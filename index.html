@@ -1261,10 +1261,38 @@ function wState(){try{return JSON.parse(localStorage.getItem(WKEY)||'{}')}catch(
 function wSave(st){try{localStorage.setItem(WKEY,JSON.stringify(st))}catch(e){}}
 function fmtDate(iso){const d=new Date(iso);return String(d.getDate()).padStart(2,'0')+'.'+String(d.getMonth()+1).padStart(2,'0')}
 function wTag(b){return b.parentElement.querySelector('.weight-tag')}
-function markEdited(b,iso){
+function markEdited(b,iso,auto){
   const tag=wTag(b);
-  if(tag){if(!tag.dataset.base)tag.dataset.base=tag.textContent;tag.textContent=tag.dataset.base+' · ред. '+fmtDate(iso)}
+  if(tag){if(!tag.dataset.base)tag.dataset.base=tag.textContent;tag.textContent=tag.dataset.base+(auto?' · авто':' · ред. '+fmtDate(iso))}
   b.classList.add('edited');
+}
+/* Auto-progression: editing the current weight recalculates the "next" badge
+   using the per-exercise step derived from the default cur→next pair in HTML.
+   Works only when the number structure matches (e.g. "37 кг", "3 × 60 сек"). */
+function wNums(s){return (s.match(/\d+(?:[.,]\d+)?/g)||[]).map(x=>parseFloat(x.replace(',','.')))}
+function wTmpl(s){return s.replace(/\d+(?:[.,]\d+)?/g,'#')}
+function wFmt(n){return String(Math.round(n*100)/100)}
+function nextBadgeOf(b){const t=b.closest('.weight-tracker');return t?t.querySelector('.weight-next-badge'):null}
+function autoNext(curBadge,newVal){
+  const nb=nextBadgeOf(curBadge);if(!nb)return;
+  const cd=curBadge.dataset.def,nd=nb.dataset.def;
+  if(wTmpl(cd)!==wTmpl(nd)||wTmpl(newVal)!==wTmpl(cd))return;
+  const base=wNums(cd),step=wNums(nd),cur=wNums(newVal);
+  if(!base.length)return;
+  let i=0;
+  const out=nd.replace(/\d+(?:[.,]\d+)?/g,()=>{const r=cur[i]+(step[i]-base[i]);i++;return wFmt(r)});
+  nb.textContent=out;
+  const st=wState(),key=nb.dataset.wkey;
+  st[key]=st[key]||{};st[key].next={v:out,d:new Date().toISOString(),a:1};
+  wSave(st);markEdited(nb,st[key].next.d,true);
+}
+function resetAutoNext(curBadge){
+  const nb=nextBadgeOf(curBadge);if(!nb)return;
+  const st=wState(),key=nb.dataset.wkey,rec=st[key]&&st[key].next;
+  if(!rec||!rec.a)return;
+  nb.textContent=nb.dataset.def;
+  delete st[key].next;if(!Object.keys(st[key]).length)delete st[key];
+  wSave(st);unmarkEdited(nb);
 }
 function unmarkEdited(b){
   const tag=wTag(b);
@@ -1295,10 +1323,12 @@ function finishEdit(b,inp){
     b.textContent=b.dataset.def;
     if(st[key]){delete st[key][slot];if(!Object.keys(st[key]).length)delete st[key]}
     wSave(st);unmarkEdited(b);
+    if(slot==='cur')resetAutoNext(b);
   }else{
     b.textContent=v;
     st[key]=st[key]||{};st[key][slot]={v:v,d:new Date().toISOString()};
     wSave(st);markEdited(b,st[key][slot].d);
+    if(slot==='cur')autoNext(b,v);
   }
 }
 (function initWeights(){
@@ -1312,7 +1342,7 @@ function finishEdit(b,inp){
       b.dataset.wslot=b.classList.contains('weight-next-badge')?'next':'cur';
       b.dataset.def=b.textContent.trim();
       const rec=st[key]&&st[key][b.dataset.wslot];
-      if(rec){b.textContent=rec.v;markEdited(b,rec.d)}
+      if(rec){b.textContent=rec.v;markEdited(b,rec.d,rec.a)}
       b.addEventListener('click',startEdit);
     });
   });
