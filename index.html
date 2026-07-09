@@ -5,170 +5,212 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <title>Влад · План тренировок</title>
+<meta name="theme-color" content="#0B0C0F">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#0f0f0f;--bg2:#1a1a1a;--bg3:#222;--border:rgba(255,255,255,0.08);--text:#f0f0f0;--muted:#888;--hint:#444;--blue:#4a9eff;--blue-bg:rgba(74,158,255,0.1);--blue-border:rgba(74,158,255,0.25);--green:#4caf7d;--green-bg:rgba(76,175,125,0.1);--green-border:rgba(76,175,125,0.25);--orange:#ff8c42;--orange-bg:rgba(255,140,66,0.1);--orange-border:rgba(255,140,66,0.25);--amber:#f5a623;--amber-bg:rgba(245,166,35,0.1);--amber-border:rgba(245,166,35,0.25);--red:#e05252;--red-bg:rgba(224,82,82,0.1);--red-border:rgba(224,82,82,0.25)}
+/* Aesthetic direction:
+ * Атлетичный / собранный / премиальный.
+ * - Type: Archivo 400–900, tabular-nums для цифр, UPPERCASE-лейблы с трекингом
+ * - Color: графит #0B0C0F / #13151B / #1A1D25, текст #EDEEF2 (не чисто-белый).
+ *   Сигнатурный акцент volt #D6F94F (активный таб, чеклист, маркеры).
+ *   Семантика сохранена: blue=спина, orange=грудь/плечи/кардио, green=коррекция, amber=питание, red=риск.
+ * - Density: компактная мобильная, шкала 4/8px
+ * - Radius: карточки 16, вложенные 12, чипы/табы 999. Без теней — бордеры и подсветка фоном.
+ * - Icons: инлайн-SVG stroke 1.8, эмодзи нет
+ * - Motion: quiet, 180ms ease, prefers-reduced-motion учитывается
+ */
+:root{--bg:#0B0C0F;--bg2:#13151B;--bg3:#1A1D25;--border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.14);--text:#EDEEF2;--muted:#8B90A0;--hint:#565B6B;
+--volt:#D6F94F;--volt-bg:rgba(214,249,79,0.10);--volt-border:rgba(214,249,79,0.35);
+--blue:#6AA6FF;--blue-bg:rgba(106,166,255,0.10);--blue-border:rgba(106,166,255,0.28);
+--green:#53C98F;--green-bg:rgba(83,201,143,0.10);--green-border:rgba(83,201,143,0.28);
+--orange:#FF9D57;--orange-bg:rgba(255,157,87,0.10);--orange-border:rgba(255,157,87,0.28);
+--amber:#F2BB4C;--amber-bg:rgba(242,187,76,0.10);--amber-border:rgba(242,187,76,0.28);
+--red:#F07373;--red-bg:rgba(240,115,115,0.10);--red-border:rgba(240,115,115,0.28)}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-body{background:var(--bg);color:var(--text);font-family:-apple-system,'SF Pro Text','Helvetica Neue',sans-serif;font-size:15px;line-height:1.5;max-width:480px;margin:0 auto;padding:0 0 80px}
-.header{padding:52px 20px 20px;border-bottom:1px solid var(--border)}
-.header-label{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
-.header-title{font-size:28px;font-weight:700;letter-spacing:-0.5px;line-height:1.1}
-.header-sub{margin-top:6px;font-size:13px;color:var(--muted)}
-.tabs{display:flex;background:var(--bg2);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;overflow-x:auto;scrollbar-width:none}
+html{background:var(--bg)}
+body{background:var(--bg);color:var(--text);font-family:'Archivo',-apple-system,'Helvetica Neue',sans-serif;font-size:15px;line-height:1.5;max-width:480px;margin:0 auto;padding:0 0 88px}
+::selection{background:var(--volt);color:#0B0C0F}
+:focus-visible{outline:2px solid var(--volt);outline-offset:2px}
+svg{display:block}
+.icon{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+/* Header */
+.header{padding:56px 20px 22px;border-bottom:1px solid var(--border);background:
+radial-gradient(120% 90% at 85% -10%,rgba(214,249,79,0.07),transparent 60%),var(--bg)}
+.header-label{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--volt);font-weight:700;margin-bottom:8px}
+.header-title{font-size:38px;font-weight:900;letter-spacing:-0.5px;line-height:1;text-transform:uppercase}
+.header-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+.chip{font-size:12px;font-weight:600;color:var(--muted);border:1px solid var(--border2);border-radius:999px;padding:5px 11px;font-variant-numeric:tabular-nums}
+.chip-goal{color:var(--volt);border-color:var(--volt-border);background:var(--volt-bg)}
+/* Tabs */
+.tabs{display:flex;gap:6px;padding:10px 14px;background:rgba(11,12,15,0.88);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;overflow-x:auto;scrollbar-width:none}
 .tabs::-webkit-scrollbar{display:none}
-.tab{flex:0 0 auto;padding:12px 14px;text-align:center;font-size:12px;font-weight:500;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;transition:all 0.15s;white-space:nowrap}
-.tab.active{color:var(--text);border-bottom-color:var(--blue)}
+.tab{appearance:none;background:transparent;border:1px solid var(--border);color:var(--muted);font-family:inherit;flex:0 0 auto;padding:8px 14px;font-size:12px;font-weight:700;letter-spacing:0.4px;text-transform:uppercase;border-radius:999px;cursor:pointer;transition:color 0.18s ease,background 0.18s ease,border-color 0.18s ease;white-space:nowrap}
+.tab:hover{color:var(--text);border-color:var(--border2)}
+.tab.active{background:var(--volt);border-color:var(--volt);color:#0B0C0F}
 .section{display:none;padding:16px}
 .section.active{display:block}
-.card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px}
-.card-header{display:flex;align-items:center;gap:10px;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--border)}
-.card-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;flex-shrink:0}
+/* Cards */
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:12px}
+.card-header{display:flex;align-items:center;gap:11px;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+.card-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;flex-shrink:0}
 .icon-blue{background:var(--blue-bg);color:var(--blue)}.icon-orange{background:var(--orange-bg);color:var(--orange)}.icon-green{background:var(--green-bg);color:var(--green)}.icon-amber{background:var(--amber-bg);color:var(--amber)}
-.card-title{font-size:15px;font-weight:600}
+.card-title{font-size:15px;font-weight:700;letter-spacing:-0.1px}
 .card-sub{font-size:12px;color:var(--muted);margin-top:1px}
+/* Metrics */
 .metrics{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
-.metric{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:14px}
-.metric-label{font-size:11px;color:var(--muted);margin-bottom:4px}
-.metric-value{font-size:26px;font-weight:700;letter-spacing:-0.5px}
+.metric{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:14px}
+.metric-label{font-size:10px;letter-spacing:1px;text-transform:uppercase;font-weight:700;color:var(--muted);margin-bottom:5px}
+.metric-value{font-size:28px;font-weight:800;letter-spacing:-0.5px;font-variant-numeric:tabular-nums}
 .metric-unit{font-size:12px;color:var(--muted);margin-top:2px}
 .metric-blue .metric-value{color:var(--blue)}.metric-green .metric-value{color:var(--green)}.metric-orange .metric-value{color:var(--orange)}.metric-amber .metric-value{color:var(--amber)}.metric-red .metric-value{color:var(--red)}
-.slabel{font-size:10px;letter-spacing:1.2px;text-transform:uppercase;color:var(--hint);margin:14px 0 8px;padding:0 2px}
+.slabel{font-size:10px;letter-spacing:1.6px;text-transform:uppercase;font-weight:700;color:var(--hint);margin:16px 0 8px;padding:0 2px}
 .exercise{display:flex;justify-content:space-between;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--border);gap:12px}
 .exercise:last-child{border-bottom:none;padding-bottom:0}
 .exercise-name{font-size:14px;color:var(--text);flex:1}
-.exercise-sets{font-size:13px;font-weight:600;color:var(--blue);white-space:nowrap}
-.corrective-tag{font-size:10px;background:var(--green-bg);color:var(--green);border:1px solid var(--green-border);border-radius:4px;padding:1px 5px;margin-left:6px;vertical-align:middle;white-space:nowrap}
-.key-tag{font-size:10px;background:var(--blue-bg);color:var(--blue);border:1px solid var(--blue-border);border-radius:4px;padding:1px 5px;margin-left:6px;vertical-align:middle;white-space:nowrap}
+.exercise-sets{font-size:13px;font-weight:700;color:var(--blue);white-space:nowrap;font-variant-numeric:tabular-nums}
+.corrective-tag{font-size:10px;font-weight:600;background:var(--green-bg);color:var(--green);border:1px solid var(--green-border);border-radius:5px;padding:1px 6px;margin-left:6px;vertical-align:middle;white-space:nowrap}
+.key-tag{font-size:10px;font-weight:600;background:var(--blue-bg);color:var(--blue);border:1px solid var(--blue-border);border-radius:5px;padding:1px 6px;margin-left:6px;vertical-align:middle;white-space:nowrap}
 /* Exercise cards */
-.ex-card{background:var(--bg3);border:1px solid var(--border);border-radius:12px;margin-bottom:10px;overflow:hidden}
-.ex-card-header{display:flex;align-items:center;gap:10px;padding:12px 14px;cursor:pointer;user-select:none}
+.ex-card{background:var(--bg3);border:1px solid var(--border);border-radius:14px;margin-bottom:10px;overflow:hidden;transition:border-color 0.18s ease}
+.ex-card.open{border-color:var(--border2)}
+.ex-card-header{display:flex;align-items:center;gap:11px;padding:13px 14px;cursor:pointer;user-select:none}
 .ex-card-header a{pointer-events:auto;position:relative;z-index:20}
 .ex-card-header:active{background:rgba(255,255,255,0.03)}
-.ex-num{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
+.ex-num{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;flex-shrink:0;font-variant-numeric:tabular-nums}
 .ex-title-wrap{flex:1}
-.ex-card-title{font-size:14px;font-weight:600}
-.ex-card-sets{font-size:12px;color:var(--muted);margin-top:1px}
-.ex-chevron{font-size:16px;color:var(--hint);transition:transform 0.2s;flex-shrink:0}
+.ex-card-title{font-size:14px;font-weight:700}
+.ex-card-sets{font-size:12px;color:var(--muted);margin-top:2px;font-variant-numeric:tabular-nums}
+.ex-chevron{width:16px;height:16px;color:var(--hint);transition:transform 0.18s ease;flex-shrink:0}
 .ex-card.open .ex-chevron{transform:rotate(180deg)}
 .ex-body{display:none;padding:0 14px 14px}
 .ex-card.open .ex-body{display:block}
 .ex-steps{list-style:none;padding:0;margin-bottom:12px}
 .ex-steps li{display:flex;gap:10px;padding:7px 0;border-bottom:1px solid var(--border);font-size:13px;color:var(--muted);line-height:1.45}
 .ex-steps li:last-child{border-bottom:none}
-.ex-steps li::before{content:attr(data-n);min-width:20px;height:20px;border-radius:50%;background:rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:var(--muted);flex-shrink:0;margin-top:1px}
-.ex-tip{margin-top:0;margin-bottom:12px;padding:9px 11px;background:var(--amber-bg);border:1px solid var(--amber-border);border-radius:8px;font-size:12px;color:var(--amber);line-height:1.4}
+.ex-steps li::before{content:attr(data-n);min-width:20px;height:20px;border-radius:6px;background:rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--muted);flex-shrink:0;margin-top:1px}
+.ex-tip{margin:0 0 12px;padding:10px 12px;background:var(--amber-bg);border:1px solid var(--amber-border);border-radius:10px;font-size:12px;color:var(--amber);line-height:1.45}
+.ex-tip::before{content:'важно';display:block;font-size:9px;font-weight:800;letter-spacing:1.4px;text-transform:uppercase;opacity:0.75;margin-bottom:3px}
 .ex-tip.green{background:var(--green-bg);border-color:var(--green-border);color:var(--green)}
-/* YouTube button */
-
-
+.ex-tip.green::before{content:'заметка'}
 /* Weight tracker */
 .weight-tracker{margin-top:12px;padding-top:12px;border-top:1px solid var(--border)}
 .weight-row{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
-.weight-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px}
+.weight-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1.2px;font-weight:700;margin-bottom:7px}
 .weight-current{display:flex;align-items:center;gap:6px}
-.weight-badge{background:var(--blue-bg);border:1px solid var(--blue-border);border-radius:8px;padding:6px 12px;font-size:15px;font-weight:700;color:var(--blue);min-width:70px;text-align:center}
-.weight-badge.recommended{background:rgba(245,166,35,0.1);border-color:rgba(245,166,35,0.3);color:var(--amber)}
+.weight-badge{background:var(--blue-bg);border:1px solid var(--blue-border);border-radius:9px;padding:6px 12px;font-size:15px;font-weight:800;color:var(--blue);min-width:70px;text-align:center;font-variant-numeric:tabular-nums}
+.weight-badge.recommended{background:var(--amber-bg);border-color:var(--amber-border);color:var(--amber)}
 .weight-next{display:flex;align-items:center;gap:6px}
-.weight-next-badge{background:var(--green-bg);border:1px solid var(--green-border);border-radius:8px;padding:6px 12px;font-size:14px;font-weight:600;color:var(--green);min-width:70px;text-align:center}
-.weight-tag{font-size:10px;color:var(--muted)}
-.weight-rule{margin-top:8px;font-size:11px;color:var(--hint);line-height:1.4}
-
-.yt-btn{display:flex;align-items:center;gap:8px;padding:10px 14px;background:rgba(255,0,0,0.12);border:1px solid rgba(255,0,0,0.25);border-radius:10px;color:#ff4444;font-size:13px;font-weight:500;text-decoration:none;cursor:pointer;transition:background 0.15s;position:relative;z-index:20;-webkit-touch-callout:default}
-.yt-btn:active{background:rgba(255,0,0,0.2)}
+.weight-next-badge{background:var(--green-bg);border:1px solid var(--green-border);border-radius:9px;padding:6px 12px;font-size:14px;font-weight:700;color:var(--green);min-width:70px;text-align:center;font-variant-numeric:tabular-nums}
+.weight-tag{font-size:10px;color:var(--muted);letter-spacing:0.3px}
+.weight-rule{margin-top:8px;font-size:11px;color:var(--hint);line-height:1.45}
+/* YouTube */
+.yt-btn{display:flex;align-items:center;gap:9px;padding:10px 14px;background:rgba(255,255,255,0.03);border:1px solid var(--border2);border-radius:10px;color:var(--text);font-size:13px;font-weight:600;text-decoration:none;cursor:pointer;transition:background 0.18s ease,border-color 0.18s ease;position:relative;z-index:20;-webkit-touch-callout:default}
+.yt-btn:hover{background:rgba(255,255,255,0.06)}
+.yt-btn:active{background:rgba(255,255,255,0.08)}
 .yt-btn svg{flex-shrink:0;pointer-events:none}
 /* Week grid */
 .week{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-bottom:12px}
-.day-cell{border-radius:10px;padding:8px 4px;text-align:center;border:1px solid var(--border);background:var(--bg2)}
+.day-cell{border-radius:12px;padding:9px 3px 8px;text-align:center;border:1px solid var(--border);background:var(--bg2)}
 .day-cell.gym{background:var(--blue-bg);border-color:var(--blue-border)}
 .day-cell.kick{background:var(--orange-bg);border-color:var(--orange-border)}
 .day-cell.stretch{background:var(--green-bg);border-color:var(--green-border)}
-.day-name{font-size:9px;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted);margin-bottom:4px}
+.day-name{font-size:9px;text-transform:uppercase;letter-spacing:0.6px;font-weight:700;color:var(--muted);margin-bottom:6px}
 .day-cell.gym .day-name{color:var(--blue)}.day-cell.kick .day-name{color:var(--orange)}.day-cell.stretch .day-name{color:var(--green)}
-.day-emoji{font-size:16px;line-height:1}
-.day-type{font-size:9px;margin-top:3px;color:var(--muted)}
+.day-ic{display:flex;justify-content:center;color:var(--hint)}
+.day-ic .icon{width:17px;height:17px}
+.day-cell.gym .day-ic{color:var(--blue)}.day-cell.kick .day-ic{color:var(--orange)}.day-cell.stretch .day-ic{color:var(--green)}
+.day-type{font-size:9px;margin-top:5px;color:var(--muted)}
 .day-cell.gym .day-type{color:var(--blue)}.day-cell.kick .day-type{color:var(--orange)}.day-cell.stretch .day-type{color:var(--green)}
 /* Body stats */
 .stat-row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--border)}
 .stat-row:last-child{border-bottom:none}
 .stat-name{font-size:13px;color:var(--muted)}
-.stat-values{display:flex;gap:10px;align-items:center}
-.stat-now{font-size:14px;font-weight:600}
+.stat-values{display:flex;gap:10px;align-items:center;font-variant-numeric:tabular-nums}
+.stat-now{font-size:14px;font-weight:700}
 .stat-arrow{font-size:12px;color:var(--hint)}
-.stat-goal{font-size:13px;color:var(--green)}
+.stat-goal{font-size:13px;font-weight:600;color:var(--green)}
 .stat-diff{font-size:11px;color:var(--muted)}
 .prog-wrap{margin:14px 0}
-.prog-label{display:flex;justify-content:space-between;margin-bottom:6px;font-size:12px}
+.prog-label{display:flex;justify-content:space-between;margin-bottom:6px;font-size:12px;font-variant-numeric:tabular-nums}
 .prog-bar{height:6px;background:rgba(255,255,255,0.08);border-radius:3px;overflow:hidden}
 .prog-fill{height:100%;border-radius:3px}
 .ratio-big{text-align:center;padding:16px 0 10px}
-.ratio-num{font-size:48px;font-weight:700;letter-spacing:-2px}
+.ratio-num{font-size:54px;font-weight:900;letter-spacing:-2px;font-variant-numeric:tabular-nums}
 .ratio-scale{display:flex;gap:8px;margin-top:14px}
-.ratio-step{flex:1;padding:8px 6px;border-radius:8px;text-align:center;border:1px solid var(--border)}
-.ratio-step.active-step{border-color:var(--blue);background:var(--blue-bg)}
-.ratio-step-val{font-size:13px;font-weight:600}
+.ratio-step{flex:1;padding:9px 6px;border-radius:10px;text-align:center;border:1px solid var(--border)}
+.ratio-step.active-step{border-color:var(--border2);background:var(--bg3)}
+.ratio-step-val{font-size:13px;font-weight:800;font-variant-numeric:tabular-nums}
 .ratio-step-desc{font-size:10px;color:var(--muted);margin-top:2px}
 .vtaper-svg{width:100%;margin:14px 0}
 /* Nutrition */
 .meal{padding:12px 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;gap:12px}
 .meal:last-child{border-bottom:none}
-.meal-time{font-size:11px;color:var(--muted);margin-bottom:3px}
-.meal-desc{font-size:14px}
+.meal-left{flex:1}
+.meal-right{text-align:right}
+.meal-time{font-size:10px;letter-spacing:1px;font-weight:700;color:var(--muted);margin-bottom:3px}
+.meal-desc{font-size:14px;font-weight:600}
 .meal-macros{font-size:12px;color:var(--muted);margin-top:2px}
-.meal-kcal{font-size:18px;font-weight:700;color:var(--amber)}
+.meal-kcal{font-size:19px;font-weight:800;color:var(--amber);font-variant-numeric:tabular-nums}
 .meal-kcal-unit{font-size:11px;color:var(--muted);text-align:right}
-.post-workout-badge{display:inline-block;font-size:10px;background:var(--blue-bg);color:var(--blue);border:1px solid var(--blue-border);border-radius:4px;padding:2px 6px;margin-bottom:4px}
+.post-workout-badge{display:inline-block;font-size:10px;font-weight:600;background:var(--blue-bg);color:var(--blue);border:1px solid var(--blue-border);border-radius:5px;padding:2px 7px;margin-bottom:4px}
 /* Rules */
-.rule{display:flex;gap:10px;padding:11px 0;border-bottom:1px solid var(--border);align-items:flex-start}
+.rule{display:flex;gap:11px;padding:11px 0;border-bottom:1px solid var(--border);align-items:flex-start}
 .rule:last-child{border-bottom:none}
-.rule-icon{font-size:18px;flex-shrink:0;margin-top:1px}
+.rule-marker{width:7px;height:7px;background:var(--volt);border-radius:2px;transform:rotate(45deg);flex-shrink:0;margin-top:7px}
 .rule-text{font-size:14px;line-height:1.45}
-.rule-text strong{color:var(--text);font-weight:600}
+.rule-text strong{color:var(--text);font-weight:700}
 .rule-text span{color:var(--muted)}
 /* Stretch */
 .stretch-item{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);align-items:center;gap:12px}
 .stretch-item:last-child{border-bottom:none}
 .stretch-name{font-size:14px}
-.stretch-time{font-size:13px;font-weight:600;color:var(--green);white-space:nowrap}
+.stretch-time{font-size:13px;font-weight:700;color:var(--green);white-space:nowrap;font-variant-numeric:tabular-nums}
 /* Checklist */
 .check-item{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--border);cursor:pointer}
 .check-item:last-child{border-bottom:none}
-.checkbox{width:22px;height:22px;border-radius:6px;border:1.5px solid var(--hint);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all 0.15s}
-.check-item.done .checkbox{background:var(--green);border-color:var(--green)}
-.check-item.done .checkbox::after{content:'✓';font-size:13px;color:#fff;font-weight:700}
+.checkbox{width:22px;height:22px;border-radius:7px;border:1.5px solid var(--hint);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:background 0.18s ease,border-color 0.18s ease}
+.check-item.done .checkbox{background:var(--volt);border-color:var(--volt)}
+.check-item.done .checkbox::after{content:'✓';font-size:13px;color:#0B0C0F;font-weight:800}
 .check-label{font-size:14px}
 .check-item.done .check-label{color:var(--muted);text-decoration:line-through}
-.warning-card{background:var(--amber-bg);border:1px solid var(--amber-border);border-radius:12px;padding:14px;margin-bottom:12px}
-.warning-title{font-size:13px;font-weight:600;color:var(--amber);margin-bottom:6px}
-.warning-text{font-size:13px;color:rgba(245,166,35,0.85);line-height:1.5}
+.warning-card{background:var(--amber-bg);border:1px solid var(--amber-border);border-radius:14px;padding:14px;margin-bottom:12px}
+.warning-title{font-size:13px;font-weight:700;color:var(--amber);margin-bottom:6px}
+.warning-text{font-size:13px;color:rgba(242,187,76,0.85);line-height:1.5}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
 <body>
 
-<div class="header">
+<header class="header">
   <div class="header-label">Персональный план</div>
-  <div class="header-title">Тело мечты</div>
-  <div class="header-sub">26 лет · 187 см · 85 кг · ~22% жира → V-тейпер</div>
-</div>
+  <h1 class="header-title">Тело мечты</h1>
+  <div class="header-chips">
+    <span class="chip">26 лет</span><span class="chip">187 см</span><span class="chip">85 кг</span><span class="chip">~22% жира</span><span class="chip chip-goal">цель — V-тейпер</span>
+  </div>
+</header>
 
-<div class="tabs">
-  <div class="tab active" onclick="showTab('week')">Неделя</div>
-  <div class="tab" onclick="showTab('body')">Параметры</div>
-  <div class="tab" onclick="showTab('day-a')">День A</div>
-  <div class="tab" onclick="showTab('day-b')">День B</div>
-  <div class="tab" onclick="showTab('food')">Питание</div>
-  <div class="tab" onclick="showTab('rules')">Правила</div>
-</div>
+<nav class="tabs" role="tablist">
+  <button class="tab active" data-tab="week" role="tab" aria-selected="true">Неделя</button>
+  <button class="tab" data-tab="body" role="tab" aria-selected="false">Параметры</button>
+  <button class="tab" data-tab="day-a" role="tab" aria-selected="false">День A</button>
+  <button class="tab" data-tab="day-b" role="tab" aria-selected="false">День B</button>
+  <button class="tab" data-tab="food" role="tab" aria-selected="false">Питание</button>
+  <button class="tab" data-tab="rules" role="tab" aria-selected="false">Правила</button>
+</nav>
 
 <!-- НЕДЕЛЯ -->
 <div id="week" class="section active">
   <div class="slabel">Расписание недели</div>
   <div class="week">
-    <div class="day-cell"><div class="day-name">Пн</div><div class="day-emoji">😴</div><div class="day-type">отдых</div></div>
-    <div class="day-cell gym"><div class="day-name">Вт</div><div class="day-emoji">💪</div><div class="day-type">День A</div></div>
-    <div class="day-cell"><div class="day-name">Ср</div><div class="day-emoji">😴</div><div class="day-type">отдых</div></div>
-    <div class="day-cell gym"><div class="day-name">Чт</div><div class="day-emoji">💪</div><div class="day-type">День B</div></div>
-    <div class="day-cell"><div class="day-name">Пт</div><div class="day-emoji">😴</div><div class="day-type">отдых</div></div>
-    <div class="day-cell kick"><div class="day-name">Сб</div><div class="day-emoji">🥊</div><div class="day-type">кикбокс</div></div>
-    <div class="day-cell stretch"><div class="day-name">Вс</div><div class="day-emoji">🧘</div><div class="day-type">растяжка</div></div>
+    <div class="day-cell"><div class="day-name">Пн</div><div class="day-ic"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 13.5A8.5 8.5 0 1 1 10.5 4a7 7 0 0 0 9.5 9.5z"/></svg></div><div class="day-type">отдых</div></div>
+    <div class="day-cell gym"><div class="day-name">Вт</div><div class="day-ic"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7.5v9M17 7.5v9M3.5 10v4M20.5 10v4M7 12h10"/></svg></div><div class="day-type">День A</div></div>
+    <div class="day-cell"><div class="day-name">Ср</div><div class="day-ic"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 13.5A8.5 8.5 0 1 1 10.5 4a7 7 0 0 0 9.5 9.5z"/></svg></div><div class="day-type">отдых</div></div>
+    <div class="day-cell gym"><div class="day-name">Чт</div><div class="day-ic"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7.5v9M17 7.5v9M3.5 10v4M20.5 10v4M7 12h10"/></svg></div><div class="day-type">День B</div></div>
+    <div class="day-cell"><div class="day-name">Пт</div><div class="day-ic"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 13.5A8.5 8.5 0 1 1 10.5 4a7 7 0 0 0 9.5 9.5z"/></svg></div><div class="day-type">отдых</div></div>
+    <div class="day-cell kick"><div class="day-name">Сб</div><div class="day-ic"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M13 3L5.5 13.5H11L10 21l7.5-10.5H12L13 3z"/></svg></div><div class="day-type">кикбокс</div></div>
+    <div class="day-cell stretch"><div class="day-name">Вс</div><div class="day-ic"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="5" r="2"/><path d="M12 8v5M12 13l-4.5 6M12 13l4.5 6M5.5 10.5L12 9l6.5 1.5"/></svg></div><div class="day-type">растяжка</div></div>
   </div>
   <div class="metrics">
     <div class="metric metric-blue"><div class="metric-label">Калории/день</div><div class="metric-value">2300</div><div class="metric-unit">дефицит ~300 ккал</div></div>
@@ -177,12 +219,12 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,'SF Pro Te
     <div class="metric metric-orange"><div class="metric-label">Жиры</div><div class="metric-value">70г</div><div class="metric-unit">ненасыщенные</div></div>
   </div>
   <div class="warning-card">
-    <div class="warning-title">⚡ Главное правило прогрессии</div>
+    <div class="warning-title">Главное правило прогрессии</div>
     <div class="warning-text">Делаешь верхний диапазон повторений чисто во всех подходах → следующая тренировка +1–2 кг. Не делаешь — держи вес. Записывай веса после каждой тренировки.</div>
   </div>
   <div class="card">
     <div class="card-header">
-      <div class="card-icon icon-blue">📊</div>
+      <div class="card-icon icon-blue"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20v-8M12 20V5M19 20v-6"/></svg></div>
       <div><div class="card-title">Контроль</div><div class="card-sub">что и когда замерять</div></div>
     </div>
     <div class="exercise"><div class="exercise-name">Взвешивание утром натощак</div><div class="exercise-sets" style="color:var(--muted)">каждые 2 нед.</div></div>
@@ -195,7 +237,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,'SF Pro Te
 <div id="body" class="section">
   <div class="card">
     <div class="card-header">
-      <div class="card-icon icon-blue">📐</div>
+      <div class="card-icon icon-blue"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19V6M5 19h14M5 19L18 6M9 19v-3M13 19v-3"/></svg></div>
       <div><div class="card-title">Коэффициент V-тейпера</div><div class="card-sub">плечи ÷ талия · цель ≥ 1.50</div></div>
     </div>
     <div class="ratio-big">
@@ -215,37 +257,37 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,'SF Pro Te
   </div>
   <div class="card">
     <div class="card-header">
-      <div class="card-icon icon-orange">🎯</div>
+      <div class="card-icon icon-orange"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/></svg></div>
       <div><div class="card-title">Текущий vs Цель</div><div class="card-sub">визуальный силуэт</div></div>
     </div>
     <svg class="vtaper-svg" viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg">
       <g>
-        <text x="80" y="18" fill="#888" font-size="11" text-anchor="middle" font-family="-apple-system,sans-serif">сейчас</text>
-        <ellipse cx="80" cy="50" rx="42" ry="10" fill="none" stroke="#ff8c42" stroke-width="2"/>
-        <path d="M38,50 L48,110 L45,150 L115,150 L112,110 L122,50" fill="rgba(255,140,66,0.08)" stroke="#ff8c42" stroke-width="1.5" stroke-dasharray="4,3"/>
-        <line x1="48" y1="110" x2="112" y2="110" stroke="rgba(255,140,66,0.3)" stroke-width="1" stroke-dasharray="3,3"/>
-        <text x="80" y="107" fill="#ff8c42" font-size="9" text-anchor="middle" font-family="-apple-system,sans-serif">талия 93</text>
-        <text x="80" y="65" fill="#ff8c42" font-size="9" text-anchor="middle" font-family="-apple-system,sans-serif">плечи 124</text>
-        <text x="80" y="170" fill="#ff8c42" font-size="13" font-weight="700" text-anchor="middle" font-family="-apple-system,sans-serif">1.33</text>
-        <text x="80" y="184" fill="#888" font-size="10" text-anchor="middle" font-family="-apple-system,sans-serif">лёгкий V</text>
+        <text x="80" y="18" fill="#8B90A0" font-size="11" text-anchor="middle" font-family="Archivo,sans-serif">сейчас</text>
+        <ellipse cx="80" cy="50" rx="42" ry="10" fill="none" stroke="#FF9D57" stroke-width="2"/>
+        <path d="M38,50 L48,110 L45,150 L115,150 L112,110 L122,50" fill="rgba(255,157,87,0.08)" stroke="#FF9D57" stroke-width="1.5" stroke-dasharray="4,3"/>
+        <line x1="48" y1="110" x2="112" y2="110" stroke="rgba(255,157,87,0.3)" stroke-width="1" stroke-dasharray="3,3"/>
+        <text x="80" y="107" fill="#FF9D57" font-size="9" text-anchor="middle" font-family="Archivo,sans-serif">талия 93</text>
+        <text x="80" y="65" fill="#FF9D57" font-size="9" text-anchor="middle" font-family="Archivo,sans-serif">плечи 124</text>
+        <text x="80" y="170" fill="#FF9D57" font-size="13" font-weight="700" text-anchor="middle" font-family="Archivo,sans-serif">1.33</text>
+        <text x="80" y="184" fill="#8B90A0" font-size="10" text-anchor="middle" font-family="Archivo,sans-serif">лёгкий V</text>
       </g>
       <line x1="160" y1="20" x2="160" y2="185" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
-      <text x="160" y="104" fill="rgba(255,255,255,0.15)" font-size="18" text-anchor="middle" font-family="-apple-system,sans-serif">→</text>
+      <text x="160" y="104" fill="rgba(255,255,255,0.15)" font-size="18" text-anchor="middle" font-family="Archivo,sans-serif">→</text>
       <g>
-        <text x="240" y="18" fill="#888" font-size="11" text-anchor="middle" font-family="-apple-system,sans-serif">цель</text>
-        <ellipse cx="240" cy="50" rx="44" ry="10" fill="none" stroke="#4caf7d" stroke-width="2"/>
-        <path d="M196,50 L212,110 L206,150 L274,150 L268,110 L284,50" fill="rgba(76,175,125,0.08)" stroke="#4caf7d" stroke-width="1.5"/>
-        <line x1="212" y1="110" x2="268" y2="110" stroke="rgba(76,175,125,0.3)" stroke-width="1" stroke-dasharray="3,3"/>
-        <text x="240" y="107" fill="#4caf7d" font-size="9" text-anchor="middle" font-family="-apple-system,sans-serif">талия 82</text>
-        <text x="240" y="65" fill="#4caf7d" font-size="9" text-anchor="middle" font-family="-apple-system,sans-serif">плечи 128+</text>
-        <text x="240" y="170" fill="#4caf7d" font-size="13" font-weight="700" text-anchor="middle" font-family="-apple-system,sans-serif">1.56</text>
-        <text x="240" y="184" fill="#888" font-size="10" text-anchor="middle" font-family="-apple-system,sans-serif">V-тейпер</text>
+        <text x="240" y="18" fill="#8B90A0" font-size="11" text-anchor="middle" font-family="Archivo,sans-serif">цель</text>
+        <ellipse cx="240" cy="50" rx="44" ry="10" fill="none" stroke="#53C98F" stroke-width="2"/>
+        <path d="M196,50 L212,110 L206,150 L274,150 L268,110 L284,50" fill="rgba(83,201,143,0.08)" stroke="#53C98F" stroke-width="1.5"/>
+        <line x1="212" y1="110" x2="268" y2="110" stroke="rgba(83,201,143,0.3)" stroke-width="1" stroke-dasharray="3,3"/>
+        <text x="240" y="107" fill="#53C98F" font-size="9" text-anchor="middle" font-family="Archivo,sans-serif">талия 82</text>
+        <text x="240" y="65" fill="#53C98F" font-size="9" text-anchor="middle" font-family="Archivo,sans-serif">плечи 128+</text>
+        <text x="240" y="170" fill="#53C98F" font-size="13" font-weight="700" text-anchor="middle" font-family="Archivo,sans-serif">1.56</text>
+        <text x="240" y="184" fill="#8B90A0" font-size="10" text-anchor="middle" font-family="Archivo,sans-serif">V-тейпер</text>
       </g>
     </svg>
   </div>
   <div class="card">
     <div class="card-header">
-      <div class="card-icon icon-green">📏</div>
+      <div class="card-icon icon-green"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="9" width="18" height="7" rx="1.5"/><path d="M7.5 9v3M12 9v3M16.5 9v3"/></svg></div>
       <div><div class="card-title">Замеры · июль 2026</div><div class="card-sub">обновлено 7 июля</div></div>
     </div>
     <div class="stat-row"><div class="stat-name">Талия</div><div class="stat-values"><div class="stat-now" style="color:var(--red)">93 см</div><div class="stat-arrow">→</div><div class="stat-goal">80–84 см</div><div class="stat-diff">−9–13</div></div></div>
@@ -257,13 +299,13 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,'SF Pro Te
   </div>
   <div class="card">
     <div class="card-header">
-      <div class="card-icon icon-blue">🔺</div>
+      <div class="card-icon icon-blue"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5l8 14H4l8-14z"/></svg></div>
       <div><div class="card-title">Как строится V-тейпер</div><div class="card-sub">два рычага одновременно</div></div>
     </div>
-    <div class="rule"><div class="rule-icon">📉</div><div class="rule-text"><strong>Убираем талию.</strong> <span>Дефицит 300 ккал + высокий белок. −12 см на талии дадут коэффициент 1.45 уже при нынешних плечах.</span></div></div>
-    <div class="rule"><div class="rule-icon">📐</div><div class="rule-text"><strong>Растим ширину плеч.</strong> <span>Махи в стороны — главное упражнение. Средняя дельта создаёт визуальную ширину.</span></div></div>
-    <div class="rule"><div class="rule-icon">🔼</div><div class="rule-text"><strong>Ширина спины.</strong> <span>Тяги блоков строят широчайшие — они создают V снизу. Широкий хват обязателен.</span></div></div>
-    <div class="rule"><div class="rule-icon">⏳</div><div class="rule-text"><strong>Горизонт.</strong> <span>Первые изменения — через 2–3 месяца. Уверенный V-тейпер — через 9–12 месяцев.</span></div></div>
+    <div class="rule"><div class="rule-marker"></div><div class="rule-text"><strong>Убираем талию.</strong> <span>Дефицит 300 ккал + высокий белок. −12 см на талии дадут коэффициент 1.45 уже при нынешних плечах.</span></div></div>
+    <div class="rule"><div class="rule-marker"></div><div class="rule-text"><strong>Растим ширину плеч.</strong> <span>Махи в стороны — главное упражнение. Средняя дельта создаёт визуальную ширину.</span></div></div>
+    <div class="rule"><div class="rule-marker"></div><div class="rule-text"><strong>Ширина спины.</strong> <span>Тяги блоков строят широчайшие — они создают V снизу. Широкий хват обязателен.</span></div></div>
+    <div class="rule"><div class="rule-marker"></div><div class="rule-text"><strong>Горизонт.</strong> <span>Первые изменения — через 2–3 месяца. Уверенный V-тейпер — через 9–12 месяцев.</span></div></div>
   </div>
 </div>
 
@@ -285,7 +327,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,'SF Pro Te
     <div class="ex-card-header">
       <div class="ex-num" style="background:var(--blue-bg);color:var(--blue)">1</div>
       <div class="ex-title-wrap"><div class="ex-card-title">Подтягивания широким хватом</div><div class="ex-card-sets" style="color:var(--blue)">4 × макс (цель 8–10) · база V-тейпера</div></div>
-      <div class="ex-chevron">⌄</div>
+      <div class="ex-chevron"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></div>
     </div>
     <div class="ex-body">
       <ol class="ex-steps">
@@ -295,7 +337,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,'SF Pro Te
         <li data-n="4">Подбородок выше перекладины или максимально близко — без рывков ногами.</li>
         <li data-n="5">Опускайся медленно — 2–3 сек, до почти полного выпрямления рук.</li>
       </ol>
-      <div class="ex-tip">⚠️ Главное базовое упражнение для ширины спины. Если меньше 6 повторений — используй гравитрон или резинку. Раскачка и киппинг — не считаются.</div>
+      <div class="ex-tip">Главное базовое упражнение для ширины спины. Если меньше 6 повторений — используй гравитрон или резинку. Раскачка и киппинг — не считаются.</div>
       <div class="weight-tracker">
         <div class="weight-label">Рабочий вес</div>
         <div class="weight-row">
@@ -316,7 +358,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,'SF Pro Te
     <div class="ex-card-header">
       <div class="ex-num" style="background:var(--blue-bg);color:var(--blue)">2</div>
       <div class="ex-title-wrap"><div class="ex-card-title">Тяга горизонтального блока широким хватом</div><div class="ex-card-sets" style="color:var(--blue)">4 × 10 · спина</div></div>
-      <div class="ex-chevron">⌄</div>
+      <div class="ex-chevron"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></div>
     </div>
     <div class="ex-body">
       <ol class="ex-steps">
@@ -326,7 +368,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,'SF Pro Te
         <li data-n="4">В конечной точке задержись 1 сек — почувствуй сжатие спины.</li>
         <li data-n="5">Медленно возвращай вперёд — 2–3 сек, не роняй вес.</li>
       </ol>
-      <div class="ex-tip">⚠️ Не горби спину и не раскачивайся корпусом. Работает спина — не инерция.</div>
+      <div class="ex-tip">Не горби спину и не раскачивайся корпусом. Работает спина — не инерция.</div>
 
       <div class="weight-tracker">
         <div class="weight-label">Рабочий вес</div>
@@ -348,7 +390,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,'SF Pro Te
     <div class="ex-card-header">
       <div class="ex-num" style="background:var(--blue-bg);color:var(--blue)">3</div>
       <div class="ex-title-wrap"><div class="ex-card-title">Тяга верхнего блока к груди</div><div class="ex-card-sets" style="color:var(--blue)">3 × 10 · добивка после подтягиваний</div></div>
-      <div class="ex-chevron">⌄</div>
+      <div class="ex-chevron"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></div>
     </div>
     <div class="ex-body">
       <ol class="ex-steps">
@@ -358,7 +400,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,'SF Pro Te
         <li data-n="4">Коснись груди или приблизься — не дёргай, плавно.</li>
         <li data-n="5">Медленно возвращай вверх, полностью растягивая широчайшие.</li>
       </ol>
-      <div class="ex-tip">⚠️ Широкий хват = больше широчайших. Узкий хват смещает нагрузку на бицепс.</div>
+      <div class="ex-tip">Широкий хват = больше широчайших. Узкий хват смещает нагрузку на бицепс.</div>
 
       <div class="weight-tracker">
         <div class="weight-label">Рабочий вес</div>
@@ -380,7 +422,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,'SF Pro Te
     <div class="ex-card-header">
       <div class="ex-num" style="background:var(--blue-bg);color:var(--blue)">4</div>
       <div class="ex-title-wrap"><div class="ex-card-title">Тяга гантели в наклоне</div><div class="ex-card-sets" style="color:var(--blue)">3 × 12 каждой рукой</div></div>
-      <div class="ex-chevron">⌄</div>
+      <div class="ex-chevron"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></div>
     </div>
     <div class="ex-body">
       <ol class="ex-steps">
@@ -390,7 +432,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,'SF Pro Te
         <li data-n="4">В верхней точке лопатка максимально сведена — задержись 1 сек.</li>
         <li data-n="5">Опускай медленно, полностью растягивая мышцу.</li>
       </ol>
-      <div class="ex-tip">⚠️ Не разворачивай корпус — работает только рука и лопатка. Спина неподвижна.</div>
+      <div class="ex-tip">Не разворачивай корпус — работает только рука и лопатка. Спина неподвижна.</div>
 
       <div class="weight-tracker">
         <div class="weight-label">Рабочий вес</div>
@@ -414,7 +456,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,'SF Pro Te
     <div class="ex-card-header">
       <div class="ex-num" style="background:var(--orange-bg);color:var(--orange)">5</div>
       <div class="ex-title-wrap"><div class="ex-card-title">Жим Арнольда</div><div class="ex-card-sets" style="color:var(--orange)">3 × 10 · все три пучка дельты</div></div>
-      <div class="ex-chevron">⌄</div>
+      <div class="ex-chevron"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></div>
     </div>
     <div class="ex-body">
       <ol class="ex-steps">
@@ -424,7 +466,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,'SF Pro Te
         <li data-n="4">Опускай обратно с обратным разворотом кистей — медленно, 2–3 сек.</li>
         <li data-n="5">Всё движение плавное, без рывков — разворот и жим слитно.</li>
       </ol>
-      <div class="ex-tip">⚠️ Вес меньше, чем в обычном жиме — разворот кистей усложняет движение. Начни с 12 кг. Если не почувствуешь плечи лучше обычного жима — скажи, вернём назад.</div>
+      <div class="ex-tip">Вес меньше, чем в обычном жиме — разворот кистей усложняет движение. Начни с 12 кг. Если не почувствуешь плечи лучше обычного жима — скажи, вернём назад.</div>
       <div class="weight-tracker">
         <div class="weight-label">Рабочий вес</div>
         <div class="weight-row">
@@ -445,7 +487,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,'SF Pro Te
     <div class="ex-card-header">
       <div class="ex-num" style="background:var(--orange-bg);color:var(--orange)">6</div>
       <div class="ex-title-wrap"><div class="ex-card-title">Тяга штанги к подбородку широким хватом</div><div class="ex-card-sets" style="color:var(--orange)">3 × 12 · средняя дельта</div></div>
-      <div class="ex-chevron">⌄</div>
+      <div class="ex-chevron"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></div>
     </div>
     <div class="ex-body">
       <ol class="ex-steps">
@@ -455,7 +497,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,'SF Pro Te
         <li data-n="4">В верхней точке локти смотрят в стороны и вверх — пауза 1 сек.</li>
         <li data-n="5">Опускай медленно — 2–3 сек, контролируя вес.</li>
       </ol>
-      <div class="ex-tip">⚠️ Именно широкий хват — он смещает нагрузку с трапеции на среднюю дельту. Узкий хват сюда не подходит и нагружает запястья.</div>
+      <div class="ex-tip">Именно широкий хват — он смещает нагрузку с трапеции на среднюю дельту. Узкий хват сюда не подходит и нагружает запястья.</div>
       <div class="weight-tracker">
         <div class="weight-label">Рабочий вес</div>
         <div class="weight-row">
@@ -475,8 +517,8 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,'SF Pro Te
   <div class="ex-card" onclick="toggleEx(this,event)">
     <div class="ex-card-header">
       <div class="ex-num" style="background:var(--orange-bg);color:var(--orange)">7</div>
-      <div class="ex-title-wrap"><div class="ex-card-title">Махи гантелями в стороны ★</div><div class="ex-card-sets" style="color:var(--orange)">5 × 12–15 · ширина плеч · приоритет</div></div>
-      <div class="ex-chevron">⌄</div>
+      <div class="ex-title-wrap"><div class="ex-card-title">Махи гантелями в стороны</div><div class="ex-card-sets" style="color:var(--orange)">5 × 12–15 · ширина плеч · приоритет</div></div>
+      <div class="ex-chevron"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></div>
     </div>
     <div class="ex-body">
       <ol class="ex-steps">
@@ -486,7 +528,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,'SF Pro Te
         <li data-n="4">В верхней точке — секунда паузы, чувствуй жжение в средней дельте.</li>
         <li data-n="5">Медленно опускай — 2–3 сек. Это важнее, чем подъём.</li>
       </ol>
-      <div class="ex-tip">⚠️ Вес лёгкий — 5–8 кг для старта. Читинг убивает эффект. Главное упражнение для ширины плеч.</div>
+      <div class="ex-tip">Вес лёгкий — 5–8 кг для старта. Читинг убивает эффект. Главное упражнение для ширины плеч.</div>
 
       <div class="weight-tracker">
         <div class="weight-label">Рабочий вес</div>
@@ -508,7 +550,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,'SF Pro Te
     <div class="ex-card-header">
       <div class="ex-num" style="background:var(--orange-bg);color:var(--orange)">8</div>
       <div class="ex-title-wrap"><div class="ex-card-title">Махи в тренажёре (Lateral Raise Machine)</div><div class="ex-card-sets" style="color:var(--orange)">3 × 12–15 · средняя дельта</div></div>
-      <div class="ex-chevron">⌄</div>
+      <div class="ex-chevron"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></div>
     </div>
     <div class="ex-body">
       <ol class="ex-steps">
@@ -518,7 +560,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,'SF Pro Te
         <li data-n="4">Поднимай локти в стороны до уровня плеч — плавно, без рывка.</li>
         <li data-n="5">Медленно опускай — 2–3 сек, полный контроль на негативной фазе.</li>
       </ol>
-      <div class="ex-tip">⚠️ Тренажёр фиксирует траекторию — хорошо для чистой изоляции средней дельты без читинга. Вместе с махами гантелями — 8 подходов суммарно на среднюю дельту, это приоритетный объём.</div>
+      <div class="ex-tip">Тренажёр фиксирует траекторию — хорошо для чистой изоляции средней дельты без читинга. Вместе с махами гантелями — 8 подходов суммарно на среднюю дельту, это приоритетный объём.</div>
       <div class="weight-tracker">
         <div class="weight-label">Рабочий вес</div>
         <div class="weight-row">
@@ -539,7 +581,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,'SF Pro Te
     <div class="ex-card-header">
       <div class="ex-num" style="background:var(--orange-bg);color:var(--orange)">9</div>
       <div class="ex-title-wrap"><div class="ex-card-title">Обратная бабочка (Reverse Pec Deck)</div><div class="ex-card-sets" style="color:var(--orange)">4 × 15 · задняя дельта</div></div>
-      <div class="ex-chevron">⌄</div>
+      <div class="ex-chevron"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></div>
     </div>
     <div class="ex-body">
       <ol class="ex-steps">
@@ -549,7 +591,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,'SF Pro Te
         <li data-n="4">В крайней точке сожми лопатки и заднюю дельту — задержись 1 сек.</li>
         <li data-n="5">Медленно возвращай вперёд — 3 сек. Это важнее подъёма.</li>
       </ol>
-      <div class="ex-tip">⚠️ Вес очень лёгкий — задняя дельта у боксёров почти не развита. Не тяни трапецией, не поднимай плечи. Если плечи лезут вверх — вес слишком тяжёлый.</div>
+      <div class="ex-tip">Вес очень лёгкий — задняя дельта у боксёров почти не развита. Не тяни трапецией, не поднимай плечи. Если плечи лезут вверх — вес слишком тяжёлый.</div>
       <div class="weight-tracker">
         <div class="weight-label">Рабочий вес</div>
         <div class="weight-row">
@@ -557,7 +599,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,'SF Pro Te
           <div style="color:var(--hint);font-size:18px">→</div>
           <div class="weight-next"><div><div class="weight-tag">после чистых</div><div class="weight-next-badge">39 кг</div></div></div>
         </div>
-        <div class="weight-rule">⚠️ Просадка к концу — 15/12/10 повт на 36 кг. Держи 36 кг, цель 4×15 чисто</div>
+        <div class="weight-rule">Просадка к концу — 15/12/10 повт на 36 кг. Держи 36 кг, цель 4×15 чисто</div>
       </div>
       <a class="yt-btn" href="https://www.youtube.com/watch?v=zEKEiMIBBQs" target="_blank">
         <svg width="20" height="14" viewBox="0 0 20 14" fill="none"><rect width="20" height="14" rx="3" fill="#FF0000"/><path d="M8 3.5L14 7L8 10.5V3.5Z" fill="white"/></svg>
@@ -574,7 +616,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,'SF Pro Te
     <div class="ex-card-header">
       <div class="ex-num" style="background:var(--green-bg);color:var(--green)">10</div>
       <div class="ex-title-wrap"><div class="ex-card-title">Face pull с канатом</div><div class="ex-card-sets" style="color:var(--green)">3 × 15 · кифоз</div></div>
-      <div class="ex-chevron">⌄</div>
+      <div class="ex-chevron"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></div>
     </div>
     <div class="ex-body">
       <ol class="ex-steps">
@@ -584,7 +626,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,'SF Pro Te
         <li data-n="4">Запястья у висков, локти максимально назад. Лопатки сведены.</li>
         <li data-n="5">Медленно возвращай вперёд.</li>
       </ol>
-      <div class="ex-tip green">🟢 Корректирует кифоз, укрепляет задние дельты и ромбовидные. Никогда не пропускай.</div>
+      <div class="ex-tip green">Корректирует кифоз, укрепляет задние дельты и ромбовидные. Никогда не пропускай.</div>
 
       <div class="weight-tracker">
         <div class="weight-label">Рабочий вес</div>
@@ -607,7 +649,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,'SF Pro Te
     <div class="ex-card-header">
       <div class="ex-num" style="background:var(--green-bg);color:var(--green)">11</div>
       <div class="ex-title-wrap"><div class="ex-card-title">Планка</div><div class="ex-card-sets" style="color:var(--green)">3 × 60 сек · кор</div></div>
-      <div class="ex-chevron">⌄</div>
+      <div class="ex-chevron"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></div>
     </div>
     <div class="ex-body">
       <ol class="ex-steps">
@@ -616,7 +658,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,'SF Pro Te
         <li data-n="3">Напряги пресс, ягодицы и квадрицепсы одновременно.</li>
         <li data-n="4">Дыши равномерно. Не задерживай дыхание.</li>
       </ol>
-      <div class="ex-tip">⚠️ Если форма нарушается — заканчивай. Планка в плохой форме бесполезна.</div>
+      <div class="ex-tip">Если форма нарушается — заканчивай. Планка в плохой форме бесполезна.</div>
 
       <div class="weight-tracker">
         <div class="weight-label">Рабочее время</div>
@@ -648,7 +690,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,'SF Pro Te
     <div class="ex-card-header">
       <div class="ex-num" style="background:var(--green-bg);color:var(--green)">12</div>
       <div class="ex-title-wrap"><div class="ex-card-title">Dead bug</div><div class="ex-card-sets" style="color:var(--green)">3 × 10 каждой стороной</div></div>
-      <div class="ex-chevron">⌄</div>
+      <div class="ex-chevron"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></div>
     </div>
     <div class="ex-body">
       <ol class="ex-steps">
@@ -657,7 +699,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,'SF Pro Te
         <li data-n="3">Одновременно опускай правую руку за голову и вытягивай левую ногу вперёд.</li>
         <li data-n="4">Не касаясь пола, вернись. Повтори с другой стороной.</li>
       </ol>
-      <div class="ex-tip green">🟢 Если поясница отрывается — уменьши амплитуду.</div>
+      <div class="ex-tip green">Если поясница отрывается — уменьши амплитуду.</div>
 
       <div class="weight-tracker">
         <div class="weight-label">Темп</div>
@@ -689,7 +731,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,'SF Pro Te
     <div class="ex-card-header">
       <div class="ex-num" style="background:var(--green-bg);color:var(--green)">13</div>
       <div class="ex-title-wrap"><div class="ex-card-title">Wall angel</div><div class="ex-card-sets" style="color:var(--green)">2 × 10 · кифоз</div></div>
-      <div class="ex-chevron">⌄</div>
+      <div class="ex-chevron"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></div>
     </div>
     <div class="ex-body">
       <ol class="ex-steps">
@@ -698,7 +740,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,'SF Pro Te
         <li data-n="3">Медленно скользи руками вверх, не отрывая ни локти, ни запястья, ни спину.</li>
         <li data-n="4">Поднимись максимально высоко без отрыва, вернись вниз.</li>
       </ol>
-      <div class="ex-tip green">🟢 Не требует оборудования. Делай на обеих тренировках — простой и эффективный против кифоза.</div>
+      <div class="ex-tip green">Не требует оборудования. Делай на обеих тренировках — простой и эффективный против кифоза.</div>
       <a class="yt-btn" href="https://www.youtube.com/watch?v=w_aI31xL3KU" target="_blank">
         <svg width="20" height="14" viewBox="0 0 20 14" fill="none"><rect width="20" height="14" rx="3" fill="#FF0000"/><path d="M8 3.5L14 7L8 10.5V3.5Z" fill="white"/></svg>
         Смотреть технику на YouTube
@@ -713,7 +755,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,'SF Pro Te
 
   <div class="card" style="margin-top:10px;border-color:var(--orange-border)">
     <div class="card-header" style="margin-bottom:10px;padding-bottom:10px">
-      <div class="card-icon icon-orange">🏃</div>
+      <div class="card-icon icon-orange"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h4l2-5 4 10 2-5h6"/></svg></div>
       <div><div class="card-title">Кардио — заминка</div><div class="card-sub">после силовой · жиросжигание</div></div>
     </div>
     <div class="exercise"><div class="exercise-name">Беговая дорожка или велотренажёр</div><div class="exercise-sets" style="color:var(--orange)">15–20 мин</div></div>
@@ -740,7 +782,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,'SF Pro Te
     <div class="ex-card-header">
       <div class="ex-num" style="background:var(--orange-bg);color:var(--orange)">1</div>
       <div class="ex-title-wrap"><div class="ex-card-title">Жим штанги лёжа</div><div class="ex-card-sets" style="color:var(--orange)">4 × 10 · грудь</div></div>
-      <div class="ex-chevron">⌄</div>
+      <div class="ex-chevron"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></div>
     </div>
     <div class="ex-body">
       <ol class="ex-steps">
@@ -750,7 +792,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,'SF Pro Te
         <li data-n="4">Жми вверх по дуге — мощно, выдох в момент усилия.</li>
         <li data-n="5">Не разгибай руки полностью в верхней точке — лёгкий сгиб в локте.</li>
       </ol>
-      <div class="ex-tip">⚠️ Ступни прижаты к полу. Не отрывай ягодицы от скамьи. Лопатки не двигаются всё время.</div>
+      <div class="ex-tip">Ступни прижаты к полу. Не отрывай ягодицы от скамьи. Лопатки не двигаются всё время.</div>
 
       <div class="weight-tracker">
         <div class="weight-label">Рабочий вес</div>
@@ -772,7 +814,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,'SF Pro Te
     <div class="ex-card-header">
       <div class="ex-num" style="background:var(--orange-bg);color:var(--orange)">2</div>
       <div class="ex-title-wrap"><div class="ex-card-title">Жим в хаммере под углом 30–45°</div><div class="ex-card-sets" style="color:var(--orange)">3 × 12 · верхняя грудь</div></div>
-      <div class="ex-chevron">⌄</div>
+      <div class="ex-chevron"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></div>
     </div>
     <div class="ex-body">
       <ol class="ex-steps">
@@ -781,7 +823,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,'SF Pro Te
         <li data-n="3">Жми рукояти вперёд плавно, выдыхая. В конце — небольшое сведение рук.</li>
         <li data-n="4">Не разгибай руки полностью. Медленно возвращай — 2 сек.</li>
       </ol>
-      <div class="ex-tip">⚠️ Не отрывай спину от спинки в момент жима.</div>
+      <div class="ex-tip">Не отрывай спину от спинки в момент жима.</div>
 
       <div class="weight-tracker">
         <div class="weight-label">Рабочий вес</div>
@@ -803,7 +845,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,'SF Pro Te
     <div class="ex-card-header">
       <div class="ex-num" style="background:var(--orange-bg);color:var(--orange)">3</div>
       <div class="ex-title-wrap"><div class="ex-card-title">Сведение рук в тренажёре («Бабочка»)</div><div class="ex-card-sets" style="color:var(--orange)">3 × 15 · растяжка груди</div></div>
-      <div class="ex-chevron">⌄</div>
+      <div class="ex-chevron"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></div>
     </div>
     <div class="ex-body">
       <ol class="ex-steps">
@@ -813,7 +855,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,'SF Pro Te
         <li data-n="4">Медленно возвращай назад — 3 сек, чувствуй растяжение груди.</li>
         <li data-n="5">Не бросай вес назад — контролируй всё движение.</li>
       </ol>
-      <div class="ex-tip">⚠️ Не разводи руки слишком далеко назад — плечевой сустав под риском. Амплитуда комфортная, без боли в плечах.</div>
+      <div class="ex-tip">Не разводи руки слишком далеко назад — плечевой сустав под риском. Амплитуда комфортная, без боли в плечах.</div>
 
       <div class="weight-tracker">
         <div class="weight-label">Рабочий вес</div>
@@ -835,7 +877,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,'SF Pro Te
     <div class="ex-card-header">
       <div class="ex-num" style="background:var(--blue-bg);color:var(--blue)">4</div>
       <div class="ex-title-wrap"><div class="ex-card-title">Отжимания на брусьях (трицепс)</div><div class="ex-card-sets" style="color:var(--blue)">3 × макс (цель 10–12) · база трицепса</div></div>
-      <div class="ex-chevron">⌄</div>
+      <div class="ex-chevron"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></div>
     </div>
     <div class="ex-body">
       <ol class="ex-steps">
@@ -845,7 +887,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,'SF Pro Te
         <li data-n="4">Выжимай себя вверх мощно, до почти полного выпрямления рук.</li>
         <li data-n="5">Не раскачивайся, ноги можно скрестить и согнуть.</li>
       </ol>
-      <div class="ex-tip">⚠️ Вертикальный корпус = трицепс, наклон вперёд = грудь. Для рук держи корпус прямо. Если меньше 8 повторений — гравитрон.</div>
+      <div class="ex-tip">Вертикальный корпус = трицепс, наклон вперёд = грудь. Для рук держи корпус прямо. Если меньше 8 повторений — гравитрон.</div>
       <div class="weight-tracker">
         <div class="weight-label">Рабочий вес</div>
         <div class="weight-row">
@@ -868,7 +910,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,'SF Pro Te
     <div class="ex-card-header">
       <div class="ex-num" style="background:var(--blue-bg);color:var(--blue)">5</div>
       <div class="ex-title-wrap"><div class="ex-card-title">Подъём штанги на бицепс</div><div class="ex-card-sets" style="color:var(--blue)">4 × 10 · база бицепса</div></div>
-      <div class="ex-chevron">⌄</div>
+      <div class="ex-chevron"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></div>
     </div>
     <div class="ex-body">
       <ol class="ex-steps">
@@ -878,7 +920,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,'SF Pro Te
         <li data-n="4">В верхней точке сожми бицепс — 1 сек паузы.</li>
         <li data-n="5">Опускай медленно — 2–3 сек, до полного выпрямления внизу.</li>
       </ol>
-      <div class="ex-tip">⚠️ EZ-гриф (изогнутый) комфортнее для запястий — если есть, бери его. Штанга позволяет прогрессировать агрессивнее гантелей — это главная база для массы бицепса.</div>
+      <div class="ex-tip">EZ-гриф (изогнутый) комфортнее для запястий — если есть, бери его. Штанга позволяет прогрессировать агрессивнее гантелей — это главная база для массы бицепса.</div>
       <div class="weight-tracker">
         <div class="weight-label">Рабочий вес</div>
         <div class="weight-row">
@@ -900,7 +942,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,'SF Pro Te
     <div class="ex-card-header">
       <div class="ex-num" style="background:var(--blue-bg);color:var(--blue)">6</div>
       <div class="ex-title-wrap"><div class="ex-card-title">Молотковые сгибания (Hammer curl)</div><div class="ex-card-sets" style="color:var(--blue)">3 × 12 · бицепс + брахиалис</div></div>
-      <div class="ex-chevron">⌄</div>
+      <div class="ex-chevron"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></div>
     </div>
     <div class="ex-body">
       <ol class="ex-steps">
@@ -910,7 +952,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,'SF Pro Te
         <li data-n="4">В верхней точке — сожми, задержись 1 сек.</li>
         <li data-n="5">Медленно опускай — 2–3 сек.</li>
       </ol>
-      <div class="ex-tip">⚠️ Брахиалис — мышца под бицепсом, визуально "выталкивает" бицепс наружу и даёт толщину руки. Молотковый хват грузит именно его.</div>
+      <div class="ex-tip">Брахиалис — мышца под бицепсом, визуально "выталкивает" бицепс наружу и даёт толщину руки. Молотковый хват грузит именно его.</div>
       <div class="weight-tracker">
         <div class="weight-label">Рабочий вес</div>
         <div class="weight-row">
@@ -931,7 +973,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,'SF Pro Te
     <div class="ex-card-header">
       <div class="ex-num" style="background:var(--blue-bg);color:var(--blue)">7</div>
       <div class="ex-title-wrap"><div class="ex-card-title">Трицепс — блок с канатом</div><div class="ex-card-sets" style="color:var(--blue)">4 × 12 · трицепс</div></div>
-      <div class="ex-chevron">⌄</div>
+      <div class="ex-chevron"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></div>
     </div>
     <div class="ex-body">
       <ol class="ex-steps">
@@ -941,7 +983,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,'SF Pro Te
         <li data-n="4">Сожми трицепс в нижней точке — 1 сек.</li>
         <li data-n="5">Медленно возвращай вверх до угла 90° в локте.</li>
       </ol>
-      <div class="ex-tip">⚠️ Локти не двигаются и не уходят вперёд. Если едут — вес слишком тяжёлый.</div>
+      <div class="ex-tip">Локти не двигаются и не уходят вперёд. Если едут — вес слишком тяжёлый.</div>
 
       <div class="weight-tracker">
         <div class="weight-label">Рабочий вес</div>
@@ -966,7 +1008,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,'SF Pro Te
     <div class="ex-card-header">
       <div class="ex-num" style="background:var(--blue-bg);color:var(--blue)">8</div>
       <div class="ex-title-wrap"><div class="ex-card-title">Скручивания на блоке (Cable crunch)</div><div class="ex-card-sets" style="color:var(--blue)">3 × 15 · пресс с нагрузкой</div></div>
-      <div class="ex-chevron">⌄</div>
+      <div class="ex-chevron"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></div>
     </div>
     <div class="ex-body">
       <ol class="ex-steps">
@@ -976,7 +1018,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,'SF Pro Te
         <li data-n="4">В нижней точке — пауза 1 сек, максимальное сжатие пресса.</li>
         <li data-n="5">Медленно возвращайся вверх — 2 сек, не расслабляй пресс полностью.</li>
       </ol>
-      <div class="ex-tip">⚠️ Единственное упражнение на пресс с прогрессией веса — только так пресс растёт как мышца. Начни с лёгкого веса, следи за техникой.</div>
+      <div class="ex-tip">Единственное упражнение на пресс с прогрессией веса — только так пресс растёт как мышца. Начни с лёгкого веса, следи за техникой.</div>
       <div class="weight-tracker">
         <div class="weight-label">Рабочий вес</div>
         <div class="weight-row">
@@ -997,7 +1039,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,'SF Pro Te
     <div class="ex-card-header">
       <div class="ex-num" style="background:var(--blue-bg);color:var(--blue)">9</div>
       <div class="ex-title-wrap"><div class="ex-card-title">Подъём ног в висе на турнике</div><div class="ex-card-sets" style="color:var(--blue)">3 × 12 · пресс</div></div>
-      <div class="ex-chevron">⌄</div>
+      <div class="ex-chevron"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></div>
     </div>
     <div class="ex-body">
       <ol class="ex-steps">
@@ -1006,7 +1048,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,'SF Pro Te
         <li data-n="3">Медленно опускай — 2–3 сек. Не бросай ноги вниз.</li>
         <li data-n="4">Не раскачивай корпус — это инерция, а не работа пресса.</li>
       </ol>
-      <div class="ex-tip">⚠️ Если тяжело с прямыми — сгибай в коленях. Прогрессируй постепенно.</div>
+      <div class="ex-tip">Если тяжело с прямыми — сгибай в коленях. Прогрессируй постепенно.</div>
 
       <div class="weight-tracker">
         <div class="weight-label">Прогресс</div>
@@ -1040,7 +1082,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,'SF Pro Te
     <div class="ex-card-header">
       <div class="ex-num" style="background:var(--green-bg);color:var(--green)">10</div>
       <div class="ex-title-wrap"><div class="ex-card-title">Bird-dog</div><div class="ex-card-sets" style="color:var(--green)">3 × 10 каждой · кифоз + кор</div></div>
-      <div class="ex-chevron">⌄</div>
+      <div class="ex-chevron"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></div>
     </div>
     <div class="ex-body">
       <ol class="ex-steps">
@@ -1049,7 +1091,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,'SF Pro Te
         <li data-n="3">Удержи 2–3 сек. Бёдра не разворачивай — таз смотрит вниз.</li>
         <li data-n="4">Вернись, повтори другой стороной.</li>
       </ol>
-      <div class="ex-tip green">🟢 Медленно = эффективно. Тренирует стабилизацию позвоночника.</div>
+      <div class="ex-tip green">Медленно = эффективно. Тренирует стабилизацию позвоночника.</div>
       <a class="yt-btn" href="https://www.youtube.com/watch?v=asjqq8ZqbvQ" target="_blank">
         <svg width="20" height="14" viewBox="0 0 20 14" fill="none"><rect width="20" height="14" rx="3" fill="#FF0000"/><path d="M8 3.5L14 7L8 10.5V3.5Z" fill="white"/></svg>
         Смотреть технику на YouTube
@@ -1061,7 +1103,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,'SF Pro Te
     <div class="ex-card-header">
       <div class="ex-num" style="background:var(--green-bg);color:var(--green)">11</div>
       <div class="ex-title-wrap"><div class="ex-card-title">Wall angel</div><div class="ex-card-sets" style="color:var(--green)">2 × 10 · кифоз</div></div>
-      <div class="ex-chevron">⌄</div>
+      <div class="ex-chevron"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></div>
     </div>
     <div class="ex-body">
       <ol class="ex-steps">
@@ -1070,7 +1112,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,'SF Pro Te
         <li data-n="3">Медленно скользи руками вверх, не отрывая ни локти, ни запястья, ни спину.</li>
         <li data-n="4">Поднимись максимально высоко без отрыва, вернись вниз.</li>
       </ol>
-      <div class="ex-tip green">🟢 Если локти отрываются до верха — это твоя текущая амплитуда. Работай в ней.</div>
+      <div class="ex-tip green">Если локти отрываются до верха — это твоя текущая амплитуда. Работай в ней.</div>
       <a class="yt-btn" href="https://www.youtube.com/watch?v=w_aI31xL3KU" target="_blank">
         <svg width="20" height="14" viewBox="0 0 20 14" fill="none"><rect width="20" height="14" rx="3" fill="#FF0000"/><path d="M8 3.5L14 7L8 10.5V3.5Z" fill="white"/></svg>
         Смотреть технику на YouTube
@@ -1085,7 +1127,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,'SF Pro Te
 
   <div class="card" style="margin-top:10px;border-color:var(--orange-border)">
     <div class="card-header" style="margin-bottom:10px;padding-bottom:10px">
-      <div class="card-icon icon-orange">🏃</div>
+      <div class="card-icon icon-orange"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h4l2-5 4 10 2-5h6"/></svg></div>
       <div><div class="card-title">Кардио — заминка</div><div class="card-sub">после силовой · жиросжигание</div></div>
     </div>
     <div class="exercise"><div class="exercise-name">Беговая дорожка или велотренажёр</div><div class="exercise-sets" style="color:var(--orange)">15–20 мин</div></div>
@@ -1102,7 +1144,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,'SF Pro Te
   </div>
   <div class="card">
     <div class="card-header">
-      <div class="card-icon icon-amber">🍽</div>
+      <div class="card-icon icon-amber"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 0 0 16 0H4z"/><path d="M9 5v3M12 4v4M15 5v3"/></svg></div>
       <div><div class="card-title">Структура дня</div><div class="card-sub">4 приёма · в день тренировки углеводов больше</div></div>
     </div>
     <div class="meal"><div class="meal-left"><div class="meal-time">ЗАВТРАК</div><div class="meal-desc">Яйца + овсянка + фрукт</div><div class="meal-macros">~35г белка · ~60г углеводов</div></div><div class="meal-right"><div class="meal-kcal">500</div><div class="meal-kcal-unit">ккал</div></div></div>
@@ -1112,7 +1154,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,'SF Pro Te
   </div>
   <div class="card">
     <div class="card-header">
-      <div class="card-icon icon-green">💊</div>
+      <div class="card-icon icon-green"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="8.5" width="14" height="8" rx="4"/><path d="M12 8.5v8"/></svg></div>
       <div><div class="card-title">Добавки (назначены врачом)</div><div class="card-sub">не менять без консультации</div></div>
     </div>
     <div class="exercise"><div class="exercise-name">Омега-3</div><div class="exercise-sets" style="color:var(--green)">✓ есть</div></div>
@@ -1121,7 +1163,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,'SF Pro Te
     <div class="exercise"><div class="exercise-name">B-комплекс с фолатом</div><div class="exercise-sets" style="color:var(--amber)">курс 4–6 нед.</div></div>
   </div>
   <div class="warning-card">
-    <div class="warning-title">🚫 Исключить полностью</div>
+    <div class="warning-title">Исключить полностью</div>
     <div class="warning-text">Алкоголь · Соя и фитоэстрогены · Быстрые углеводы вне посттренировочного окна</div>
   </div>
 </div>
@@ -1130,25 +1172,25 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,'SF Pro Te
 <div id="rules" class="section">
   <div class="card">
     <div class="card-header">
-      <div class="card-icon icon-blue">🧠</div>
+      <div class="card-icon icon-blue"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M15 9l-1.8 4.5L9 15l1.8-4.5L15 9z"/></svg></div>
       <div><div class="card-title">Стратегия</div><div class="card-sub">почему именно так</div></div>
     </div>
-    <div class="rule"><div class="rule-icon">⚖️</div><div class="rule-text"><strong>Умеренный дефицит, не жёсткая сушка.</strong> <span>При 22% жира и небольшой мышечной массе жёсткий дефицит уберёт и жир, и мышцы.</span></div></div>
-    <div class="rule"><div class="rule-icon">🥩</div><div class="rule-text"><strong>Белок — приоритет #1.</strong> <span>Первые 2 недели просто стабильно ешь 175г белка. Потом детализируй остальное.</span></div></div>
-    <div class="rule"><div class="rule-icon">📈</div><div class="rule-text"><strong>Прогрессия нагрузки.</strong> <span>Записывай веса. Верхний диапазон чисто → +1–2 кг на следующей тренировке.</span></div></div>
-    <div class="rule"><div class="rule-icon">🟢</div><div class="rule-text"><strong>Коррекционные упражнения — обязательны.</strong> <span>Face pull, bird-dog, wall angel — лечебная работа по кифозу. Каждая тренировка.</span></div></div>
+    <div class="rule"><div class="rule-marker"></div><div class="rule-text"><strong>Умеренный дефицит, не жёсткая сушка.</strong> <span>При 22% жира и небольшой мышечной массе жёсткий дефицит уберёт и жир, и мышцы.</span></div></div>
+    <div class="rule"><div class="rule-marker"></div><div class="rule-text"><strong>Белок — приоритет #1.</strong> <span>Первые 2 недели просто стабильно ешь 175г белка. Потом детализируй остальное.</span></div></div>
+    <div class="rule"><div class="rule-marker"></div><div class="rule-text"><strong>Прогрессия нагрузки.</strong> <span>Записывай веса. Верхний диапазон чисто → +1–2 кг на следующей тренировке.</span></div></div>
+    <div class="rule"><div class="rule-marker"></div><div class="rule-text"><strong>Коррекционные упражнения — обязательны.</strong> <span>Face pull, bird-dog, wall angel — лечебная работа по кифозу. Каждая тренировка.</span></div></div>
   </div>
   <div class="card">
     <div class="card-header">
-      <div class="card-icon icon-amber">😴</div>
+      <div class="card-icon icon-amber"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 13.5A8.5 8.5 0 1 1 10.5 4a7 7 0 0 0 9.5 9.5z"/></svg></div>
       <div><div class="card-title">Сон — не опция</div><div class="card-sub">засыпать до 23:00</div></div>
     </div>
-    <div class="rule"><div class="rule-icon">🌙</div><div class="rule-text"><strong>Гормон роста пикует в первые 2–3 часа сна.</strong> <span>Засыпание в час ночи срезает самый продуктивный гормональный цикл.</span></div></div>
-    <div class="rule"><div class="rule-icon">⏰</div><div class="rule-text"><strong>Тактика.</strong> <span>Сдвигай отбой на 30 мин раньше каждые 5–7 дней.</span></div></div>
+    <div class="rule"><div class="rule-marker"></div><div class="rule-text"><strong>Гормон роста пикует в первые 2–3 часа сна.</strong> <span>Засыпание в час ночи срезает самый продуктивный гормональный цикл.</span></div></div>
+    <div class="rule"><div class="rule-marker"></div><div class="rule-text"><strong>Тактика.</strong> <span>Сдвигай отбой на 30 мин раньше каждые 5–7 дней.</span></div></div>
   </div>
   <div class="card">
     <div class="card-header">
-      <div class="card-icon icon-green">🧘</div>
+      <div class="card-icon icon-green"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="5" r="2"/><path d="M12 8v5M12 13l-4.5 6M12 13l4.5 6M5.5 10.5L12 9l6.5 1.5"/></svg></div>
       <div><div class="card-title">Воскресенье — растяжка</div><div class="card-sub">таз, ноги, позвоночник · 20–25 мин</div></div>
     </div>
     <div class="stretch-item"><div class="stretch-name">Низкий выпад с поворотом (hip flexor)</div><div class="stretch-time">60 сек × 2</div></div>
@@ -1159,7 +1201,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,'SF Pro Te
   </div>
   <div class="card">
     <div class="card-header">
-      <div class="card-icon icon-blue">✅</div>
+      <div class="card-icon icon-blue"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg></div>
       <div><div class="card-title">Чеклист старта</div><div class="card-sub">нажми — отмечай</div></div>
     </div>
     <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="check-label">Записывать веса на каждой тренировке</div></div>
@@ -1174,18 +1216,32 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,'SF Pro Te
 </div>
 
 <script>
-
-
+const TABS=['week','body','day-a','day-b','food','rules'];
 function showTab(id){
-  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  const tabs=['week','body','day-a','day-b','food','rules'];
-  document.querySelectorAll('.tab')[tabs.indexOf(id)].classList.add('active');
+  document.querySelectorAll('.section').forEach(s=>s.classList.toggle('active',s.id===id));
+  document.querySelectorAll('.tab').forEach(t=>{
+    const on=t.dataset.tab===id;
+    t.classList.toggle('active',on);
+    t.setAttribute('aria-selected',on?'true':'false');
+  });
   window.scrollTo(0,0);
+  try{localStorage.setItem('plan-tab',id)}catch(e){}
 }
+document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>showTab(t.dataset.tab)));
 function toggleEx(el,e){if(e&&(e.target.tagName==='A'||e.target.closest('.yt-btn')))return;el.classList.toggle('open')}
-function toggle(el){el.classList.toggle('done')}
+function checkState(){try{return JSON.parse(localStorage.getItem('plan-checks')||'{}')}catch(e){return{}}}
+function toggle(el){
+  el.classList.toggle('done');
+  const items=[...document.querySelectorAll('.check-item')];
+  const st=checkState();st[items.indexOf(el)]=el.classList.contains('done');
+  try{localStorage.setItem('plan-checks',JSON.stringify(st))}catch(e){}
+}
+(function restore(){
+  const st=checkState(),items=[...document.querySelectorAll('.check-item')];
+  Object.keys(st).forEach(i=>{if(items[i])items[i].classList.toggle('done',!!st[i])});
+  let t=null;try{t=localStorage.getItem('plan-tab')}catch(e){}
+  if(t&&TABS.includes(t))showTab(t);
+})();
 </script>
 </body>
 </html>
