@@ -1,0 +1,1191 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Влад · План тренировок</title>
+<style>
+:root{--bg:#0f0f0f;--bg2:#1a1a1a;--bg3:#222;--border:rgba(255,255,255,0.08);--text:#f0f0f0;--muted:#888;--hint:#444;--blue:#4a9eff;--blue-bg:rgba(74,158,255,0.1);--blue-border:rgba(74,158,255,0.25);--green:#4caf7d;--green-bg:rgba(76,175,125,0.1);--green-border:rgba(76,175,125,0.25);--orange:#ff8c42;--orange-bg:rgba(255,140,66,0.1);--orange-border:rgba(255,140,66,0.25);--amber:#f5a623;--amber-bg:rgba(245,166,35,0.1);--amber-border:rgba(245,166,35,0.25);--red:#e05252;--red-bg:rgba(224,82,82,0.1);--red-border:rgba(224,82,82,0.25)}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,'SF Pro Text','Helvetica Neue',sans-serif;font-size:15px;line-height:1.5;max-width:480px;margin:0 auto;padding:0 0 80px}
+.header{padding:52px 20px 20px;border-bottom:1px solid var(--border)}
+.header-label{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.header-title{font-size:28px;font-weight:700;letter-spacing:-0.5px;line-height:1.1}
+.header-sub{margin-top:6px;font-size:13px;color:var(--muted)}
+.tabs{display:flex;background:var(--bg2);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:0 0 auto;padding:12px 14px;text-align:center;font-size:12px;font-weight:500;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;transition:all 0.15s;white-space:nowrap}
+.tab.active{color:var(--text);border-bottom-color:var(--blue)}
+.section{display:none;padding:16px}
+.section.active{display:block}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px}
+.card-header{display:flex;align-items:center;gap:10px;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+.card-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;flex-shrink:0}
+.icon-blue{background:var(--blue-bg);color:var(--blue)}.icon-orange{background:var(--orange-bg);color:var(--orange)}.icon-green{background:var(--green-bg);color:var(--green)}.icon-amber{background:var(--amber-bg);color:var(--amber)}
+.card-title{font-size:15px;font-weight:600}
+.card-sub{font-size:12px;color:var(--muted);margin-top:1px}
+.metrics{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.metric{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:14px}
+.metric-label{font-size:11px;color:var(--muted);margin-bottom:4px}
+.metric-value{font-size:26px;font-weight:700;letter-spacing:-0.5px}
+.metric-unit{font-size:12px;color:var(--muted);margin-top:2px}
+.metric-blue .metric-value{color:var(--blue)}.metric-green .metric-value{color:var(--green)}.metric-orange .metric-value{color:var(--orange)}.metric-amber .metric-value{color:var(--amber)}.metric-red .metric-value{color:var(--red)}
+.slabel{font-size:10px;letter-spacing:1.2px;text-transform:uppercase;color:var(--hint);margin:14px 0 8px;padding:0 2px}
+.exercise{display:flex;justify-content:space-between;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--border);gap:12px}
+.exercise:last-child{border-bottom:none;padding-bottom:0}
+.exercise-name{font-size:14px;color:var(--text);flex:1}
+.exercise-sets{font-size:13px;font-weight:600;color:var(--blue);white-space:nowrap}
+.corrective-tag{font-size:10px;background:var(--green-bg);color:var(--green);border:1px solid var(--green-border);border-radius:4px;padding:1px 5px;margin-left:6px;vertical-align:middle;white-space:nowrap}
+.key-tag{font-size:10px;background:var(--blue-bg);color:var(--blue);border:1px solid var(--blue-border);border-radius:4px;padding:1px 5px;margin-left:6px;vertical-align:middle;white-space:nowrap}
+/* Exercise cards */
+.ex-card{background:var(--bg3);border:1px solid var(--border);border-radius:12px;margin-bottom:10px;overflow:hidden}
+.ex-card-header{display:flex;align-items:center;gap:10px;padding:12px 14px;cursor:pointer;user-select:none}
+.ex-card-header a{pointer-events:auto;position:relative;z-index:20}
+.ex-card-header:active{background:rgba(255,255,255,0.03)}
+.ex-num{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
+.ex-title-wrap{flex:1}
+.ex-card-title{font-size:14px;font-weight:600}
+.ex-card-sets{font-size:12px;color:var(--muted);margin-top:1px}
+.ex-chevron{font-size:16px;color:var(--hint);transition:transform 0.2s;flex-shrink:0}
+.ex-card.open .ex-chevron{transform:rotate(180deg)}
+.ex-body{display:none;padding:0 14px 14px}
+.ex-card.open .ex-body{display:block}
+.ex-steps{list-style:none;padding:0;margin-bottom:12px}
+.ex-steps li{display:flex;gap:10px;padding:7px 0;border-bottom:1px solid var(--border);font-size:13px;color:var(--muted);line-height:1.45}
+.ex-steps li:last-child{border-bottom:none}
+.ex-steps li::before{content:attr(data-n);min-width:20px;height:20px;border-radius:50%;background:rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:var(--muted);flex-shrink:0;margin-top:1px}
+.ex-tip{margin-top:0;margin-bottom:12px;padding:9px 11px;background:var(--amber-bg);border:1px solid var(--amber-border);border-radius:8px;font-size:12px;color:var(--amber);line-height:1.4}
+.ex-tip.green{background:var(--green-bg);border-color:var(--green-border);color:var(--green)}
+/* YouTube button */
+
+
+/* Weight tracker */
+.weight-tracker{margin-top:12px;padding-top:12px;border-top:1px solid var(--border)}
+.weight-row{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.weight-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px}
+.weight-current{display:flex;align-items:center;gap:6px}
+.weight-badge{background:var(--blue-bg);border:1px solid var(--blue-border);border-radius:8px;padding:6px 12px;font-size:15px;font-weight:700;color:var(--blue);min-width:70px;text-align:center}
+.weight-badge.recommended{background:rgba(245,166,35,0.1);border-color:rgba(245,166,35,0.3);color:var(--amber)}
+.weight-next{display:flex;align-items:center;gap:6px}
+.weight-next-badge{background:var(--green-bg);border:1px solid var(--green-border);border-radius:8px;padding:6px 12px;font-size:14px;font-weight:600;color:var(--green);min-width:70px;text-align:center}
+.weight-tag{font-size:10px;color:var(--muted)}
+.weight-rule{margin-top:8px;font-size:11px;color:var(--hint);line-height:1.4}
+
+.yt-btn{display:flex;align-items:center;gap:8px;padding:10px 14px;background:rgba(255,0,0,0.12);border:1px solid rgba(255,0,0,0.25);border-radius:10px;color:#ff4444;font-size:13px;font-weight:500;text-decoration:none;cursor:pointer;transition:background 0.15s;position:relative;z-index:20;-webkit-touch-callout:default}
+.yt-btn:active{background:rgba(255,0,0,0.2)}
+.yt-btn svg{flex-shrink:0;pointer-events:none}
+/* Week grid */
+.week{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-bottom:12px}
+.day-cell{border-radius:10px;padding:8px 4px;text-align:center;border:1px solid var(--border);background:var(--bg2)}
+.day-cell.gym{background:var(--blue-bg);border-color:var(--blue-border)}
+.day-cell.kick{background:var(--orange-bg);border-color:var(--orange-border)}
+.day-cell.stretch{background:var(--green-bg);border-color:var(--green-border)}
+.day-name{font-size:9px;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted);margin-bottom:4px}
+.day-cell.gym .day-name{color:var(--blue)}.day-cell.kick .day-name{color:var(--orange)}.day-cell.stretch .day-name{color:var(--green)}
+.day-emoji{font-size:16px;line-height:1}
+.day-type{font-size:9px;margin-top:3px;color:var(--muted)}
+.day-cell.gym .day-type{color:var(--blue)}.day-cell.kick .day-type{color:var(--orange)}.day-cell.stretch .day-type{color:var(--green)}
+/* Body stats */
+.stat-row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--border)}
+.stat-row:last-child{border-bottom:none}
+.stat-name{font-size:13px;color:var(--muted)}
+.stat-values{display:flex;gap:10px;align-items:center}
+.stat-now{font-size:14px;font-weight:600}
+.stat-arrow{font-size:12px;color:var(--hint)}
+.stat-goal{font-size:13px;color:var(--green)}
+.stat-diff{font-size:11px;color:var(--muted)}
+.prog-wrap{margin:14px 0}
+.prog-label{display:flex;justify-content:space-between;margin-bottom:6px;font-size:12px}
+.prog-bar{height:6px;background:rgba(255,255,255,0.08);border-radius:3px;overflow:hidden}
+.prog-fill{height:100%;border-radius:3px}
+.ratio-big{text-align:center;padding:16px 0 10px}
+.ratio-num{font-size:48px;font-weight:700;letter-spacing:-2px}
+.ratio-scale{display:flex;gap:8px;margin-top:14px}
+.ratio-step{flex:1;padding:8px 6px;border-radius:8px;text-align:center;border:1px solid var(--border)}
+.ratio-step.active-step{border-color:var(--blue);background:var(--blue-bg)}
+.ratio-step-val{font-size:13px;font-weight:600}
+.ratio-step-desc{font-size:10px;color:var(--muted);margin-top:2px}
+.vtaper-svg{width:100%;margin:14px 0}
+/* Nutrition */
+.meal{padding:12px 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;gap:12px}
+.meal:last-child{border-bottom:none}
+.meal-time{font-size:11px;color:var(--muted);margin-bottom:3px}
+.meal-desc{font-size:14px}
+.meal-macros{font-size:12px;color:var(--muted);margin-top:2px}
+.meal-kcal{font-size:18px;font-weight:700;color:var(--amber)}
+.meal-kcal-unit{font-size:11px;color:var(--muted);text-align:right}
+.post-workout-badge{display:inline-block;font-size:10px;background:var(--blue-bg);color:var(--blue);border:1px solid var(--blue-border);border-radius:4px;padding:2px 6px;margin-bottom:4px}
+/* Rules */
+.rule{display:flex;gap:10px;padding:11px 0;border-bottom:1px solid var(--border);align-items:flex-start}
+.rule:last-child{border-bottom:none}
+.rule-icon{font-size:18px;flex-shrink:0;margin-top:1px}
+.rule-text{font-size:14px;line-height:1.45}
+.rule-text strong{color:var(--text);font-weight:600}
+.rule-text span{color:var(--muted)}
+/* Stretch */
+.stretch-item{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);align-items:center;gap:12px}
+.stretch-item:last-child{border-bottom:none}
+.stretch-name{font-size:14px}
+.stretch-time{font-size:13px;font-weight:600;color:var(--green);white-space:nowrap}
+/* Checklist */
+.check-item{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--border);cursor:pointer}
+.check-item:last-child{border-bottom:none}
+.checkbox{width:22px;height:22px;border-radius:6px;border:1.5px solid var(--hint);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all 0.15s}
+.check-item.done .checkbox{background:var(--green);border-color:var(--green)}
+.check-item.done .checkbox::after{content:'✓';font-size:13px;color:#fff;font-weight:700}
+.check-label{font-size:14px}
+.check-item.done .check-label{color:var(--muted);text-decoration:line-through}
+.warning-card{background:var(--amber-bg);border:1px solid var(--amber-border);border-radius:12px;padding:14px;margin-bottom:12px}
+.warning-title{font-size:13px;font-weight:600;color:var(--amber);margin-bottom:6px}
+.warning-text{font-size:13px;color:rgba(245,166,35,0.85);line-height:1.5}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-label">Персональный план</div>
+  <div class="header-title">Тело мечты</div>
+  <div class="header-sub">26 лет · 187 см · 85 кг · ~22% жира → V-тейпер</div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="showTab('week')">Неделя</div>
+  <div class="tab" onclick="showTab('body')">Параметры</div>
+  <div class="tab" onclick="showTab('day-a')">День A</div>
+  <div class="tab" onclick="showTab('day-b')">День B</div>
+  <div class="tab" onclick="showTab('food')">Питание</div>
+  <div class="tab" onclick="showTab('rules')">Правила</div>
+</div>
+
+<!-- НЕДЕЛЯ -->
+<div id="week" class="section active">
+  <div class="slabel">Расписание недели</div>
+  <div class="week">
+    <div class="day-cell"><div class="day-name">Пн</div><div class="day-emoji">😴</div><div class="day-type">отдых</div></div>
+    <div class="day-cell gym"><div class="day-name">Вт</div><div class="day-emoji">💪</div><div class="day-type">День A</div></div>
+    <div class="day-cell"><div class="day-name">Ср</div><div class="day-emoji">😴</div><div class="day-type">отдых</div></div>
+    <div class="day-cell gym"><div class="day-name">Чт</div><div class="day-emoji">💪</div><div class="day-type">День B</div></div>
+    <div class="day-cell"><div class="day-name">Пт</div><div class="day-emoji">😴</div><div class="day-type">отдых</div></div>
+    <div class="day-cell kick"><div class="day-name">Сб</div><div class="day-emoji">🥊</div><div class="day-type">кикбокс</div></div>
+    <div class="day-cell stretch"><div class="day-name">Вс</div><div class="day-emoji">🧘</div><div class="day-type">растяжка</div></div>
+  </div>
+  <div class="metrics">
+    <div class="metric metric-blue"><div class="metric-label">Калории/день</div><div class="metric-value">2300</div><div class="metric-unit">дефицит ~300 ккал</div></div>
+    <div class="metric metric-green"><div class="metric-label">Белок</div><div class="metric-value">175г</div><div class="metric-unit">приоритет #1</div></div>
+    <div class="metric metric-amber"><div class="metric-label">Углеводы</div><div class="metric-value">240г</div><div class="metric-unit">больше в день трен.</div></div>
+    <div class="metric metric-orange"><div class="metric-label">Жиры</div><div class="metric-value">70г</div><div class="metric-unit">ненасыщенные</div></div>
+  </div>
+  <div class="warning-card">
+    <div class="warning-title">⚡ Главное правило прогрессии</div>
+    <div class="warning-text">Делаешь верхний диапазон повторений чисто во всех подходах → следующая тренировка +1–2 кг. Не делаешь — держи вес. Записывай веса после каждой тренировки.</div>
+  </div>
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon icon-blue">📊</div>
+      <div><div class="card-title">Контроль</div><div class="card-sub">что и когда замерять</div></div>
+    </div>
+    <div class="exercise"><div class="exercise-name">Взвешивание утром натощак</div><div class="exercise-sets" style="color:var(--muted)">каждые 2 нед.</div></div>
+    <div class="exercise"><div class="exercise-name">Замеры: талия, грудь, плечи, руки, бёдра</div><div class="exercise-sets" style="color:var(--muted)">раз в мес.</div></div>
+    <div class="exercise"><div class="exercise-name">DEXA или калипер → пересмотр стратегии</div><div class="exercise-sets" style="color:var(--muted)">через 3 мес.</div></div>
+  </div>
+</div>
+
+<!-- ПАРАМЕТРЫ -->
+<div id="body" class="section">
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon icon-blue">📐</div>
+      <div><div class="card-title">Коэффициент V-тейпера</div><div class="card-sub">плечи ÷ талия · цель ≥ 1.50</div></div>
+    </div>
+    <div class="ratio-big">
+      <div class="ratio-num" style="color:var(--orange)">1.33</div>
+      <div style="font-size:13px;color:var(--muted);margin-top:4px">сейчас (124 ÷ 93)</div>
+    </div>
+    <div class="ratio-scale">
+      <div class="ratio-step active-step"><div class="ratio-step-val" style="color:var(--orange)">1.33</div><div class="ratio-step-desc">сейчас</div></div>
+      <div class="ratio-step"><div class="ratio-step-val" style="color:var(--amber)">1.40</div><div class="ratio-step-desc">заметно</div></div>
+      <div class="ratio-step"><div class="ratio-step-val" style="color:var(--blue)">1.50</div><div class="ratio-step-desc">атлет.</div></div>
+      <div class="ratio-step"><div class="ratio-step-val" style="color:var(--green)">1.60+</div><div class="ratio-step-desc">идеал</div></div>
+    </div>
+    <div class="prog-wrap" style="margin-top:16px">
+      <div class="prog-label"><span style="color:var(--muted);font-size:12px">Прогресс к атлетичному V (1.50)</span><span style="color:var(--blue);font-size:12px">27%</span></div>
+      <div class="prog-bar"><div class="prog-fill" style="width:27%;background:var(--blue)"></div></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon icon-orange">🎯</div>
+      <div><div class="card-title">Текущий vs Цель</div><div class="card-sub">визуальный силуэт</div></div>
+    </div>
+    <svg class="vtaper-svg" viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg">
+      <g>
+        <text x="80" y="18" fill="#888" font-size="11" text-anchor="middle" font-family="-apple-system,sans-serif">сейчас</text>
+        <ellipse cx="80" cy="50" rx="42" ry="10" fill="none" stroke="#ff8c42" stroke-width="2"/>
+        <path d="M38,50 L48,110 L45,150 L115,150 L112,110 L122,50" fill="rgba(255,140,66,0.08)" stroke="#ff8c42" stroke-width="1.5" stroke-dasharray="4,3"/>
+        <line x1="48" y1="110" x2="112" y2="110" stroke="rgba(255,140,66,0.3)" stroke-width="1" stroke-dasharray="3,3"/>
+        <text x="80" y="107" fill="#ff8c42" font-size="9" text-anchor="middle" font-family="-apple-system,sans-serif">талия 93</text>
+        <text x="80" y="65" fill="#ff8c42" font-size="9" text-anchor="middle" font-family="-apple-system,sans-serif">плечи 124</text>
+        <text x="80" y="170" fill="#ff8c42" font-size="13" font-weight="700" text-anchor="middle" font-family="-apple-system,sans-serif">1.33</text>
+        <text x="80" y="184" fill="#888" font-size="10" text-anchor="middle" font-family="-apple-system,sans-serif">лёгкий V</text>
+      </g>
+      <line x1="160" y1="20" x2="160" y2="185" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+      <text x="160" y="104" fill="rgba(255,255,255,0.15)" font-size="18" text-anchor="middle" font-family="-apple-system,sans-serif">→</text>
+      <g>
+        <text x="240" y="18" fill="#888" font-size="11" text-anchor="middle" font-family="-apple-system,sans-serif">цель</text>
+        <ellipse cx="240" cy="50" rx="44" ry="10" fill="none" stroke="#4caf7d" stroke-width="2"/>
+        <path d="M196,50 L212,110 L206,150 L274,150 L268,110 L284,50" fill="rgba(76,175,125,0.08)" stroke="#4caf7d" stroke-width="1.5"/>
+        <line x1="212" y1="110" x2="268" y2="110" stroke="rgba(76,175,125,0.3)" stroke-width="1" stroke-dasharray="3,3"/>
+        <text x="240" y="107" fill="#4caf7d" font-size="9" text-anchor="middle" font-family="-apple-system,sans-serif">талия 82</text>
+        <text x="240" y="65" fill="#4caf7d" font-size="9" text-anchor="middle" font-family="-apple-system,sans-serif">плечи 128+</text>
+        <text x="240" y="170" fill="#4caf7d" font-size="13" font-weight="700" text-anchor="middle" font-family="-apple-system,sans-serif">1.56</text>
+        <text x="240" y="184" fill="#888" font-size="10" text-anchor="middle" font-family="-apple-system,sans-serif">V-тейпер</text>
+      </g>
+    </svg>
+  </div>
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon icon-green">📏</div>
+      <div><div class="card-title">Замеры · июль 2026</div><div class="card-sub">обновлено 7 июля</div></div>
+    </div>
+    <div class="stat-row"><div class="stat-name">Талия</div><div class="stat-values"><div class="stat-now" style="color:var(--red)">93 см</div><div class="stat-arrow">→</div><div class="stat-goal">80–84 см</div><div class="stat-diff">−9–13</div></div></div>
+    <div class="stat-row"><div class="stat-name">Грудь</div><div class="stat-values"><div class="stat-now" style="color:var(--green)">111 см</div><div class="stat-arrow">→</div><div class="stat-goal">115+ см</div><div class="stat-diff">+4</div></div></div>
+    <div class="stat-row"><div class="stat-name">Плечи</div><div class="stat-values"><div class="stat-now" style="color:var(--amber)">124 см</div><div class="stat-arrow">→</div><div class="stat-goal">128+ см</div><div class="stat-diff">+4</div></div></div>
+    <div class="stat-row"><div class="stat-name">Руки (ср.)</div><div class="stat-values"><div class="stat-now" style="color:var(--muted)">33.2 см</div><div class="stat-arrow">→</div><div class="stat-goal">38–40 см</div><div class="stat-diff">+5–7</div></div></div>
+    <div class="stat-row"><div class="stat-name">Бёдра</div><div class="stat-values"><div class="stat-now" style="color:var(--muted)">104 см</div><div class="stat-arrow">→</div><div class="stat-goal">~100 см</div><div class="stat-diff">−4</div></div></div>
+    <div class="stat-row"><div class="stat-name">Жир</div><div class="stat-values"><div class="stat-now" style="color:var(--red)">~22%</div><div class="stat-arrow">→</div><div class="stat-goal">12–15%</div><div class="stat-diff">−7–10%</div></div></div>
+  </div>
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon icon-blue">🔺</div>
+      <div><div class="card-title">Как строится V-тейпер</div><div class="card-sub">два рычага одновременно</div></div>
+    </div>
+    <div class="rule"><div class="rule-icon">📉</div><div class="rule-text"><strong>Убираем талию.</strong> <span>Дефицит 300 ккал + высокий белок. −12 см на талии дадут коэффициент 1.45 уже при нынешних плечах.</span></div></div>
+    <div class="rule"><div class="rule-icon">📐</div><div class="rule-text"><strong>Растим ширину плеч.</strong> <span>Махи в стороны — главное упражнение. Средняя дельта создаёт визуальную ширину.</span></div></div>
+    <div class="rule"><div class="rule-icon">🔼</div><div class="rule-text"><strong>Ширина спины.</strong> <span>Тяги блоков строят широчайшие — они создают V снизу. Широкий хват обязателен.</span></div></div>
+    <div class="rule"><div class="rule-icon">⏳</div><div class="rule-text"><strong>Горизонт.</strong> <span>Первые изменения — через 2–3 месяца. Уверенный V-тейпер — через 9–12 месяцев.</span></div></div>
+  </div>
+</div>
+
+<!-- ДЕНЬ A -->
+<div id="day-a" class="section">
+  <div class="card" style="margin-bottom:12px">
+    <div class="card-header">
+      <div class="card-icon icon-blue">A</div>
+      <div><div class="card-title">Вторник — спина + плечи</div><div class="card-sub">V-тейпер: ширина и объём верха · ~75–90 мин с кардио</div></div>
+    </div>
+    <div class="slabel" style="margin-top:0">разминка</div>
+    <div class="exercise"><div class="exercise-name">5 мин дорожка/велотренажёр (пульс ~110)</div><div class="exercise-sets" style="color:var(--muted)">5 мин</div></div>
+    <div class="exercise"><div class="exercise-name">Суставная сверху вниз + грудной отдел позвоночника</div><div class="exercise-sets" style="color:var(--muted)">3–4 мин</div></div>
+  </div>
+
+  <div class="slabel" style="padding:0 2px">спина</div>
+
+  <div class="ex-card" onclick="toggleEx(this,event)">
+    <div class="ex-card-header">
+      <div class="ex-num" style="background:var(--blue-bg);color:var(--blue)">1</div>
+      <div class="ex-title-wrap"><div class="ex-card-title">Подтягивания широким хватом</div><div class="ex-card-sets" style="color:var(--blue)">4 × макс (цель 8–10) · база V-тейпера</div></div>
+      <div class="ex-chevron">⌄</div>
+    </div>
+    <div class="ex-body">
+      <ol class="ex-steps">
+        <li data-n="1">Возьмись за перекладину широким хватом — заметно шире плеч, ладони от себя.</li>
+        <li data-n="2">Повисни, сведи лопатки вниз и назад — плечи не у ушей.</li>
+        <li data-n="3">Тянись грудью к перекладине, локти идут вниз и в стороны.</li>
+        <li data-n="4">Подбородок выше перекладины или максимально близко — без рывков ногами.</li>
+        <li data-n="5">Опускайся медленно — 2–3 сек, до почти полного выпрямления рук.</li>
+      </ol>
+      <div class="ex-tip">⚠️ Главное базовое упражнение для ширины спины. Если меньше 6 повторений — используй гравитрон или резинку. Раскачка и киппинг — не считаются.</div>
+      <div class="weight-tracker">
+        <div class="weight-label">Рабочий вес</div>
+        <div class="weight-row">
+          <div class="weight-current"><div><div class="weight-tag">текущий</div><div class="weight-badge recommended">свой вес</div></div></div>
+          <div style="color:var(--hint);font-size:18px">→</div>
+          <div class="weight-next"><div><div class="weight-tag">после чистых</div><div class="weight-next-badge">+ пояс</div></div></div>
+        </div>
+        <div class="weight-rule">✓ 4×10 чисто своим весом → добавляй вес на поясе +2.5 кг</div>
+      </div>
+      <a class="yt-btn" href="https://www.youtube.com/watch?v=-VaMVXrq8vw" target="_blank">
+        <svg width="20" height="14" viewBox="0 0 20 14" fill="none"><rect width="20" height="14" rx="3" fill="#FF0000"/><path d="M8 3.5L14 7L8 10.5V3.5Z" fill="white"/></svg>
+        Смотреть технику на YouTube
+      </a>
+    </div>
+  </div>
+
+  <div class="ex-card" onclick="toggleEx(this,event)">
+    <div class="ex-card-header">
+      <div class="ex-num" style="background:var(--blue-bg);color:var(--blue)">2</div>
+      <div class="ex-title-wrap"><div class="ex-card-title">Тяга горизонтального блока широким хватом</div><div class="ex-card-sets" style="color:var(--blue)">4 × 10 · спина</div></div>
+      <div class="ex-chevron">⌄</div>
+    </div>
+    <div class="ex-body">
+      <ol class="ex-steps">
+        <li data-n="1">Сядь, упрись ногами в подставку. Возьмись широким хватом — руки чуть шире плеч.</li>
+        <li data-n="2">Выпрями спину, слегка отклонись назад — 10–15°. Грудь вперёд.</li>
+        <li data-n="3">Тяни рукоять к животу, сводя лопатки. Локти идут назад вдоль корпуса.</li>
+        <li data-n="4">В конечной точке задержись 1 сек — почувствуй сжатие спины.</li>
+        <li data-n="5">Медленно возвращай вперёд — 2–3 сек, не роняй вес.</li>
+      </ol>
+      <div class="ex-tip">⚠️ Не горби спину и не раскачивайся корпусом. Работает спина — не инерция.</div>
+
+      <div class="weight-tracker">
+        <div class="weight-label">Рабочий вес</div>
+        <div class="weight-row">
+          <div class="weight-current"><div><div class="weight-tag">текущий</div><div class="weight-badge">37 кг</div></div></div>
+          <div style="color:var(--hint);font-size:18px">→</div>
+          <div class="weight-next"><div><div class="weight-tag">после чистых</div><div class="weight-next-badge">39 кг</div></div></div>
+        </div>
+        <div class="weight-rule">✓ 4×10 чисто ровно (07.07) → следующая 37 кг</div>
+      </div>
+      <a class="yt-btn" href="https://www.youtube.com/watch?v=q-0E4X2D_gU" target="_blank">
+        <svg width="20" height="14" viewBox="0 0 20 14" fill="none"><rect width="20" height="14" rx="3" fill="#FF0000"/><path d="M8 3.5L14 7L8 10.5V3.5Z" fill="white"/></svg>
+        Смотреть технику на YouTube
+      </a>
+    </div>
+  </div>
+
+  <div class="ex-card" onclick="toggleEx(this,event)">
+    <div class="ex-card-header">
+      <div class="ex-num" style="background:var(--blue-bg);color:var(--blue)">3</div>
+      <div class="ex-title-wrap"><div class="ex-card-title">Тяга верхнего блока к груди</div><div class="ex-card-sets" style="color:var(--blue)">3 × 10 · добивка после подтягиваний</div></div>
+      <div class="ex-chevron">⌄</div>
+    </div>
+    <div class="ex-body">
+      <ol class="ex-steps">
+        <li data-n="1">Зафиксируй бёдра под валиками. Возьми гриф широким хватом — чуть шире плеч.</li>
+        <li data-n="2">Слегка отклонись назад, выведи грудь вперёд-вверх навстречу грифу.</li>
+        <li data-n="3">Тяни гриф к верхней части груди, ведя локти вниз и назад.</li>
+        <li data-n="4">Коснись груди или приблизься — не дёргай, плавно.</li>
+        <li data-n="5">Медленно возвращай вверх, полностью растягивая широчайшие.</li>
+      </ol>
+      <div class="ex-tip">⚠️ Широкий хват = больше широчайших. Узкий хват смещает нагрузку на бицепс.</div>
+
+      <div class="weight-tracker">
+        <div class="weight-label">Рабочий вес</div>
+        <div class="weight-row">
+          <div class="weight-current"><div><div class="weight-tag">текущий</div><div class="weight-badge">49 кг</div></div></div>
+          <div style="color:var(--hint);font-size:18px">→</div>
+          <div class="weight-next"><div><div class="weight-tag">после чистых</div><div class="weight-next-badge">52 кг</div></div></div>
+        </div>
+        <div class="weight-rule">✓ 3 из 4 подходов чисто (07.07) → держи 49 кг, цель 4×10 чисто (добивка)</div>
+      </div>
+      <a class="yt-btn" href="https://www.youtube.com/watch?v=_bPdnFwrLhw" target="_blank">
+        <svg width="20" height="14" viewBox="0 0 20 14" fill="none"><rect width="20" height="14" rx="3" fill="#FF0000"/><path d="M8 3.5L14 7L8 10.5V3.5Z" fill="white"/></svg>
+        Смотреть технику на YouTube
+      </a>
+    </div>
+  </div>
+
+  <div class="ex-card" onclick="toggleEx(this,event)">
+    <div class="ex-card-header">
+      <div class="ex-num" style="background:var(--blue-bg);color:var(--blue)">4</div>
+      <div class="ex-title-wrap"><div class="ex-card-title">Тяга гантели в наклоне</div><div class="ex-card-sets" style="color:var(--blue)">3 × 12 каждой рукой</div></div>
+      <div class="ex-chevron">⌄</div>
+    </div>
+    <div class="ex-body">
+      <ol class="ex-steps">
+        <li data-n="1">Колено и ладонь одной руки опри на скамью. Спина параллельна полу.</li>
+        <li data-n="2">Возьми гантель нейтральным хватом (ладонь к себе). Рука вниз, полное растяжение.</li>
+        <li data-n="3">Тяни локоть строго вверх вдоль корпуса — не в сторону.</li>
+        <li data-n="4">В верхней точке лопатка максимально сведена — задержись 1 сек.</li>
+        <li data-n="5">Опускай медленно, полностью растягивая мышцу.</li>
+      </ol>
+      <div class="ex-tip">⚠️ Не разворачивай корпус — работает только рука и лопатка. Спина неподвижна.</div>
+
+      <div class="weight-tracker">
+        <div class="weight-label">Рабочий вес</div>
+        <div class="weight-row">
+          <div class="weight-current"><div><div class="weight-tag">текущий</div><div class="weight-badge">16 кг</div></div></div>
+          <div style="color:var(--hint);font-size:18px">→</div>
+          <div class="weight-next"><div><div class="weight-tag">после чистых</div><div class="weight-next-badge">17.5 кг</div></div></div>
+        </div>
+        <div class="weight-rule">✓ 15×12 чисто (23.06) → следующая 16 кг, потом снова 17.5 кг</div>
+      </div>
+      <a class="yt-btn" href="https://www.youtube.com/watch?v=DLpIrbhR3X8" target="_blank">
+        <svg width="20" height="14" viewBox="0 0 20 14" fill="none"><rect width="20" height="14" rx="3" fill="#FF0000"/><path d="M8 3.5L14 7L8 10.5V3.5Z" fill="white"/></svg>
+        Смотреть технику на YouTube
+      </a>
+    </div>
+  </div>
+
+  <div class="slabel" style="padding:0 2px">плечи — ключ к V-тейперу</div>
+
+  <div class="ex-card" onclick="toggleEx(this,event)">
+    <div class="ex-card-header">
+      <div class="ex-num" style="background:var(--orange-bg);color:var(--orange)">5</div>
+      <div class="ex-title-wrap"><div class="ex-card-title">Жим Арнольда</div><div class="ex-card-sets" style="color:var(--orange)">3 × 10 · все три пучка дельты</div></div>
+      <div class="ex-chevron">⌄</div>
+    </div>
+    <div class="ex-body">
+      <ol class="ex-steps">
+        <li data-n="1">Сядь на скамью со спинкой. Гантели у плеч, ладони развёрнуты к себе — как в верхней точке подъёма на бицепс.</li>
+        <li data-n="2">Начинай жать вверх, одновременно разворачивая кисти наружу.</li>
+        <li data-n="3">В верхней точке ладони смотрят вперёд, руки почти прямые — лёгкий сгиб в локте.</li>
+        <li data-n="4">Опускай обратно с обратным разворотом кистей — медленно, 2–3 сек.</li>
+        <li data-n="5">Всё движение плавное, без рывков — разворот и жим слитно.</li>
+      </ol>
+      <div class="ex-tip">⚠️ Вес меньше, чем в обычном жиме — разворот кистей усложняет движение. Начни с 12 кг. Если не почувствуешь плечи лучше обычного жима — скажи, вернём назад.</div>
+      <div class="weight-tracker">
+        <div class="weight-label">Рабочий вес</div>
+        <div class="weight-row">
+          <div class="weight-current"><div><div class="weight-tag">текущий</div><div class="weight-badge recommended">12 кг</div></div></div>
+          <div style="color:var(--hint);font-size:18px">→</div>
+          <div class="weight-next"><div><div class="weight-tag">после чистых</div><div class="weight-next-badge">14 кг</div></div></div>
+        </div>
+        <div class="weight-rule">✓ 3×10 чисто → +2 кг · Не добил → держи вес</div>
+      </div>
+      <a class="yt-btn" href="https://www.youtube.com/watch?v=4TS4qt3E09o" target="_blank">
+        <svg width="20" height="14" viewBox="0 0 20 14" fill="none"><rect width="20" height="14" rx="3" fill="#FF0000"/><path d="M8 3.5L14 7L8 10.5V3.5Z" fill="white"/></svg>
+        Смотреть технику на YouTube
+      </a>
+    </div>
+  </div>
+
+  <div class="ex-card" onclick="toggleEx(this,event)">
+    <div class="ex-card-header">
+      <div class="ex-num" style="background:var(--orange-bg);color:var(--orange)">6</div>
+      <div class="ex-title-wrap"><div class="ex-card-title">Тяга штанги к подбородку широким хватом</div><div class="ex-card-sets" style="color:var(--orange)">3 × 12 · средняя дельта</div></div>
+      <div class="ex-chevron">⌄</div>
+    </div>
+    <div class="ex-body">
+      <ol class="ex-steps">
+        <li data-n="1">Возьми штангу хватом шире плеч. Стоя, штанга у бёдер.</li>
+        <li data-n="2">Тяни штангу вверх вдоль тела, ведя локтями — локти всегда выше кистей.</li>
+        <li data-n="3">Поднимай до уровня груди — не выше, широкий хват не требует тянуть к подбородку.</li>
+        <li data-n="4">В верхней точке локти смотрят в стороны и вверх — пауза 1 сек.</li>
+        <li data-n="5">Опускай медленно — 2–3 сек, контролируя вес.</li>
+      </ol>
+      <div class="ex-tip">⚠️ Именно широкий хват — он смещает нагрузку с трапеции на среднюю дельту. Узкий хват сюда не подходит и нагружает запястья.</div>
+      <div class="weight-tracker">
+        <div class="weight-label">Рабочий вес</div>
+        <div class="weight-row">
+          <div class="weight-current"><div><div class="weight-tag">текущий</div><div class="weight-badge recommended">20 кг</div></div></div>
+          <div style="color:var(--hint);font-size:18px">→</div>
+          <div class="weight-next"><div><div class="weight-tag">после чистых</div><div class="weight-next-badge">22.5 кг</div></div></div>
+        </div>
+        <div class="weight-rule">✓ 3×12 чисто → +2.5 кг · Гриф 20 кг — начни с пустого</div>
+      </div>
+      <a class="yt-btn" href="https://www.youtube.com/watch?v=ddbSvuXLtl4" target="_blank">
+        <svg width="20" height="14" viewBox="0 0 20 14" fill="none"><rect width="20" height="14" rx="3" fill="#FF0000"/><path d="M8 3.5L14 7L8 10.5V3.5Z" fill="white"/></svg>
+        Смотреть технику на YouTube
+      </a>
+    </div>
+  </div>
+
+  <div class="ex-card" onclick="toggleEx(this,event)">
+    <div class="ex-card-header">
+      <div class="ex-num" style="background:var(--orange-bg);color:var(--orange)">7</div>
+      <div class="ex-title-wrap"><div class="ex-card-title">Махи гантелями в стороны ★</div><div class="ex-card-sets" style="color:var(--orange)">5 × 12–15 · ширина плеч · приоритет</div></div>
+      <div class="ex-chevron">⌄</div>
+    </div>
+    <div class="ex-body">
+      <ol class="ex-steps">
+        <li data-n="1">Встань прямо, гантели вдоль бёдер, лёгкий сгиб в локтях — держи всё время.</li>
+        <li data-n="2">Поднимай руки в стороны мизинцем вверх — как будто выливаешь воду из стакана.</li>
+        <li data-n="3">Подними до уровня плеч — не выше, не ниже.</li>
+        <li data-n="4">В верхней точке — секунда паузы, чувствуй жжение в средней дельте.</li>
+        <li data-n="5">Медленно опускай — 2–3 сек. Это важнее, чем подъём.</li>
+      </ol>
+      <div class="ex-tip">⚠️ Вес лёгкий — 5–8 кг для старта. Читинг убивает эффект. Главное упражнение для ширины плеч.</div>
+
+      <div class="weight-tracker">
+        <div class="weight-label">Рабочий вес</div>
+        <div class="weight-row">
+          <div class="weight-current"><div><div class="weight-tag">текущий</div><div class="weight-badge">8 кг</div></div></div>
+          <div style="color:var(--hint);font-size:18px">→</div>
+          <div class="weight-next"><div><div class="weight-tag">после чистых</div><div class="weight-next-badge">9 кг</div></div></div>
+        </div>
+        <div class="weight-rule">✓ 4×15 чисто на 6 кг (07.07) → следующая 8 кг · теперь 5 подходов, приоритет</div>
+      </div>
+      <a class="yt-btn" href="https://www.youtube.com/watch?v=WnI2hZJ0d9w" target="_blank">
+        <svg width="20" height="14" viewBox="0 0 20 14" fill="none"><rect width="20" height="14" rx="3" fill="#FF0000"/><path d="M8 3.5L14 7L8 10.5V3.5Z" fill="white"/></svg>
+        Смотреть технику на YouTube
+      </a>
+    </div>
+  </div>
+
+  <div class="ex-card" onclick="toggleEx(this,event)">
+    <div class="ex-card-header">
+      <div class="ex-num" style="background:var(--orange-bg);color:var(--orange)">8</div>
+      <div class="ex-title-wrap"><div class="ex-card-title">Махи в тренажёре (Lateral Raise Machine)</div><div class="ex-card-sets" style="color:var(--orange)">3 × 12–15 · средняя дельта</div></div>
+      <div class="ex-chevron">⌄</div>
+    </div>
+    <div class="ex-body">
+      <ol class="ex-steps">
+        <li data-n="1">Сядь ближе к краю сиденья, корпус статичен — не раскачивайся.</li>
+        <li data-n="2">Спина в нейтральном положении, не прогибайся назад.</li>
+        <li data-n="3">Локти прижаты к упорам, именно они ведут движение — не кисти.</li>
+        <li data-n="4">Поднимай локти в стороны до уровня плеч — плавно, без рывка.</li>
+        <li data-n="5">Медленно опускай — 2–3 сек, полный контроль на негативной фазе.</li>
+      </ol>
+      <div class="ex-tip">⚠️ Тренажёр фиксирует траекторию — хорошо для чистой изоляции средней дельты без читинга. Вместе с махами гантелями — 8 подходов суммарно на среднюю дельту, это приоритетный объём.</div>
+      <div class="weight-tracker">
+        <div class="weight-label">Рабочий вес</div>
+        <div class="weight-row">
+          <div class="weight-current"><div><div class="weight-tag">текущий</div><div class="weight-badge">7.5 кг</div></div></div>
+          <div style="color:var(--hint);font-size:18px">→</div>
+          <div class="weight-next"><div><div class="weight-tag">после чистых</div><div class="weight-next-badge">9 кг</div></div></div>
+        </div>
+        <div class="weight-rule">✓ 4×15 чисто (07.07) → следующая 9 кг, но держи 3 подхода вместо 4</div>
+      </div>
+      <a class="yt-btn" href="https://www.youtube.com/watch?v=NSk-rzNGRn4" target="_blank">
+        <svg width="20" height="14" viewBox="0 0 20 14" fill="none"><rect width="20" height="14" rx="3" fill="#FF0000"/><path d="M8 3.5L14 7L8 10.5V3.5Z" fill="white"/></svg>
+        Смотреть технику на YouTube
+      </a>
+    </div>
+  </div>
+
+  <div class="ex-card" onclick="toggleEx(this,event)">
+    <div class="ex-card-header">
+      <div class="ex-num" style="background:var(--orange-bg);color:var(--orange)">9</div>
+      <div class="ex-title-wrap"><div class="ex-card-title">Обратная бабочка (Reverse Pec Deck)</div><div class="ex-card-sets" style="color:var(--orange)">4 × 15 · задняя дельта</div></div>
+      <div class="ex-chevron">⌄</div>
+    </div>
+    <div class="ex-body">
+      <ol class="ex-steps">
+        <li data-n="1">Сядь лицом к спинке тренажёра для бабочки. Отрегулируй сиденье — ручки на уровне плеч.</li>
+        <li data-n="2">Возьмись за ручки нейтральным хватом, руки слегка согнуты в локтях — держи этот угол всё время.</li>
+        <li data-n="3">Разводи руки назад и в стороны по дуге — медленно, 2 сек. Локти ведут движение.</li>
+        <li data-n="4">В крайней точке сожми лопатки и заднюю дельту — задержись 1 сек.</li>
+        <li data-n="5">Медленно возвращай вперёд — 3 сек. Это важнее подъёма.</li>
+      </ol>
+      <div class="ex-tip">⚠️ Вес очень лёгкий — задняя дельта у боксёров почти не развита. Не тяни трапецией, не поднимай плечи. Если плечи лезут вверх — вес слишком тяжёлый.</div>
+      <div class="weight-tracker">
+        <div class="weight-label">Рабочий вес</div>
+        <div class="weight-row">
+          <div class="weight-current"><div><div class="weight-tag">текущий</div><div class="weight-badge">36 кг</div></div></div>
+          <div style="color:var(--hint);font-size:18px">→</div>
+          <div class="weight-next"><div><div class="weight-tag">после чистых</div><div class="weight-next-badge">39 кг</div></div></div>
+        </div>
+        <div class="weight-rule">⚠️ Просадка к концу — 15/12/10 повт на 36 кг. Держи 36 кг, цель 4×15 чисто</div>
+      </div>
+      <a class="yt-btn" href="https://www.youtube.com/watch?v=zEKEiMIBBQs" target="_blank">
+        <svg width="20" height="14" viewBox="0 0 20 14" fill="none"><rect width="20" height="14" rx="3" fill="#FF0000"/><path d="M8 3.5L14 7L8 10.5V3.5Z" fill="white"/></svg>
+        Смотреть технику на YouTube
+      </a>
+    </div>
+  </div>
+
+
+
+  <div class="slabel" style="padding:0 2px">коррекция кифоза + кор — обязательно</div>
+
+  <div class="ex-card" onclick="toggleEx(this,event)">
+    <div class="ex-card-header">
+      <div class="ex-num" style="background:var(--green-bg);color:var(--green)">10</div>
+      <div class="ex-title-wrap"><div class="ex-card-title">Face pull с канатом</div><div class="ex-card-sets" style="color:var(--green)">3 × 15 · кифоз</div></div>
+      <div class="ex-chevron">⌄</div>
+    </div>
+    <div class="ex-body">
+      <ol class="ex-steps">
+        <li data-n="1">Установи блок на уровне лица. Возьмись за канат нейтральным хватом.</li>
+        <li data-n="2">Отступи назад, натяни трос. Руки прямые перед собой — исходная позиция.</li>
+        <li data-n="3">Тяни канат к лицу, разводя локти в стороны и вверх — выше плеч.</li>
+        <li data-n="4">Запястья у висков, локти максимально назад. Лопатки сведены.</li>
+        <li data-n="5">Медленно возвращай вперёд.</li>
+      </ol>
+      <div class="ex-tip green">🟢 Корректирует кифоз, укрепляет задние дельты и ромбовидные. Никогда не пропускай.</div>
+
+      <div class="weight-tracker">
+        <div class="weight-label">Рабочий вес</div>
+        <div class="weight-row">
+          <div class="weight-current"><div><div class="weight-tag">текущий</div><div class="weight-badge">25 кг</div></div></div>
+          <div style="color:var(--hint);font-size:18px">→</div>
+          <div class="weight-next"><div><div class="weight-tag">после чистых</div><div class="weight-next-badge">27 кг</div></div></div>
+        </div>
+        <div class="weight-rule">✓ Первый раз сделан полностью! 2 рабочих подхода по 15 чисто на 25 кг → следующая 27 кг</div>
+      </div>
+      <a class="yt-btn" href="https://www.youtube.com/watch?v=IzaevEuD50s" target="_blank">
+        <svg width="20" height="14" viewBox="0 0 20 14" fill="none"><rect width="20" height="14" rx="3" fill="#FF0000"/><path d="M8 3.5L14 7L8 10.5V3.5Z" fill="white"/></svg>
+        Смотреть технику на YouTube
+      </a>
+    </div>
+  </div>
+
+
+  <div class="ex-card" onclick="toggleEx(this,event)">
+    <div class="ex-card-header">
+      <div class="ex-num" style="background:var(--green-bg);color:var(--green)">11</div>
+      <div class="ex-title-wrap"><div class="ex-card-title">Планка</div><div class="ex-card-sets" style="color:var(--green)">3 × 60 сек · кор</div></div>
+      <div class="ex-chevron">⌄</div>
+    </div>
+    <div class="ex-body">
+      <ol class="ex-steps">
+        <li data-n="1">Упор на предплечья и носки. Локти строго под плечами.</li>
+        <li data-n="2">Тело — прямая линия от пяток до макушки. Не поднимай таз, не проваливай живот.</li>
+        <li data-n="3">Напряги пресс, ягодицы и квадрицепсы одновременно.</li>
+        <li data-n="4">Дыши равномерно. Не задерживай дыхание.</li>
+      </ol>
+      <div class="ex-tip">⚠️ Если форма нарушается — заканчивай. Планка в плохой форме бесполезна.</div>
+
+      <div class="weight-tracker">
+        <div class="weight-label">Рабочее время</div>
+        <div class="weight-row">
+          <div class="weight-current">
+            <div>
+              <div class="weight-tag">текущее</div>
+              <div class="weight-badge">3 × 60 сек</div>
+            </div>
+          </div>
+          <div style="color:var(--hint);font-size:18px">→</div>
+          <div class="weight-next">
+            <div>
+              <div class="weight-tag">следующая</div>
+              <div class="weight-next-badge">3 × 75 сек</div>
+            </div>
+          </div>
+        </div>
+        <div class="weight-rule">✓ Цель 60 сек достигнута (07.07) → следующая 75 сек</div>
+      </div>
+      <a class="yt-btn" href="https://www.youtube.com/watch?v=_E7Vg4ECFYA" target="_blank">
+        <svg width="20" height="14" viewBox="0 0 20 14" fill="none"><rect width="20" height="14" rx="3" fill="#FF0000"/><path d="M8 3.5L14 7L8 10.5V3.5Z" fill="white"/></svg>
+        Смотреть технику на YouTube
+      </a>
+    </div>
+  </div>
+
+  <div class="ex-card" onclick="toggleEx(this,event)">
+    <div class="ex-card-header">
+      <div class="ex-num" style="background:var(--green-bg);color:var(--green)">12</div>
+      <div class="ex-title-wrap"><div class="ex-card-title">Dead bug</div><div class="ex-card-sets" style="color:var(--green)">3 × 10 каждой стороной</div></div>
+      <div class="ex-chevron">⌄</div>
+    </div>
+    <div class="ex-body">
+      <ol class="ex-steps">
+        <li data-n="1">Ляг на спину. Руки вертикально вверх. Ноги согни 90° — бёдра вертикально.</li>
+        <li data-n="2">Прижми поясницу к полу — она не отрывается всё время.</li>
+        <li data-n="3">Одновременно опускай правую руку за голову и вытягивай левую ногу вперёд.</li>
+        <li data-n="4">Не касаясь пола, вернись. Повтори с другой стороной.</li>
+      </ol>
+      <div class="ex-tip green">🟢 Если поясница отрывается — уменьши амплитуду.</div>
+
+      <div class="weight-tracker">
+        <div class="weight-label">Темп</div>
+        <div class="weight-row">
+          <div class="weight-current">
+            <div>
+              <div class="weight-tag">старт</div>
+              <div class="weight-badge recommended">медленно</div>
+            </div>
+          </div>
+          <div style="color:var(--hint);font-size:18px">→</div>
+          <div class="weight-next">
+            <div>
+              <div class="weight-tag">прогресс</div>
+              <div class="weight-next-badge">с весом</div>
+            </div>
+          </div>
+        </div>
+        <div class="weight-rule">✓ 3×10 чисто → добавь гантель 2 кг в вытянутую руку</div>
+      </div>
+      <a class="yt-btn" href="https://www.youtube.com/watch?v=bsNm4Q0HUhY" target="_blank">
+        <svg width="20" height="14" viewBox="0 0 20 14" fill="none"><rect width="20" height="14" rx="3" fill="#FF0000"/><path d="M8 3.5L14 7L8 10.5V3.5Z" fill="white"/></svg>
+        Смотреть технику на YouTube
+      </a>
+    </div>
+  </div>
+
+  <div class="ex-card" onclick="toggleEx(this,event)">
+    <div class="ex-card-header">
+      <div class="ex-num" style="background:var(--green-bg);color:var(--green)">13</div>
+      <div class="ex-title-wrap"><div class="ex-card-title">Wall angel</div><div class="ex-card-sets" style="color:var(--green)">2 × 10 · кифоз</div></div>
+      <div class="ex-chevron">⌄</div>
+    </div>
+    <div class="ex-body">
+      <ol class="ex-steps">
+        <li data-n="1">Встань спиной к стене. Прижми: затылок, лопатки, поясницу, ягодицы, пятки.</li>
+        <li data-n="2">Подними руки — локти согнуты 90°, прижми к стене тыльную сторону рук и локти.</li>
+        <li data-n="3">Медленно скользи руками вверх, не отрывая ни локти, ни запястья, ни спину.</li>
+        <li data-n="4">Поднимись максимально высоко без отрыва, вернись вниз.</li>
+      </ol>
+      <div class="ex-tip green">🟢 Не требует оборудования. Делай на обеих тренировках — простой и эффективный против кифоза.</div>
+      <a class="yt-btn" href="https://www.youtube.com/watch?v=w_aI31xL3KU" target="_blank">
+        <svg width="20" height="14" viewBox="0 0 20 14" fill="none"><rect width="20" height="14" rx="3" fill="#FF0000"/><path d="M8 3.5L14 7L8 10.5V3.5Z" fill="white"/></svg>
+        Смотреть технику на YouTube
+      </a>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:10px">
+    <div class="slabel" style="margin-top:0">заминка</div>
+    <div class="exercise"><div class="exercise-name">Растяжка грудного отдела позвоночника</div><div class="exercise-sets" style="color:var(--muted)">5 мин</div></div>
+  </div>
+
+  <div class="card" style="margin-top:10px;border-color:var(--orange-border)">
+    <div class="card-header" style="margin-bottom:10px;padding-bottom:10px">
+      <div class="card-icon icon-orange">🏃</div>
+      <div><div class="card-title">Кардио — заминка</div><div class="card-sub">после силовой · жиросжигание</div></div>
+    </div>
+    <div class="exercise"><div class="exercise-name">Беговая дорожка или велотренажёр</div><div class="exercise-sets" style="color:var(--orange)">15–20 мин</div></div>
+    <div class="exercise" style="border-bottom:none;padding-bottom:0"><div class="exercise-name" style="color:var(--muted);font-size:13px">Пульс 130–150 уд/мин · умеренный темп · можешь говорить короткими фразами · не спринт</div></div>
+  </div>
+
+</div>
+
+<!-- ДЕНЬ B -->
+<div id="day-b" class="section">
+  <div class="card" style="margin-bottom:12px">
+    <div class="card-header">
+      <div class="card-icon icon-orange">B</div>
+      <div><div class="card-title">Четверг — грудь + руки + ноги</div><div class="card-sub">объём, руки, пресс · ~70–85 мин с кардио</div></div>
+    </div>
+    <div class="slabel" style="margin-top:0">разминка</div>
+    <div class="exercise"><div class="exercise-name">5 мин дорожка/велотренажёр (пульс ~110)</div><div class="exercise-sets" style="color:var(--muted)">5 мин</div></div>
+    <div class="exercise"><div class="exercise-name">Суставная сверху вниз: шея → плечи → локти → запястья → тазобедренные → колени → голеностоп</div><div class="exercise-sets" style="color:var(--muted)">3–4 мин</div></div>
+  </div>
+
+  <div class="slabel" style="padding:0 2px">грудь</div>
+
+  <div class="ex-card" onclick="toggleEx(this,event)">
+    <div class="ex-card-header">
+      <div class="ex-num" style="background:var(--orange-bg);color:var(--orange)">1</div>
+      <div class="ex-title-wrap"><div class="ex-card-title">Жим штанги лёжа</div><div class="ex-card-sets" style="color:var(--orange)">4 × 10 · грудь</div></div>
+      <div class="ex-chevron">⌄</div>
+    </div>
+    <div class="ex-body">
+      <ol class="ex-steps">
+        <li data-n="1">Ляг на скамью, возьмись за гриф хватом чуть шире плеч. Сведи лопатки и прижми к скамье — грудь будет выше.</li>
+        <li data-n="2">Сними штангу со стоек. Локти ~45–75° к корпусу, не разводи на 90°.</li>
+        <li data-n="3">Опускай штангу к нижней части груди медленно — 2–3 сек. Касаешься груди или чуть выше.</li>
+        <li data-n="4">Жми вверх по дуге — мощно, выдох в момент усилия.</li>
+        <li data-n="5">Не разгибай руки полностью в верхней точке — лёгкий сгиб в локте.</li>
+      </ol>
+      <div class="ex-tip">⚠️ Ступни прижаты к полу. Не отрывай ягодицы от скамьи. Лопатки не двигаются всё время.</div>
+
+      <div class="weight-tracker">
+        <div class="weight-label">Рабочий вес</div>
+        <div class="weight-row">
+          <div class="weight-current"><div><div class="weight-tag">текущий</div><div class="weight-badge">60 кг</div></div></div>
+          <div style="color:var(--hint);font-size:18px">→</div>
+          <div class="weight-next"><div><div class="weight-tag">после чистых</div><div class="weight-next-badge">62 кг</div></div></div>
+        </div>
+        <div class="weight-rule">✓ 3 из 4 подходов ×10 чисто (28.06) → держи 60 кг, цель 4×10 чисто</div>
+      </div>
+      <a class="yt-btn" href="https://www.youtube.com/watch?v=rT7DgCr-3pg" target="_blank">
+        <svg width="20" height="14" viewBox="0 0 20 14" fill="none"><rect width="20" height="14" rx="3" fill="#FF0000"/><path d="M8 3.5L14 7L8 10.5V3.5Z" fill="white"/></svg>
+        Смотреть технику на YouTube
+      </a>
+    </div>
+  </div>
+
+  <div class="ex-card" onclick="toggleEx(this,event)">
+    <div class="ex-card-header">
+      <div class="ex-num" style="background:var(--orange-bg);color:var(--orange)">2</div>
+      <div class="ex-title-wrap"><div class="ex-card-title">Жим в хаммере под углом 30–45°</div><div class="ex-card-sets" style="color:var(--orange)">3 × 12 · верхняя грудь</div></div>
+      <div class="ex-chevron">⌄</div>
+    </div>
+    <div class="ex-body">
+      <ol class="ex-steps">
+        <li data-n="1">Сядь в тренажёр, отрегулируй сиденье — рукояти на уровне нижней части груди.</li>
+        <li data-n="2">Спина плотно к спинке. Лопатки сведены и утоплены вниз.</li>
+        <li data-n="3">Жми рукояти вперёд плавно, выдыхая. В конце — небольшое сведение рук.</li>
+        <li data-n="4">Не разгибай руки полностью. Медленно возвращай — 2 сек.</li>
+      </ol>
+      <div class="ex-tip">⚠️ Не отрывай спину от спинки в момент жима.</div>
+
+      <div class="weight-tracker">
+        <div class="weight-label">Рабочий вес</div>
+        <div class="weight-row">
+          <div class="weight-current"><div><div class="weight-tag">текущий</div><div class="weight-badge">20 кг</div></div></div>
+          <div style="color:var(--hint);font-size:18px">→</div>
+          <div class="weight-next"><div><div class="weight-tag">после чистых</div><div class="weight-next-badge">22 кг</div></div></div>
+        </div>
+        <div class="weight-rule">✓ 2×12 чисто на 20 кг (28.06) → следующая 22 кг</div>
+      </div>
+      <a class="yt-btn" href="https://www.youtube.com/watch?v=ZixeFw_iHVY" target="_blank">
+        <svg width="20" height="14" viewBox="0 0 20 14" fill="none"><rect width="20" height="14" rx="3" fill="#FF0000"/><path d="M8 3.5L14 7L8 10.5V3.5Z" fill="white"/></svg>
+        Смотреть технику на YouTube
+      </a>
+    </div>
+  </div>
+
+  <div class="ex-card" onclick="toggleEx(this,event)">
+    <div class="ex-card-header">
+      <div class="ex-num" style="background:var(--orange-bg);color:var(--orange)">3</div>
+      <div class="ex-title-wrap"><div class="ex-card-title">Сведение рук в тренажёре («Бабочка»)</div><div class="ex-card-sets" style="color:var(--orange)">3 × 15 · растяжка груди</div></div>
+      <div class="ex-chevron">⌄</div>
+    </div>
+    <div class="ex-body">
+      <ol class="ex-steps">
+        <li data-n="1">Сядь в тренажёр, спина плотно к спинке. Возьмись за ручки — руки слегка согнуты в локтях, держи этот угол всё время.</li>
+        <li data-n="2">Отрегулируй сиденье — ручки на уровне груди, не выше плеч.</li>
+        <li data-n="3">Своди руки вперёд по дуге — медленно, 2 сек. В конечной точке сожми грудные максимально — 1 сек паузы.</li>
+        <li data-n="4">Медленно возвращай назад — 3 сек, чувствуй растяжение груди.</li>
+        <li data-n="5">Не бросай вес назад — контролируй всё движение.</li>
+      </ol>
+      <div class="ex-tip">⚠️ Не разводи руки слишком далеко назад — плечевой сустав под риском. Амплитуда комфортная, без боли в плечах.</div>
+
+      <div class="weight-tracker">
+        <div class="weight-label">Рабочий вес</div>
+        <div class="weight-row">
+          <div class="weight-current"><div><div class="weight-tag">текущий</div><div class="weight-badge">62 кг</div></div></div>
+          <div style="color:var(--hint);font-size:18px">→</div>
+          <div class="weight-next"><div><div class="weight-tag">после чистых</div><div class="weight-next-badge">65 кг</div></div></div>
+        </div>
+        <div class="weight-rule">✓ 4×12 чисто включая 59 кг (28.06) → следующая 62 кг</div>
+      </div>
+      <a class="yt-btn" href="https://www.youtube.com/watch?v=Z57CtFmRMxA" target="_blank">
+        <svg width="20" height="14" viewBox="0 0 20 14" fill="none"><rect width="20" height="14" rx="3" fill="#FF0000"/><path d="M8 3.5L14 7L8 10.5V3.5Z" fill="white"/></svg>
+        Смотреть технику на YouTube
+      </a>
+    </div>
+  </div>
+
+  <div class="ex-card" onclick="toggleEx(this,event)">
+    <div class="ex-card-header">
+      <div class="ex-num" style="background:var(--blue-bg);color:var(--blue)">4</div>
+      <div class="ex-title-wrap"><div class="ex-card-title">Отжимания на брусьях (трицепс)</div><div class="ex-card-sets" style="color:var(--blue)">3 × макс (цель 10–12) · база трицепса</div></div>
+      <div class="ex-chevron">⌄</div>
+    </div>
+    <div class="ex-body">
+      <ol class="ex-steps">
+        <li data-n="1">Запрыгни на брусья, руки прямые, корпус вертикально — минимальный наклон вперёд.</li>
+        <li data-n="2">Локти прижаты к корпусу, не разводи в стороны — это смещает нагрузку на трицепс.</li>
+        <li data-n="3">Опускайся медленно — 2–3 сек — до угла 90° в локте. Глубже не надо.</li>
+        <li data-n="4">Выжимай себя вверх мощно, до почти полного выпрямления рук.</li>
+        <li data-n="5">Не раскачивайся, ноги можно скрестить и согнуть.</li>
+      </ol>
+      <div class="ex-tip">⚠️ Вертикальный корпус = трицепс, наклон вперёд = грудь. Для рук держи корпус прямо. Если меньше 8 повторений — гравитрон.</div>
+      <div class="weight-tracker">
+        <div class="weight-label">Рабочий вес</div>
+        <div class="weight-row">
+          <div class="weight-current"><div><div class="weight-tag">текущий</div><div class="weight-badge recommended">свой вес</div></div></div>
+          <div style="color:var(--hint);font-size:18px">→</div>
+          <div class="weight-next"><div><div class="weight-tag">после чистых</div><div class="weight-next-badge">+ пояс</div></div></div>
+        </div>
+        <div class="weight-rule">✓ 3×12 чисто своим весом → добавляй вес на поясе +2.5 кг</div>
+      </div>
+      <a class="yt-btn" href="https://www.youtube.com/watch?v=q-8bWppi3oU" target="_blank">
+        <svg width="20" height="14" viewBox="0 0 20 14" fill="none"><rect width="20" height="14" rx="3" fill="#FF0000"/><path d="M8 3.5L14 7L8 10.5V3.5Z" fill="white"/></svg>
+        Смотреть технику на YouTube
+      </a>
+    </div>
+  </div>
+
+  <div class="slabel" style="padding:0 2px">руки + кор</div>
+
+  <div class="ex-card" onclick="toggleEx(this,event)">
+    <div class="ex-card-header">
+      <div class="ex-num" style="background:var(--blue-bg);color:var(--blue)">5</div>
+      <div class="ex-title-wrap"><div class="ex-card-title">Подъём штанги на бицепс</div><div class="ex-card-sets" style="color:var(--blue)">4 × 10 · база бицепса</div></div>
+      <div class="ex-chevron">⌄</div>
+    </div>
+    <div class="ex-body">
+      <ol class="ex-steps">
+        <li data-n="1">Возьми штангу или EZ-гриф хватом на ширине плеч, ладони от себя.</li>
+        <li data-n="2">Локти прижаты к корпусу — они не двигаются всё упражнение.</li>
+        <li data-n="3">Сгибай руки, поднимая штангу к груди — без рывка, без помощи корпусом.</li>
+        <li data-n="4">В верхней точке сожми бицепс — 1 сек паузы.</li>
+        <li data-n="5">Опускай медленно — 2–3 сек, до полного выпрямления внизу.</li>
+      </ol>
+      <div class="ex-tip">⚠️ EZ-гриф (изогнутый) комфортнее для запястий — если есть, бери его. Штанга позволяет прогрессировать агрессивнее гантелей — это главная база для массы бицепса.</div>
+      <div class="weight-tracker">
+        <div class="weight-label">Рабочий вес</div>
+        <div class="weight-row">
+          <div class="weight-current"><div><div class="weight-tag">текущий</div><div class="weight-badge recommended">20 кг</div></div></div>
+          <div style="color:var(--hint);font-size:18px">→</div>
+          <div class="weight-next"><div><div class="weight-tag">после чистых</div><div class="weight-next-badge">22.5 кг</div></div></div>
+        </div>
+        <div class="weight-rule">✓ 4×10 чисто → +2.5 кг · Начни с 20 кг (гриф или EZ с малыми блинами)</div>
+      </div>
+      <a class="yt-btn" href="https://www.youtube.com/watch?v=APGw5Xi8xfQ" target="_blank">
+        <svg width="20" height="14" viewBox="0 0 20 14" fill="none"><rect width="20" height="14" rx="3" fill="#FF0000"/><path d="M8 3.5L14 7L8 10.5V3.5Z" fill="white"/></svg>
+        Смотреть технику на YouTube
+      </a>
+    </div>
+  </div>
+
+
+  <div class="ex-card" onclick="toggleEx(this,event)">
+    <div class="ex-card-header">
+      <div class="ex-num" style="background:var(--blue-bg);color:var(--blue)">6</div>
+      <div class="ex-title-wrap"><div class="ex-card-title">Молотковые сгибания (Hammer curl)</div><div class="ex-card-sets" style="color:var(--blue)">3 × 12 · бицепс + брахиалис</div></div>
+      <div class="ex-chevron">⌄</div>
+    </div>
+    <div class="ex-body">
+      <ol class="ex-steps">
+        <li data-n="1">Стоя, гантели в руках, ладони смотрят друг на друга (нейтральный хват) — держи так всё время.</li>
+        <li data-n="2">Локти прижаты к корпусу, не двигаются.</li>
+        <li data-n="3">Сгибай руки вверх — движение то же что у обычного бицепса, только хват нейтральный.</li>
+        <li data-n="4">В верхней точке — сожми, задержись 1 сек.</li>
+        <li data-n="5">Медленно опускай — 2–3 сек.</li>
+      </ol>
+      <div class="ex-tip">⚠️ Брахиалис — мышца под бицепсом, визуально "выталкивает" бицепс наружу и даёт толщину руки. Молотковый хват грузит именно его.</div>
+      <div class="weight-tracker">
+        <div class="weight-label">Рабочий вес</div>
+        <div class="weight-row">
+          <div class="weight-current"><div><div class="weight-tag">текущий</div><div class="weight-badge">10 кг</div></div></div>
+          <div style="color:var(--hint);font-size:18px">→</div>
+          <div class="weight-next"><div><div class="weight-tag">после чистых</div><div class="weight-next-badge">12 кг</div></div></div>
+        </div>
+        <div class="weight-rule">✓ 2 из 3 подходов чисто — держи 10 кг, цель 3×12 чисто</div>
+      </div>
+      <a class="yt-btn" href="https://www.youtube.com/watch?v=Pd4WUV-boGA" target="_blank">
+        <svg width="20" height="14" viewBox="0 0 20 14" fill="none"><rect width="20" height="14" rx="3" fill="#FF0000"/><path d="M8 3.5L14 7L8 10.5V3.5Z" fill="white"/></svg>
+        Смотреть технику на YouTube
+      </a>
+    </div>
+  </div>
+
+  <div class="ex-card" onclick="toggleEx(this,event)">
+    <div class="ex-card-header">
+      <div class="ex-num" style="background:var(--blue-bg);color:var(--blue)">7</div>
+      <div class="ex-title-wrap"><div class="ex-card-title">Трицепс — блок с канатом</div><div class="ex-card-sets" style="color:var(--blue)">4 × 12 · трицепс</div></div>
+      <div class="ex-chevron">⌄</div>
+    </div>
+    <div class="ex-body">
+      <ol class="ex-steps">
+        <li data-n="1">Встань у блока, канат на верхнем блоке. Локти прижми к корпусу.</li>
+        <li data-n="2">Слегка наклонись вперёд — 10–15°. Локти неподвижны.</li>
+        <li data-n="3">Разгибай руки вниз, в нижней точке разведи концы каната в стороны.</li>
+        <li data-n="4">Сожми трицепс в нижней точке — 1 сек.</li>
+        <li data-n="5">Медленно возвращай вверх до угла 90° в локте.</li>
+      </ol>
+      <div class="ex-tip">⚠️ Локти не двигаются и не уходят вперёд. Если едут — вес слишком тяжёлый.</div>
+
+      <div class="weight-tracker">
+        <div class="weight-label">Рабочий вес</div>
+        <div class="weight-row">
+          <div class="weight-current"><div><div class="weight-tag">текущий</div><div class="weight-badge">36 кг</div></div></div>
+          <div style="color:var(--hint);font-size:18px">→</div>
+          <div class="weight-next"><div><div class="weight-tag">после чистых</div><div class="weight-next-badge">39 кг</div></div></div>
+        </div>
+        <div class="weight-rule">✓ 3×12 чисто с канатом (28.06) → следующая 39 кг · с канатом вес иной чем с грифом</div>
+      </div>
+      <a class="yt-btn" href="https://www.youtube.com/watch?v=g0zATahj9Tc" target="_blank">
+        <svg width="20" height="14" viewBox="0 0 20 14" fill="none"><rect width="20" height="14" rx="3" fill="#FF0000"/><path d="M8 3.5L14 7L8 10.5V3.5Z" fill="white"/></svg>
+        Смотреть технику на YouTube
+      </a>
+    </div>
+  </div>
+
+
+
+
+  <div class="ex-card" onclick="toggleEx(this,event)">
+    <div class="ex-card-header">
+      <div class="ex-num" style="background:var(--blue-bg);color:var(--blue)">8</div>
+      <div class="ex-title-wrap"><div class="ex-card-title">Скручивания на блоке (Cable crunch)</div><div class="ex-card-sets" style="color:var(--blue)">3 × 15 · пресс с нагрузкой</div></div>
+      <div class="ex-chevron">⌄</div>
+    </div>
+    <div class="ex-body">
+      <ol class="ex-steps">
+        <li data-n="1">Встань на колени перед верхним блоком, возьмись за канат или верёвку над головой.</li>
+        <li data-n="2">Бёдра неподвижны всё время — скручиваешь только корпус вниз.</li>
+        <li data-n="3">Тяни локти к коленям, округляя спину — именно скручивание, не наклон.</li>
+        <li data-n="4">В нижней точке — пауза 1 сек, максимальное сжатие пресса.</li>
+        <li data-n="5">Медленно возвращайся вверх — 2 сек, не расслабляй пресс полностью.</li>
+      </ol>
+      <div class="ex-tip">⚠️ Единственное упражнение на пресс с прогрессией веса — только так пресс растёт как мышца. Начни с лёгкого веса, следи за техникой.</div>
+      <div class="weight-tracker">
+        <div class="weight-label">Рабочий вес</div>
+        <div class="weight-row">
+          <div class="weight-current"><div><div class="weight-tag">стартовый</div><div class="weight-badge recommended">10 кг</div></div></div>
+          <div style="color:var(--hint);font-size:18px">→</div>
+          <div class="weight-next"><div><div class="weight-tag">после чистых 3×</div><div class="weight-next-badge">12 кг</div></div></div>
+        </div>
+        <div class="weight-rule">✓ Все подходы чисто → +2–3 кг · Не добил → держи вес</div>
+      </div>
+      <a class="yt-btn" href="https://www.youtube.com/watch?v=5Dgj7Q-ZjeE" target="_blank">
+        <svg width="20" height="14" viewBox="0 0 20 14" fill="none"><rect width="20" height="14" rx="3" fill="#FF0000"/><path d="M8 3.5L14 7L8 10.5V3.5Z" fill="white"/></svg>
+        Смотреть технику на YouTube
+      </a>
+    </div>
+  </div>
+
+  <div class="ex-card" onclick="toggleEx(this,event)">
+    <div class="ex-card-header">
+      <div class="ex-num" style="background:var(--blue-bg);color:var(--blue)">9</div>
+      <div class="ex-title-wrap"><div class="ex-card-title">Подъём ног в висе на турнике</div><div class="ex-card-sets" style="color:var(--blue)">3 × 12 · пресс</div></div>
+      <div class="ex-chevron">⌄</div>
+    </div>
+    <div class="ex-body">
+      <ol class="ex-steps">
+        <li data-n="1">Повисни на турнике, хват чуть шире плеч. Тело прямое, не раскачивайся.</li>
+        <li data-n="2">На выдохе подними прямые или слегка согнутые ноги до угла 90°.</li>
+        <li data-n="3">Медленно опускай — 2–3 сек. Не бросай ноги вниз.</li>
+        <li data-n="4">Не раскачивай корпус — это инерция, а не работа пресса.</li>
+      </ol>
+      <div class="ex-tip">⚠️ Если тяжело с прямыми — сгибай в коленях. Прогрессируй постепенно.</div>
+
+      <div class="weight-tracker">
+        <div class="weight-label">Прогресс</div>
+        <div class="weight-row">
+          <div class="weight-current">
+            <div>
+              <div class="weight-tag">старт</div>
+              <div class="weight-badge recommended">согнутые ноги</div>
+            </div>
+          </div>
+          <div style="color:var(--hint);font-size:18px">→</div>
+          <div class="weight-next">
+            <div>
+              <div class="weight-tag">прогресс</div>
+              <div class="weight-next-badge">прямые ноги</div>
+            </div>
+          </div>
+        </div>
+        <div class="weight-rule">✓ 3×12 согнутыми чисто → переходи на прямые ноги</div>
+      </div>
+      <a class="yt-btn" href="https://www.youtube.com/watch?v=B59MMvDpa2g" target="_blank">
+        <svg width="20" height="14" viewBox="0 0 20 14" fill="none"><rect width="20" height="14" rx="3" fill="#FF0000"/><path d="M8 3.5L14 7L8 10.5V3.5Z" fill="white"/></svg>
+        Смотреть технику на YouTube
+      </a>
+    </div>
+  </div>
+
+  <div class="slabel" style="padding:0 2px">коррекция кифоза + кор — обязательно</div>
+
+  <div class="ex-card" onclick="toggleEx(this,event)">
+    <div class="ex-card-header">
+      <div class="ex-num" style="background:var(--green-bg);color:var(--green)">10</div>
+      <div class="ex-title-wrap"><div class="ex-card-title">Bird-dog</div><div class="ex-card-sets" style="color:var(--green)">3 × 10 каждой · кифоз + кор</div></div>
+      <div class="ex-chevron">⌄</div>
+    </div>
+    <div class="ex-body">
+      <ol class="ex-steps">
+        <li data-n="1">Встань на четвереньки: запястья под плечами, колени под бёдрами. Спина нейтральна.</li>
+        <li data-n="2">Одновременно вытяни правую руку вперёд и левую ногу назад — до параллели с полом.</li>
+        <li data-n="3">Удержи 2–3 сек. Бёдра не разворачивай — таз смотрит вниз.</li>
+        <li data-n="4">Вернись, повтори другой стороной.</li>
+      </ol>
+      <div class="ex-tip green">🟢 Медленно = эффективно. Тренирует стабилизацию позвоночника.</div>
+      <a class="yt-btn" href="https://www.youtube.com/watch?v=asjqq8ZqbvQ" target="_blank">
+        <svg width="20" height="14" viewBox="0 0 20 14" fill="none"><rect width="20" height="14" rx="3" fill="#FF0000"/><path d="M8 3.5L14 7L8 10.5V3.5Z" fill="white"/></svg>
+        Смотреть технику на YouTube
+      </a>
+    </div>
+  </div>
+
+  <div class="ex-card" onclick="toggleEx(this,event)">
+    <div class="ex-card-header">
+      <div class="ex-num" style="background:var(--green-bg);color:var(--green)">11</div>
+      <div class="ex-title-wrap"><div class="ex-card-title">Wall angel</div><div class="ex-card-sets" style="color:var(--green)">2 × 10 · кифоз</div></div>
+      <div class="ex-chevron">⌄</div>
+    </div>
+    <div class="ex-body">
+      <ol class="ex-steps">
+        <li data-n="1">Встань спиной к стене. Прижми: затылок, лопатки, поясницу, ягодицы, пятки.</li>
+        <li data-n="2">Подними руки — локти согнуты 90°, прижми к стене тыльную сторону рук и локти.</li>
+        <li data-n="3">Медленно скользи руками вверх, не отрывая ни локти, ни запястья, ни спину.</li>
+        <li data-n="4">Поднимись максимально высоко без отрыва, вернись вниз.</li>
+      </ol>
+      <div class="ex-tip green">🟢 Если локти отрываются до верха — это твоя текущая амплитуда. Работай в ней.</div>
+      <a class="yt-btn" href="https://www.youtube.com/watch?v=w_aI31xL3KU" target="_blank">
+        <svg width="20" height="14" viewBox="0 0 20 14" fill="none"><rect width="20" height="14" rx="3" fill="#FF0000"/><path d="M8 3.5L14 7L8 10.5V3.5Z" fill="white"/></svg>
+        Смотреть технику на YouTube
+      </a>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:10px">
+    <div class="slabel" style="margin-top:0">заминка</div>
+    <div class="exercise"><div class="exercise-name">Растяжка грудного отдела + ног</div><div class="exercise-sets" style="color:var(--muted)">5 мин</div></div>
+  </div>
+
+  <div class="card" style="margin-top:10px;border-color:var(--orange-border)">
+    <div class="card-header" style="margin-bottom:10px;padding-bottom:10px">
+      <div class="card-icon icon-orange">🏃</div>
+      <div><div class="card-title">Кардио — заминка</div><div class="card-sub">после силовой · жиросжигание</div></div>
+    </div>
+    <div class="exercise"><div class="exercise-name">Беговая дорожка или велотренажёр</div><div class="exercise-sets" style="color:var(--orange)">15–20 мин</div></div>
+    <div class="exercise" style="border-bottom:none;padding-bottom:0"><div class="exercise-name" style="color:var(--muted);font-size:13px">Пульс 130–150 уд/мин · умеренный темп · можешь говорить короткими фразами · не спринт</div></div>
+  </div>
+
+</div>
+
+<!-- ПИТАНИЕ -->
+<div id="food" class="section">
+  <div class="metrics">
+    <div class="metric metric-blue"><div class="metric-label">Цель/день</div><div class="metric-value">2300</div><div class="metric-unit">ккал · дефицит 300</div></div>
+    <div class="metric metric-green"><div class="metric-label">Белок</div><div class="metric-value">175г</div><div class="metric-unit">приоритет #1</div></div>
+  </div>
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon icon-amber">🍽</div>
+      <div><div class="card-title">Структура дня</div><div class="card-sub">4 приёма · в день тренировки углеводов больше</div></div>
+    </div>
+    <div class="meal"><div class="meal-left"><div class="meal-time">ЗАВТРАК</div><div class="meal-desc">Яйца + овсянка + фрукт</div><div class="meal-macros">~35г белка · ~60г углеводов</div></div><div class="meal-right"><div class="meal-kcal">500</div><div class="meal-kcal-unit">ккал</div></div></div>
+    <div class="meal"><div class="meal-left"><div class="meal-time">ОБЕД</div><div class="meal-desc">Мясо/рыба + крупа + овощи</div><div class="meal-macros">~50г белка · ~80г углеводов</div></div><div class="meal-right"><div class="meal-kcal">700</div><div class="meal-kcal-unit">ккал</div></div></div>
+    <div class="meal"><div class="meal-left"><div class="post-workout-badge">после тренировки</div><div class="meal-desc">Белок + быстрые углеводы</div><div class="meal-macros">~40г белка · рис/банан/хлеб</div></div><div class="meal-right"><div class="meal-kcal">500</div><div class="meal-kcal-unit">ккал</div></div></div>
+    <div class="meal"><div class="meal-left"><div class="meal-time">УЖИН / НА НОЧЬ</div><div class="meal-desc">Творог / казеин</div><div class="meal-macros">~50г белка · медленный протеин</div></div><div class="meal-right"><div class="meal-kcal">600</div><div class="meal-kcal-unit">ккал</div></div></div>
+  </div>
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon icon-green">💊</div>
+      <div><div class="card-title">Добавки (назначены врачом)</div><div class="card-sub">не менять без консультации</div></div>
+    </div>
+    <div class="exercise"><div class="exercise-name">Омега-3</div><div class="exercise-sets" style="color:var(--green)">✓ есть</div></div>
+    <div class="exercise"><div class="exercise-name">Цинк</div><div class="exercise-sets" style="color:var(--green)">✓ есть</div></div>
+    <div class="exercise"><div class="exercise-name">Йод</div><div class="exercise-sets" style="color:var(--green)">✓ есть</div></div>
+    <div class="exercise"><div class="exercise-name">B-комплекс с фолатом</div><div class="exercise-sets" style="color:var(--amber)">курс 4–6 нед.</div></div>
+  </div>
+  <div class="warning-card">
+    <div class="warning-title">🚫 Исключить полностью</div>
+    <div class="warning-text">Алкоголь · Соя и фитоэстрогены · Быстрые углеводы вне посттренировочного окна</div>
+  </div>
+</div>
+
+<!-- ПРАВИЛА -->
+<div id="rules" class="section">
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon icon-blue">🧠</div>
+      <div><div class="card-title">Стратегия</div><div class="card-sub">почему именно так</div></div>
+    </div>
+    <div class="rule"><div class="rule-icon">⚖️</div><div class="rule-text"><strong>Умеренный дефицит, не жёсткая сушка.</strong> <span>При 22% жира и небольшой мышечной массе жёсткий дефицит уберёт и жир, и мышцы.</span></div></div>
+    <div class="rule"><div class="rule-icon">🥩</div><div class="rule-text"><strong>Белок — приоритет #1.</strong> <span>Первые 2 недели просто стабильно ешь 175г белка. Потом детализируй остальное.</span></div></div>
+    <div class="rule"><div class="rule-icon">📈</div><div class="rule-text"><strong>Прогрессия нагрузки.</strong> <span>Записывай веса. Верхний диапазон чисто → +1–2 кг на следующей тренировке.</span></div></div>
+    <div class="rule"><div class="rule-icon">🟢</div><div class="rule-text"><strong>Коррекционные упражнения — обязательны.</strong> <span>Face pull, bird-dog, wall angel — лечебная работа по кифозу. Каждая тренировка.</span></div></div>
+  </div>
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon icon-amber">😴</div>
+      <div><div class="card-title">Сон — не опция</div><div class="card-sub">засыпать до 23:00</div></div>
+    </div>
+    <div class="rule"><div class="rule-icon">🌙</div><div class="rule-text"><strong>Гормон роста пикует в первые 2–3 часа сна.</strong> <span>Засыпание в час ночи срезает самый продуктивный гормональный цикл.</span></div></div>
+    <div class="rule"><div class="rule-icon">⏰</div><div class="rule-text"><strong>Тактика.</strong> <span>Сдвигай отбой на 30 мин раньше каждые 5–7 дней.</span></div></div>
+  </div>
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon icon-green">🧘</div>
+      <div><div class="card-title">Воскресенье — растяжка</div><div class="card-sub">таз, ноги, позвоночник · 20–25 мин</div></div>
+    </div>
+    <div class="stretch-item"><div class="stretch-name">Низкий выпад с поворотом (hip flexor)</div><div class="stretch-time">60 сек × 2</div></div>
+    <div class="stretch-item"><div class="stretch-name">Голубь (pigeon pose)</div><div class="stretch-time">90 сек × 2</div></div>
+    <div class="stretch-item"><div class="stretch-name">Задняя поверхность бедра лёжа</div><div class="stretch-time">60 сек × 2</div></div>
+    <div class="stretch-item"><div class="stretch-name">Приводящие в широкой стойке</div><div class="stretch-time">60 сек</div></div>
+    <div class="stretch-item"><div class="stretch-name">Скручивание позвоночника лёжа</div><div class="stretch-time">45 сек × 2</div></div>
+  </div>
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon icon-blue">✅</div>
+      <div><div class="card-title">Чеклист старта</div><div class="card-sub">нажми — отмечай</div></div>
+    </div>
+    <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="check-label">Записывать веса на каждой тренировке</div></div>
+    <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="check-label">Считать белок каждый день (цель 175г)</div></div>
+    <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="check-label">Начать сдвигать сон на 30 мин раньше</div></div>
+    <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="check-label">Взвеситься (стартовая точка) · 85 кг</div></div>
+    <div class="check-item done" onclick="toggle(this)"><div class="checkbox"></div><div class="check-label">Замеры сделаны · июнь 2026</div></div>
+    <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="check-label">Первая тренировка A — вторник</div></div>
+    <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="check-label">Первая тренировка B — четверг</div></div>
+    <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="check-label">Воскресенье — первая растяжка</div></div>
+  </div>
+</div>
+
+<script>
+
+
+function showTab(id){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  const tabs=['week','body','day-a','day-b','food','rules'];
+  document.querySelectorAll('.tab')[tabs.indexOf(id)].classList.add('active');
+  window.scrollTo(0,0);
+}
+function toggleEx(el,e){if(e&&(e.target.tagName==='A'||e.target.closest('.yt-btn')))return;el.classList.toggle('open')}
+function toggle(el){el.classList.toggle('done')}
+</script>
+</body>
+</html>
