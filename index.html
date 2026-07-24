@@ -181,6 +181,28 @@ radial-gradient(120% 90% at 85% -10%,rgba(214,249,79,0.07),transparent 60%),var(
 .check-item.done .checkbox::after{content:'✓';font-size:13px;color:#0B0C0F;font-weight:800}
 .check-label{font-size:14px}
 .check-item.done .check-label{color:var(--muted);text-decoration:line-through}
+/* Data export/import */
+.data-actions{display:flex;gap:8px;margin-top:2px}
+.btn{appearance:none;flex:1;font-family:inherit;font-size:13px;font-weight:700;letter-spacing:0.3px;padding:11px 12px;border-radius:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;transition:background 0.18s ease,border-color 0.18s ease,opacity 0.18s ease}
+.btn .icon{width:16px;height:16px}
+.btn-primary{background:var(--volt);border:1px solid var(--volt);color:#0B0C0F}
+.btn-primary:hover{background:#c8ef37}
+.btn-ghost{background:transparent;border:1px solid var(--border2);color:var(--text)}
+.btn-ghost:hover{background:rgba(255,255,255,0.05)}
+.data-hint{font-size:12px;color:var(--muted);line-height:1.45;margin-top:10px}
+dialog.sheet{width:min(440px,92vw);max-height:82vh;background:var(--bg2);color:var(--text);border:1px solid var(--border2);border-radius:18px;padding:0;overflow:hidden}
+dialog.sheet::backdrop{background:rgba(0,0,0,0.6);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
+.sheet-inner{padding:18px;display:flex;flex-direction:column;gap:12px;max-height:82vh}
+.sheet-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.sheet-title{font-size:17px;font-weight:800}
+.sheet-sub{font-size:12px;color:var(--muted);margin-top:3px}
+.sheet-close{appearance:none;background:transparent;border:none;color:var(--muted);cursor:pointer;padding:2px;flex-shrink:0}
+.sheet-close .icon{width:22px;height:22px}
+.sheet-ta{width:100%;min-height:190px;resize:vertical;background:var(--bg);border:1px solid var(--border);border-radius:12px;color:var(--text);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;line-height:1.5;padding:12px;outline:none}
+.sheet-ta:focus{border-color:var(--volt-border)}
+.sheet-actions{display:flex;gap:8px}
+.sheet-msg{font-size:12px;font-weight:600;min-height:16px}
+.sheet-msg.ok{color:var(--green)}.sheet-msg.err{color:var(--red)}
 .warning-card{background:var(--amber-bg);border:1px solid var(--amber-border);border-radius:14px;padding:14px;margin-bottom:12px}
 .warning-title{font-size:13px;font-weight:700;color:var(--amber);margin-bottom:6px}
 .warning-text{font-size:13px;color:rgba(242,187,76,0.85);line-height:1.5}
@@ -1219,7 +1241,48 @@ radial-gradient(120% 90% at 85% -10%,rgba(214,249,79,0.07),transparent 60%),var(
     <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="check-label">Первая тренировка B — четверг</div></div>
     <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="check-label">Воскресенье — первая растяжка</div></div>
   </div>
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon icon-green"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M12 15l-4-4M12 15l4-4M5 21h14"/></svg></div>
+      <div><div class="card-title">Бэкап весов</div><div class="card-sub">выгрузить прогресс или перенести на другое устройство</div></div>
+    </div>
+    <div class="data-actions">
+      <button class="btn btn-primary" type="button" onclick="openExport()"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15V4M12 4L8 8M12 4l4 4M5 20h14"/></svg>Экспорт</button>
+      <button class="btn btn-ghost" type="button" onclick="openImport()"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M12 15l-4-4M12 15l4-4M5 20h14"/></svg>Импорт</button>
+    </div>
+    <div class="data-hint">Веса живут только в этом браузере. «Экспорт» соберёт их в текст — скопируй и пришли мне или сохрани файлом. «Импорт» вернёт их из такого текста в новый браузер.</div>
+  </div>
 </div>
+
+<dialog class="sheet" id="export-sheet">
+  <div class="sheet-inner">
+    <div class="sheet-head">
+      <div><div class="sheet-title">Экспорт весов</div><div class="sheet-sub">Скопируй текст или скачай файлом</div></div>
+      <button class="sheet-close" type="button" aria-label="Закрыть" onclick="closeSheet('export-sheet')"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <textarea class="sheet-ta" id="export-ta" readonly></textarea>
+    <div class="sheet-msg ok" id="export-msg"></div>
+    <div class="sheet-actions">
+      <button class="btn btn-primary" type="button" onclick="copyExport()"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg>Копировать</button>
+      <button class="btn btn-ghost" type="button" onclick="downloadExport()"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M12 15l-4-4M12 15l4-4M5 20h14"/></svg>Скачать .txt</button>
+    </div>
+  </div>
+</dialog>
+
+<dialog class="sheet" id="import-sheet">
+  <div class="sheet-inner">
+    <div class="sheet-head">
+      <div><div class="sheet-title">Импорт весов</div><div class="sheet-sub">Вставь текст, полученный при экспорте</div></div>
+      <button class="sheet-close" type="button" aria-label="Закрыть" onclick="closeSheet('import-sheet')"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <textarea class="sheet-ta" id="import-ta" placeholder="Вставь сюда текст экспорта…"></textarea>
+    <div class="sheet-msg" id="import-msg"></div>
+    <div class="sheet-actions">
+      <button class="btn btn-primary" type="button" onclick="doImport()"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg>Загрузить</button>
+      <button class="btn btn-ghost" type="button" onclick="closeSheet('import-sheet')">Отмена</button>
+    </div>
+  </div>
+</dialog>
 
 <script>
 const TABS=['week','body','day-a','day-b','food','rules'];
@@ -1347,6 +1410,61 @@ function finishEdit(b,inp){
     });
   });
 })();
+/* ---- Export / import weights (share progress across browsers / with coach) ---- */
+const DAY_LABEL={'day-a':'День A — спина + плечи','day-b':'День B — грудь + руки + ноги'};
+const WMARK='PLAN-WEIGHTS::';
+function fmtDT(iso){const d=new Date(iso);const p=n=>String(n).padStart(2,'0');return p(d.getDate())+'.'+p(d.getMonth()+1)+'.'+d.getFullYear()+' · '+p(d.getHours())+':'+p(d.getMinutes())}
+function buildExport(){
+  const st=wState(),keys=Object.keys(st),L=['ТЕЛО МЕЧТЫ — рабочие веса','Экспортировано: '+fmtDT(new Date().toISOString()),''];
+  if(!keys.length){L.push('Пока ничего не менялось — все веса на значениях из плана.');}
+  else{
+    const groups={};
+    keys.forEach(k=>{const i=k.indexOf('|'),sec=k.slice(0,i),title=k.slice(i+1);(groups[sec]=groups[sec]||[]).push({title,rec:st[k]});});
+    Object.keys(groups).forEach(sec=>{
+      L.push((DAY_LABEL[sec]||sec).toUpperCase());
+      groups[sec].forEach(({title,rec})=>{
+        let s='• '+title+' — ';
+        s+=rec.cur?rec.cur.v+' (ред. '+fmtDate(rec.cur.d)+')':'(без изменений)';
+        if(rec.next)s+=' → после чистых '+rec.next.v;
+        L.push(s);
+      });
+      L.push('');
+    });
+  }
+  L.push('——— данные для импорта, не редактируй строку ниже ———',WMARK+JSON.stringify(st));
+  return L.join('\n');
+}
+function openExport(){document.getElementById('export-ta').value=buildExport();document.getElementById('export-msg').textContent='';document.getElementById('export-sheet').showModal();}
+function openImport(){document.getElementById('import-ta').value='';const m=document.getElementById('import-msg');m.textContent='';m.className='sheet-msg';document.getElementById('import-sheet').showModal();}
+function closeSheet(id){document.getElementById(id).close();}
+function copyExport(){
+  const ta=document.getElementById('export-ta'),msg=document.getElementById('export-msg');
+  const done=()=>{msg.className='sheet-msg ok';msg.textContent='Скопировано ✓';setTimeout(()=>msg.textContent='',2000);};
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(ta.value).then(done,()=>{ta.select();document.execCommand('copy');done();});}
+  else{ta.select();document.execCommand('copy');done();}
+}
+function downloadExport(){
+  const d=new Date(),p=n=>String(n).padStart(2,'0'),stamp=d.getFullYear()+p(d.getMonth()+1)+p(d.getDate());
+  const blob=new Blob([document.getElementById('export-ta').value],{type:'text/plain;charset=utf-8'});
+  const url=URL.createObjectURL(blob),a=document.createElement('a');
+  a.href=url;a.download='plan-weights-'+stamp+'.txt';document.body.appendChild(a);a.click();
+  setTimeout(()=>{document.body.removeChild(a);URL.revokeObjectURL(url);},0);
+  const msg=document.getElementById('export-msg');msg.className='sheet-msg ok';msg.textContent='Файл сохранён ✓';setTimeout(()=>msg.textContent='',2000);
+}
+function doImport(){
+  const raw=document.getElementById('import-ta').value.trim(),msg=document.getElementById('import-msg');
+  if(!raw){msg.className='sheet-msg err';msg.textContent='Поле пустое — вставь текст экспорта.';return;}
+  let json=null;
+  try{const i=raw.indexOf(WMARK);json=JSON.parse(i>=0?raw.slice(i+WMARK.length).trim():raw);}
+  catch(e){msg.className='sheet-msg err';msg.textContent='Не удалось прочитать данные. Вставь текст целиком, как при экспорте.';return;}
+  if(!json||typeof json!=='object'||Array.isArray(json)){msg.className='sheet-msg err';msg.textContent='Данные пустые или в неверном формате.';return;}
+  wSave(json);
+  msg.className='sheet-msg ok';msg.textContent='Загружено ✓ Обновляю страницу…';
+  setTimeout(()=>location.reload(),700);
+}
+document.querySelectorAll('dialog.sheet').forEach(d=>{
+  d.addEventListener('click',e=>{if(e.target===d)d.close();});
+});
 </script>
 </body>
 </html>
