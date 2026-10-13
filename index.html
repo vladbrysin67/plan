@@ -24,7 +24,7 @@
 :root{
 --bg:#0B0C0F;--bg2:#13151B;--bg3:#1A1D25;--bg4:#232733;
 --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.14);
---text:#EDEEF2;--muted:#8B90A0;--hint:#565B6B;
+--text:#EDEEF2;--muted:#8B90A0;--hint:#7F8596;
 --volt:#D6F94F;--volt-bg:rgba(214,249,79,0.10);--volt-border:rgba(214,249,79,0.35);
 --blue:#6AA6FF;--blue-bg:rgba(106,166,255,0.10);--blue-border:rgba(106,166,255,0.28);
 --green:#53C98F;--green-bg:rgba(83,201,143,0.10);--green-border:rgba(83,201,143,0.28);
@@ -51,7 +51,7 @@ background:rgba(11,12,15,0.88);backdrop-filter:blur(14px);-webkit-backdrop-filte
 .appbar-title b{color:var(--volt)}
 .appbar-right{display:flex;align-items:center;gap:8px}
 .lvl-chip{display:flex;align-items:center;gap:6px;background:var(--volt-bg);border:1px solid var(--volt-border);color:var(--volt);font-size:12px;font-weight:800;border-radius:999px;padding:4px 10px;letter-spacing:0.3px}
-.icon-btn{appearance:none;background:transparent;border:1px solid var(--border2);color:var(--muted);border-radius:10px;width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:color .18s,border-color .18s,background .18s}
+.icon-btn{appearance:none;background:transparent;border:1px solid var(--border2);color:var(--muted);border-radius:10px;width:40px;height:40px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:color .18s,border-color .18s,background .18s}
 .icon-btn:hover{color:var(--text);border-color:var(--border2);background:rgba(255,255,255,0.04)}
 
 /* Screens */
@@ -115,15 +115,15 @@ border:1px solid var(--border);border-radius:18px;padding:18px;margin-bottom:12p
 .session-ex-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:10px}
 .session-ex-name{font-size:15px;font-weight:700;line-height:1.2}
 .session-ex-cat{font-size:11px;color:var(--muted);margin-top:2px}
-.set-row{display:grid;grid-template-columns:28px 1fr 1fr 34px;gap:8px;align-items:center;margin-bottom:7px}
+.set-row{display:grid;grid-template-columns:24px 1fr 1fr 40px;gap:8px;align-items:center;margin-bottom:7px}
 .set-no{font-size:12px;font-weight:700;color:var(--hint);text-align:center}
-.set-input{background:var(--bg);border:1px solid var(--border2);border-radius:9px;color:var(--text);font-family:inherit;font-size:16px;font-weight:700;text-align:center;padding:9px 6px;width:100%;outline:none;font-variant-numeric:tabular-nums}
-.set-input:focus{border-color:var(--volt-border)}
+.set-input{background:var(--bg);border:1px solid #636A7C;border-radius:10px;color:var(--text);font-family:inherit;font-size:16px;font-weight:700;text-align:center;padding:9px 6px;width:100%;font-variant-numeric:tabular-nums}
+.set-input:focus{border-color:var(--volt);outline:2px solid var(--volt);outline-offset:1px}
 .set-input::placeholder{color:var(--hint);font-weight:500}
 .set-unit{font-size:10px;color:var(--hint);text-align:center;letter-spacing:0.5px;text-transform:uppercase}
-.set-del{appearance:none;background:transparent;border:none;color:var(--hint);cursor:pointer;display:flex;align-items:center;justify-content:center;padding:6px}
+.set-del{appearance:none;background:transparent;border:none;color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center;min-width:40px;min-height:40px}
 .set-del:hover{color:var(--red)}
-.set-head{display:grid;grid-template-columns:28px 1fr 1fr 34px;gap:8px;margin-bottom:6px}
+.set-head{display:grid;grid-template-columns:24px 1fr 1fr 40px;gap:8px;margin-bottom:6px}
 .set-head span{font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--hint);text-align:center;font-weight:700}
 .addset{appearance:none;background:transparent;border:1px dashed var(--border2);color:var(--muted);font-family:inherit;font-size:12px;font-weight:700;border-radius:9px;padding:8px;width:100%;cursor:pointer;margin-top:3px}
 .addset:hover{color:var(--text);border-color:var(--volt-border)}
@@ -139,7 +139,7 @@ dialog.sheet::backdrop{background:rgba(0,0,0,0.62);backdrop-filter:blur(3px);-we
 .sheet-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
 .sheet-title{font-size:18px;font-weight:800}
 .sheet-sub{font-size:12px;color:var(--muted);margin-top:2px}
-.sheet-close{appearance:none;background:transparent;border:none;color:var(--muted);cursor:pointer;padding:2px}
+.sheet-close{appearance:none;background:transparent;border:none;color:var(--muted);cursor:pointer;padding:8px;margin:-6px -6px 0 0}
 .cat-chips{display:flex;flex-wrap:wrap;gap:7px}
 .cat-chip{appearance:none;background:transparent;border:1px solid var(--border);color:var(--muted);font-family:inherit;font-size:12px;font-weight:700;border-radius:999px;padding:7px 13px;cursor:pointer;transition:all .18s}
 .cat-chip.active{background:var(--volt);border-color:var(--volt);color:#0B0C0F}
@@ -149,14 +149,14 @@ dialog.sheet::backdrop{background:rgba(0,0,0,0.62);backdrop-filter:blur(3px);-we
 .ex-pick-name{font-size:14px;font-weight:700}
 .ex-pick-mus{font-size:11px;color:var(--muted);margin-top:1px}
 .ex-pick-plus{color:var(--volt);flex-shrink:0}
-.sheet-ta{width:100%;min-height:200px;resize:vertical;background:var(--bg);border:1px solid var(--border);border-radius:12px;color:var(--text);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;line-height:1.5;padding:12px;outline:none}
-.sheet-ta:focus{border-color:var(--volt-border)}
+.sheet-ta{width:100%;min-height:200px;resize:vertical;background:var(--bg);border:1px solid #636A7C;border-radius:12px;color:var(--text);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:16px;line-height:1.5;padding:12px}
+.sheet-ta:focus{border-color:var(--volt)}
 .sheet-msg{font-size:12px;font-weight:600;min-height:15px}
 .sheet-msg.ok{color:var(--green)}.sheet-msg.err{color:var(--red)}
 .field{display:flex;flex-direction:column;gap:6px}
 .field label{font-size:11px;letter-spacing:0.5px;text-transform:uppercase;color:var(--muted);font-weight:700}
-.field input{background:var(--bg);border:1px solid var(--border2);border-radius:10px;color:var(--text);font-family:inherit;font-size:16px;font-weight:700;padding:11px 12px;outline:none}
-.field input:focus{border-color:var(--volt-border)}
+.field input{background:var(--bg);border:1px solid #636A7C;border-radius:10px;color:var(--text);font-family:inherit;font-size:16px;font-weight:700;padding:11px 12px}
+.field input:focus{border-color:var(--volt)}
 .settings-link{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:13px 14px;color:var(--text);text-decoration:none;cursor:pointer;font-weight:700;font-size:14px}
 .settings-link:hover{border-color:var(--border2)}
 .settings-link .icon{color:var(--muted)}
@@ -185,7 +185,7 @@ dialog.sheet::backdrop{background:rgba(0,0,0,0.62);backdrop-filter:blur(3px);-we
 .exprog-meta{font-size:11px;color:var(--muted);margin-top:6px;display:flex;justify-content:space-between}
 .distro{display:flex;flex-direction:column;gap:9px}
 .distro-row{display:grid;grid-template-columns:92px 1fr 46px;gap:10px;align-items:center}
-.distro-name{font-size:12px;color:var(--muted);text-transform:capitalize}
+.distro-name{font-size:12px;color:var(--muted)}.distro-name::first-letter{text-transform:uppercase}
 .distro-bar{height:9px;background:rgba(255,255,255,0.07);border-radius:999px;overflow:hidden}
 .distro-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--blue),#8ab8ff)}
 .distro-val{font-size:12px;font-weight:700;text-align:right;color:var(--muted);font-variant-numeric:tabular-nums}
@@ -206,12 +206,12 @@ dialog.sheet::backdrop{background:rgba(0,0,0,0.62);backdrop-filter:blur(3px);-we
 .lag{display:flex;align-items:center;gap:10px;background:var(--amber-bg);border:1px solid var(--amber-border);border-radius:12px;padding:11px 13px}
 .lag.ok{background:var(--green-bg);border-color:var(--green-border)}
 .lag-txt{font-size:13px;line-height:1.4}
-.lag-txt b{font-weight:700;text-transform:capitalize}
+.lag-txt b{font-weight:700}.lag-txt b::first-letter{text-transform:uppercase}
 
 /* Achievements */
 .ach-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .ach{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:13px;position:relative;overflow:hidden}
-.ach.locked{opacity:0.5}
+.ach.locked .ach-ic{opacity:0.4}.ach.locked .ach-name,.ach.locked .ach-desc{color:var(--muted)}
 .ach-ic{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;margin-bottom:9px}
 .ach-name{font-size:13px;font-weight:700;line-height:1.2}
 .ach-desc{font-size:11px;color:var(--muted);margin-top:3px;line-height:1.3}
@@ -239,7 +239,7 @@ dialog.sheet::backdrop{background:rgba(0,0,0,0.62);backdrop-filter:blur(3px);-we
 .coach-block.info .coach-h{color:var(--blue)}
 .coach-block.pr .coach-h{color:var(--volt)}
 .coach-p{font-size:13px;line-height:1.5;color:var(--text)}
-.coach-p .mus{text-transform:capitalize;font-weight:700}
+.coach-p .mus{font-weight:700}
 
 /* Empty states */
 .empty{text-align:center;color:var(--muted);padding:34px 16px}
@@ -264,6 +264,9 @@ background:var(--bg4);border:1px solid var(--border2);color:var(--text);font-siz
 padding:10px 16px;border-radius:999px;z-index:200;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;white-space:nowrap}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(-4px)}
 
+.btn:active,.ex-pick:active,.addset:active,.settings-link:active,.cat-chip:active,.nav-btn:active{transform:scale(.97)}
+.icon-btn:active,.set-del:active,.sheet-close:active,.seg button:active,.lvl-chip:active{transform:scale(.92)}
+.nav-btn.active{color:var(--volt)}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
@@ -280,12 +283,13 @@ padding:10px 16px;border-radius:999px;z-index:200;opacity:0;pointer-events:none;
 <!-- ГЕРОЙ -->
 <main id="hero" class="screen active">
   <div class="hero">
-    <div class="hero-title">Атлет</div>
+    <div class="hero-title">Ранг</div>
     <div class="hero-name" id="rankName">Новобранец</div>
     <div class="avatar-wrap" id="avatarWrap"></div>
     <div class="xp-row"><span>Уровень <b id="lvlNum" class="num">1</b></span><span><b id="xpNow" class="num">0</b> / <span id="xpNext" class="num">100</span> XP</span></div>
     <div class="xpbar"><div class="xpbar-fill" id="xpFill" style="width:0%"></div></div>
     <div class="hero-sub" id="heroSub">Запиши первую тренировку, чтобы начать прокачку</div>
+    <button class="btn btn-primary" id="heroCta" style="margin-top:14px"><svg class="icon-sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Начать тренировку</button>
   </div>
 
   <div class="slabel">Характеристики</div>
@@ -346,18 +350,18 @@ padding:10px 16px;border-radius:999px;z-index:200;opacity:0;pointer-events:none;
 </main>
 
 <!-- NAV -->
-<nav class="nav" role="tablist">
-  <button class="nav-btn active" data-screen="hero" role="tab"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="7" r="3.2"/><path d="M5.5 20a6.5 6.5 0 0 1 13 0"/></svg><span class="nav-lbl">Герой</span></button>
-  <button class="nav-btn" data-screen="progress" role="tab"><svg class="icon" viewBox="0 0 24 24"><path d="M4 19V5M4 19h16M8 16v-4M12 16V8M16 16v-7"/></svg><span class="nav-lbl">Прогресс</span></button>
-  <button class="nav-btn log-cta" data-screen="log" role="tab"><svg class="icon" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg><span class="nav-lbl">Запись</span></button>
-  <button class="nav-btn" data-screen="body-map" role="tab"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="4.5" r="2"/><path d="M12 7v7M12 9l-5-2M12 9l5-2M12 14l-3 6M12 14l3 6"/></svg><span class="nav-lbl">Тело</span></button>
-  <button class="nav-btn" data-screen="coach" role="tab"><svg class="icon" viewBox="0 0 24 24"><path d="M12 3a7 7 0 0 0-4 12.7V18a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.3A7 7 0 0 0 12 3zM9.5 22h5"/></svg><span class="nav-lbl">Коуч</span></button>
+<nav class="nav" aria-label="Основное меню">
+  <button class="nav-btn active" data-screen="hero"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="7" r="3.2"/><path d="M5.5 20a6.5 6.5 0 0 1 13 0"/></svg><span class="nav-lbl">Герой</span></button>
+  <button class="nav-btn" data-screen="progress"><svg class="icon" viewBox="0 0 24 24"><path d="M4 19V5M4 19h16M8 16v-4M12 16V8M16 16v-7"/></svg><span class="nav-lbl">Прогресс</span></button>
+  <button class="nav-btn log-cta" data-screen="log"><svg class="icon" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg><span class="nav-lbl">Запись</span></button>
+  <button class="nav-btn" data-screen="body-map"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="4.5" r="2"/><path d="M12 7v7M12 9l-5-2M12 9l5-2M12 14l-3 6M12 14l3 6"/></svg><span class="nav-lbl">Тело</span></button>
+  <button class="nav-btn" data-screen="coach"><svg class="icon" viewBox="0 0 24 24"><path d="M12 3a7 7 0 0 0-4 12.7V18a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.3A7 7 0 0 0 12 3zM9.5 22h5"/></svg><span class="nav-lbl">Коуч</span></button>
 </nav>
 
 <!-- SHEETS -->
-<dialog class="sheet" id="pickSheet">
+<dialog class="sheet" id="pickSheet" aria-labelledby="pickTitle">
   <div class="sheet-inner">
-    <div class="sheet-head"><div><div class="sheet-title">Выбрать упражнение</div><div class="sheet-sub">категория, затем движение</div></div>
+    <div class="sheet-head"><div><div class="sheet-title" id="pickTitle">Выбрать упражнение</div><div class="sheet-sub">категория, затем движение</div></div>
       <button class="sheet-close" onclick="document.getElementById('pickSheet').close()" aria-label="Закрыть"><svg class="icon" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
     <div class="cat-chips" id="catChips"></div>
     <div class="ex-list" id="exList"></div>
@@ -368,9 +372,9 @@ padding:10px 16px;border-radius:999px;z-index:200;opacity:0;pointer-events:none;
   <div class="sheet-inner summary" id="summaryInner"></div>
 </dialog>
 
-<dialog class="sheet" id="settingsSheet">
+<dialog class="sheet" id="settingsSheet" aria-labelledby="setTitle">
   <div class="sheet-inner">
-    <div class="sheet-head"><div><div class="sheet-title">Настройки</div><div class="sheet-sub">профиль и данные</div></div>
+    <div class="sheet-head"><div><div class="sheet-title" id="setTitle">Настройки</div><div class="sheet-sub">профиль и данные</div></div>
       <button class="sheet-close" onclick="document.getElementById('settingsSheet').close()" aria-label="Закрыть"><svg class="icon" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
     <div class="field"><label for="bwInput">Вес тела, кг</label><input id="bwInput" type="number" inputmode="decimal" step="0.5"></div>
     <button class="btn btn-ghost btn-sm" id="saveBwBtn" style="width:auto;align-self:flex-start"><svg class="icon-sm" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>Сохранить</button>
@@ -379,17 +383,17 @@ padding:10px 16px;border-radius:999px;z-index:200;opacity:0;pointer-events:none;
   </div>
 </dialog>
 
-<dialog class="sheet" id="dataSheet">
+<dialog class="sheet" id="dataSheet" aria-labelledby="dataTitle">
   <div class="sheet-inner">
     <div class="sheet-head"><div><div class="sheet-title" id="dataTitle">Экспорт</div><div class="sheet-sub" id="dataSub"></div></div>
       <button class="sheet-close" onclick="document.getElementById('dataSheet').close()" aria-label="Закрыть"><svg class="icon" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
     <textarea class="sheet-ta" id="dataTa"></textarea>
-    <div class="sheet-msg" id="dataMsg"></div>
+    <div class="sheet-msg" id="dataMsg" role="status" aria-live="polite"></div>
     <div class="btn-row" id="dataBtns"></div>
   </div>
 </dialog>
 
-<div class="toast" id="toast"></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
 "use strict";
@@ -494,21 +498,21 @@ if(!character) character=freshChar();
 function xpToNext(level){return 100+(level-1)*45;}
 function e1rm(w,reps){return Math.round(w*(1+reps/30));}
 function setVolume(ex,set){
-  const reps=Math.max(0,+set.reps||0);
+  const reps=Math.max(0,numOf(set.reps));
   if(ex.t==="t"){ return reps*45; }
-  if(ex.t==="bw"){ return reps*(character.bodyweight+(+set.weight||0)); }
-  return reps*Math.max(0,+set.weight||0);
+  if(ex.t==="bw"){ return reps*(character.bodyweight+numOf(set.weight)); }
+  return reps*Math.max(0,numOf(set.weight));
 }
 function itemVolume(it){const ex=EXMAP[it.exId];if(!ex)return 0;return (it.sets||[]).reduce((a,s)=>a+setVolume(ex,s),0);}
 function sessionVolume(items){return items.reduce((a,it)=>a+itemVolume(it),0);}
 function bestOfItem(it){
   const ex=EXMAP[it.exId]; let w=0,e=0,vol=itemVolume(it);
-  (it.sets||[]).forEach(s=>{const sw=+s.weight||0,r=+s.reps||0; if(sw>w)w=sw; const est=ex&&ex.t==="w"?e1rm(sw,r):0; if(est>e)e=est;});
+  (it.sets||[]).forEach(s=>{const sw=numOf(s.weight),r=numOf(s.reps); if(sw>w)w=sw; const est=ex&&ex.t==="w"?e1rm(sw,r):0; if(est>e)e=est;});
   return {weight:w,e1rm:e,vol};
 }
 function computeSessionXP(items){
   const vol=sessionVolume(items);
-  let setsCount=0; items.forEach(it=>setsCount+=(it.sets||[]).filter(s=>(+s.reps>0)).length);
+  let setsCount=0; items.forEach(it=>setsCount+=(it.sets||[]).filter(s=>numOf(s.reps)>0).length);
   let base=Math.round(vol/100)+setsCount*4;
   let prBonus=0;
   items.forEach(it=>{const b=bestOfItem(it);const cur=prs[it.exId]; if(b.weight>0 && (!cur||b.weight>(cur.weight||0))) prBonus+=25;});
@@ -518,6 +522,7 @@ function computeSessionXP(items){
 /* ===================== Характеристики (0-100) ===================== */
 function allSetsFlat(){const out=[];sessions.forEach(ss=>ss.items.forEach(it=>{const ex=EXMAP[it.exId];if(!ex)return;it.sets.forEach(s=>out.push({ex,s,date:ss.date}));}));return out;}
 function clamp(v,a,b){return Math.max(a,Math.min(b,v));}
+function numOf(v){const n=parseFloat(String(v).replace(',','.'));return isFinite(n)?n:0;}
 function daysAgo(dStr){const d=new Date(dStr);const n=new Date();return Math.floor((n-d)/86400000);}
 function sessionsInLastDays(n){return sessions.filter(ss=>daysAgo(ss.date)<n);}
 function currentStreak(){
@@ -600,7 +605,7 @@ function checkAchievements(){
 /* ===================== Рендер ===================== */
 function rankFor(level){let r=RANKS[0][1];for(const pair of RANKS){if(level>=pair[0])r=pair[1];}return r;}
 function fmtNum(n){return Math.round(n).toLocaleString("ru-RU");}
-function fmtTon(kg){return (kg/1000).toFixed(kg<10000?1:0);}
+function fmtTon(kg){return (kg/1000).toFixed(kg<10000?1:0).replace('.',',');}
 function plural(n,a,b,c){n=Math.abs(n)%100;const n1=n%10;if(n>10&&n<20)return c;if(n1>1&&n1<5)return b;if(n1===1)return a;return c;}
 
 function renderHero(){
@@ -653,7 +658,7 @@ function drawAvatar(level,s){
   const abs = g>0.55 ? `
     <line x1="${cx-12}" y1="${waistY-32}" x2="${cx+12}" y2="${waistY-32}" stroke="rgba(0,0,0,0.18)" stroke-width="1.5"/>
     <line x1="${cx-12}" y1="${waistY-20}" x2="${cx+12}" y2="${waistY-20}" stroke="rgba(0,0,0,0.18)" stroke-width="1.5"/>`:"";
-  document.getElementById("avatarWrap").innerHTML=`<svg viewBox="0 0 160 260" xmlns="http://www.w3.org/2000/svg" aria-label="Персонаж, уровень ${level}">${defs}${aura}${body}${detail}${abs}</svg>`;
+  document.getElementById("avatarWrap").innerHTML=`<svg viewBox="0 0 160 260" role="img" xmlns="http://www.w3.org/2000/svg" aria-label="Персонаж, уровень ${level}">${defs}${aura}${body}${detail}${abs}</svg>`;
 }
 
 function achIcon(ic){
@@ -709,8 +714,8 @@ function renderLog(){
     (it.sets||[]).forEach((st,si)=>{
       html+=`<div class="set-row">
         <div class="set-no num">${si+1}</div>
-        <input class="set-input num" inputmode="numeric" placeholder="0" value="${st.reps??""}" data-i="${ii}" data-s="${si}" data-f="reps">
-        ${ex.t==="t"?'<div></div>':`<input class="set-input num" inputmode="decimal" placeholder="0" value="${st.weight??""}" data-i="${ii}" data-s="${si}" data-f="weight">`}
+        <input class="set-input num" inputmode="numeric" placeholder="0" aria-label="${ex.n}, подход ${si+1}, ${ex.t==='t'?'минуты':'повторы'}" value="${st.reps??""}" data-i="${ii}" data-s="${si}" data-f="reps">
+        ${ex.t==="t"?'<div></div>':`<input class="set-input num" inputmode="decimal" placeholder="0" aria-label="${ex.n}, подход ${si+1}, вес в кг" value="${st.weight??""}" data-i="${ii}" data-s="${si}" data-f="weight">`}
         <button class="set-del" data-del-set="${ii}:${si}" aria-label="Удалить подход"><svg class="icon-sm" viewBox="0 0 24 24"><path d="M5 12h14"/></svg></button>
       </div>`;
     });
@@ -764,7 +769,7 @@ function renderPicker(){
 
 /* ----- Завершение сессии ----- */
 function finishSession(){
-  const items=draft.items.map(it=>({exId:it.exId,sets:(it.sets||[]).filter(s=>(+s.reps>0)).map(s=>({reps:+s.reps||0,weight:+s.weight||0}))})).filter(it=>it.sets.length&&EXMAP[it.exId]);
+  const items=draft.items.map(it=>({exId:it.exId,sets:(it.sets||[]).filter(s=>numOf(s.reps)>0).map(s=>({reps:numOf(s.reps),weight:numOf(s.weight)}))})).filter(it=>it.sets.length&&EXMAP[it.exId]);
   if(!items.length){ toast("Добавь хотя бы один подход"); return; }
   const vol=sessionVolume(items);
   const xp=computeSessionXP(items);
@@ -784,6 +789,7 @@ function finishSession(){
   save(LS.char,character);
   const newly=checkAchievements();
   draft=null; save(LS.draft,draft);
+  renderLog();
   showSummary({xp,vol,newPRs,leveled,newly,items});
   renderHero();
 }
@@ -832,7 +838,7 @@ function sparkline(vals){
   const area=d+` L${x(n-1)} 40 L${x(0)} 40 Z`;
   return `<svg class="exprog-chart" viewBox="0 0 100 40" preserveAspectRatio="none">
     <defs><linearGradient id="sg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--volt)" stop-opacity="0.25"/><stop offset="1" stop-color="var(--volt)" stop-opacity="0"/></linearGradient></defs>
-    <path d="${area}" fill="url(#sg)"/><path d="${d}" fill="none" stroke="var(--volt)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="${area}" fill="url(#sg)"/><path d="${d}" fill="none" stroke="var(--volt)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>
     <circle cx="${x(n-1)}" cy="${y(vals[n-1])}" r="2.6" fill="var(--volt)"/></svg>`;
 }
 
@@ -840,7 +846,7 @@ function sparkline(vals){
 let bodyWin="30";
 function heatColor(t){
   if(t<=0) return "var(--bg4)";
-  const stops=[[35,39,51],[58,90,140],[106,166,255],[214,249,79]];
+  const stops=[[54,64,86],[74,120,180],[106,166,255],[214,249,79]];
   const seg=clamp(t,0,1)*3; const i=Math.min(2,Math.floor(seg)); const f=seg-i;
   const a=stops[i],b=stops[i+1]; const c=a.map((v,k)=>Math.round(v+(b[k]-v)*f));
   return `rgb(${c[0]},${c[1]},${c[2]})`;
@@ -969,8 +975,9 @@ function openData(mode){
     document.getElementById("doImp").onclick=()=>{
       const raw=ta.value.trim(); if(!raw){msg.className="sheet-msg err";msg.textContent="Пусто";return;}
       let j=null; try{const i=raw.indexOf(WMARK);j=JSON.parse(i>=0?raw.slice(i+WMARK.length).trim():raw);}catch(e){msg.className="sheet-msg err";msg.textContent="Не удалось прочитать данные";return;}
-      if(!j||!j.character){msg.className="sheet-msg err";msg.textContent="Формат не распознан";return;}
-      character=j.character;sessions=j.sessions||[];prs=j.prs||{};achieved=j.achieved||{};
+      if(!j||!j.character||!Array.isArray(j.sessions)){msg.className="sheet-msg err";msg.textContent="Формат не распознан";return;}
+      if(sessions.length&&!confirm("Заменить текущий прогресс данными из импорта?"))return;
+      character=Object.assign(freshChar(),j.character);sessions=j.sessions||[];prs=j.prs||{};achieved=j.achieved||{};
       save(LS.char,character);save(LS.sess,sessions);save(LS.pr,prs);save(LS.ach,achieved);
       msg.className="sheet-msg ok";msg.textContent="Загружено ✓";setTimeout(()=>{sheet.close();showScreen("hero");},600);
     };
@@ -984,7 +991,7 @@ function dl(text,name){const d=new Date(),p=n=>String(n).padStart(2,"0"),stamp=d
 const SCREENS=["hero","progress","log","body-map","coach"];
 function showScreen(id){
   document.querySelectorAll(".screen").forEach(s=>s.classList.toggle("active",s.id===id));
-  document.querySelectorAll(".nav-btn").forEach(b=>b.classList.toggle("active",b.dataset.screen===id));
+  document.querySelectorAll(".nav-btn").forEach(b=>{const on=b.dataset.screen===id;b.classList.toggle("active",on);if(on)b.setAttribute("aria-current","page");else b.removeAttribute("aria-current");});
   if(id==="hero")renderHero(); else if(id==="progress")renderProgress(); else if(id==="log")renderLog(); else if(id==="body-map")renderBody(); else if(id==="coach")renderCoach();
   try{localStorage.setItem("rpg.screen",id);}catch(e){}
   window.scrollTo(0,0);
@@ -992,8 +999,9 @@ function showScreen(id){
 function toast(t){const el=document.getElementById("toast");el.textContent=t;el.classList.add("show");clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove("show"),1800);}
 
 document.querySelectorAll(".nav-btn").forEach(b=>b.onclick=()=>showScreen(b.dataset.screen));
+document.getElementById("heroCta").onclick=()=>showScreen("log");
 document.getElementById("settingsBtn").onclick=()=>{document.getElementById("bwInput").value=character.bodyweight;document.getElementById("settingsSheet").showModal();};
-document.getElementById("saveBwBtn").onclick=()=>{const v=parseFloat(document.getElementById("bwInput").value);if(v>0){character.bodyweight=v;save(LS.char,character);toast("Вес тела сохранён");if(document.getElementById("hero").classList.contains("active"))renderHero();}document.getElementById("settingsSheet").close();};
+document.getElementById("saveBwBtn").onclick=()=>{const v=parseFloat(String(document.getElementById("bwInput").value).replace(",","."));if(!(v>=20&&v<=400)){toast("Введи вес тела от 20 до 400");return;}character.bodyweight=v;save(LS.char,character);toast("Вес тела сохранён");if(document.getElementById("hero").classList.contains("active"))renderHero();document.getElementById("settingsSheet").close();};
 document.getElementById("resetBtn").onclick=()=>{ if(confirm("Удалить весь прогресс? Это необратимо. Сделай экспорт заранее.")){ Object.values(LS).forEach(k=>{try{localStorage.removeItem(k);}catch(e){}}); character=freshChar();character.migrated=true;sessions=[];prs={};achieved={};draft=null; save(LS.char,character); document.getElementById("settingsSheet").close(); showScreen("hero"); toast("Прогресс сброшен"); } };
 document.getElementById("exportCoachBtn").onclick=()=>openData("coach");
 document.getElementById("backupExportBtn").onclick=()=>openData("export");
