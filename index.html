@@ -2,1454 +2,1009 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<title>Влад · План тренировок</title>
 <meta name="theme-color" content="#0B0C0F">
+<title>Тело · RPG</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-/* Aesthetic direction:
- * Атлетичный / собранный / премиальный.
- * - Type: Archivo 400–900, tabular-nums для цифр, UPPERCASE-лейблы с трекингом
- * - Color: графит #0B0C0F / #13151B / #1A1D25, текст #EDEEF2 (не чисто-белый).
- *   Сигнатурный акцент volt #D6F94F (активный таб, чеклист, маркеры).
- *   Семантика сохранена: blue=спина, orange=грудь/плечи/кардио, green=коррекция, amber=питание, red=риск.
- * - Density: компактная мобильная, шкала 4/8px
- * - Radius: карточки 16, вложенные 12, чипы/табы 999. Без теней — бордеры и подсветка фоном.
- * - Icons: инлайн-SVG stroke 1.8, эмодзи нет
- * - Motion: quiet, 180ms ease, prefers-reduced-motion учитывается
+/* Aesthetic direction (подтверждено пользователем 13.10):
+ * Атлетик + RPG — заряженный / игровой / премиальный.
+ * - Type: Archivo 400–900, tabular-nums для цифр.
+ * - Color: графит #0B0C0F / #13151B / #1A1D25, акцент volt #D6F94F.
+ *   Семантика blue/green/orange/amber/red. Редкость наград:
+ *   обычное серый, редкое blue, эпик фиолет, легендарка gold.
+ * - Density: компактная мобильная, шкала 4/8px. Радиусы 16/12/999.
+ *   Без теней — бордеры + подсветка фоном.
+ * - Icons/персонаж/тело: инлайн-SVG stroke 1.8, без эмодзи.
+ * - Motion: сдержанный 180ms; праздничные микромоменты только на награды.
  */
-:root{--bg:#0B0C0F;--bg2:#13151B;--bg3:#1A1D25;--border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.14);--text:#EDEEF2;--muted:#8B90A0;--hint:#565B6B;
+:root{
+--bg:#0B0C0F;--bg2:#13151B;--bg3:#1A1D25;--bg4:#232733;
+--border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.14);
+--text:#EDEEF2;--muted:#8B90A0;--hint:#565B6B;
 --volt:#D6F94F;--volt-bg:rgba(214,249,79,0.10);--volt-border:rgba(214,249,79,0.35);
 --blue:#6AA6FF;--blue-bg:rgba(106,166,255,0.10);--blue-border:rgba(106,166,255,0.28);
 --green:#53C98F;--green-bg:rgba(83,201,143,0.10);--green-border:rgba(83,201,143,0.28);
 --orange:#FF9D57;--orange-bg:rgba(255,157,87,0.10);--orange-border:rgba(255,157,87,0.28);
 --amber:#F2BB4C;--amber-bg:rgba(242,187,76,0.10);--amber-border:rgba(242,187,76,0.28);
---red:#F07373;--red-bg:rgba(240,115,115,0.10);--red-border:rgba(240,115,115,0.28)}
+--red:#F07373;--red-bg:rgba(240,115,115,0.10);--red-border:rgba(240,115,115,0.28);
+--purple:#B98CFF;--purple-bg:rgba(185,140,255,0.12);--purple-border:rgba(185,140,255,0.32);
+--gold:#F5D06B;--gold-bg:rgba(245,208,107,0.12);--gold-border:rgba(245,208,107,0.38);
+}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html{background:var(--bg)}
-body{background:var(--bg);color:var(--text);font-family:'Archivo',-apple-system,'Helvetica Neue',sans-serif;font-size:15px;line-height:1.5;max-width:480px;margin:0 auto;padding:0 0 88px}
+body{background:var(--bg);color:var(--text);font-family:'Archivo',-apple-system,'Helvetica Neue',sans-serif;font-size:15px;line-height:1.5;max-width:480px;margin:0 auto;padding:0 0 calc(76px + env(safe-area-inset-bottom))}
 ::selection{background:var(--volt);color:#0B0C0F}
 :focus-visible{outline:2px solid var(--volt);outline-offset:2px}
 svg{display:block}
-.icon{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.num{font-variant-numeric:tabular-nums}
+.icon{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.icon-sm{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+
 /* Header */
-.header{padding:56px 20px 22px;border-bottom:1px solid var(--border);background:
-radial-gradient(120% 90% at 85% -10%,rgba(214,249,79,0.07),transparent 60%),var(--bg)}
-.header-label{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--volt);font-weight:700;margin-bottom:8px}
-.header-title{font-size:38px;font-weight:900;letter-spacing:-0.5px;line-height:1;text-transform:uppercase}
-.header-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
-.chip{font-size:12px;font-weight:600;color:var(--muted);border:1px solid var(--border2);border-radius:999px;padding:5px 11px;font-variant-numeric:tabular-nums}
-.chip-goal{color:var(--volt);border-color:var(--volt-border);background:var(--volt-bg)}
-/* Tabs */
-.tabs{display:flex;gap:6px;padding:10px 14px;background:rgba(11,12,15,0.88);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;overflow-x:auto;scrollbar-width:none}
-.tabs::-webkit-scrollbar{display:none}
-.tab{appearance:none;background:transparent;border:1px solid var(--border);color:var(--muted);font-family:inherit;flex:0 0 auto;padding:8px 14px;font-size:12px;font-weight:700;letter-spacing:0.4px;text-transform:uppercase;border-radius:999px;cursor:pointer;transition:color 0.18s ease,background 0.18s ease,border-color 0.18s ease;white-space:nowrap}
-.tab:hover{color:var(--text);border-color:var(--border2)}
-.tab.active{background:var(--volt);border-color:var(--volt);color:#0B0C0F}
-.section{display:none;padding:16px}
-.section.active{display:block}
+.appbar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:calc(14px + env(safe-area-inset-top)) 16px 12px;position:sticky;top:0;z-index:90;
+background:rgba(11,12,15,0.88);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--border)}
+.appbar-title{font-size:15px;font-weight:900;letter-spacing:1px;text-transform:uppercase}
+.appbar-title b{color:var(--volt)}
+.appbar-right{display:flex;align-items:center;gap:8px}
+.lvl-chip{display:flex;align-items:center;gap:6px;background:var(--volt-bg);border:1px solid var(--volt-border);color:var(--volt);font-size:12px;font-weight:800;border-radius:999px;padding:4px 10px;letter-spacing:0.3px}
+.icon-btn{appearance:none;background:transparent;border:1px solid var(--border2);color:var(--muted);border-radius:10px;width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:color .18s,border-color .18s,background .18s}
+.icon-btn:hover{color:var(--text);border-color:var(--border2);background:rgba(255,255,255,0.04)}
+
+/* Screens */
+.screen{display:none;padding:16px}
+.screen.active{display:block;animation:fade .18s ease}
+@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
 /* Cards */
 .card{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:12px}
-.card-header{display:flex;align-items:center;gap:11px;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--border)}
-.card-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;flex-shrink:0}
-.icon-blue{background:var(--blue-bg);color:var(--blue)}.icon-orange{background:var(--orange-bg);color:var(--orange)}.icon-green{background:var(--green-bg);color:var(--green)}.icon-amber{background:var(--amber-bg);color:var(--amber)}
-.card-title{font-size:15px;font-weight:700;letter-spacing:-0.1px}
-.card-sub{font-size:12px;color:var(--muted);margin-top:1px}
-/* Metrics */
-.metrics{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
-.metric{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:14px}
-.metric-label{font-size:10px;letter-spacing:1px;text-transform:uppercase;font-weight:700;color:var(--muted);margin-bottom:5px}
-.metric-value{font-size:28px;font-weight:800;letter-spacing:-0.5px;font-variant-numeric:tabular-nums}
-.metric-unit{font-size:12px;color:var(--muted);margin-top:2px}
-.metric-blue .metric-value{color:var(--blue)}.metric-green .metric-value{color:var(--green)}.metric-orange .metric-value{color:var(--orange)}.metric-amber .metric-value{color:var(--amber)}.metric-red .metric-value{color:var(--red)}
-.slabel{font-size:10px;letter-spacing:1.6px;text-transform:uppercase;font-weight:700;color:var(--hint);margin:16px 0 8px;padding:0 2px}
-.exercise{display:flex;justify-content:space-between;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--border);gap:12px}
-.exercise:last-child{border-bottom:none;padding-bottom:0}
-.exercise-name{font-size:14px;color:var(--text);flex:1}
-.exercise-sets{font-size:13px;font-weight:700;color:var(--blue);white-space:nowrap;font-variant-numeric:tabular-nums}
-.corrective-tag{font-size:10px;font-weight:600;background:var(--green-bg);color:var(--green);border:1px solid var(--green-border);border-radius:5px;padding:1px 6px;margin-left:6px;vertical-align:middle;white-space:nowrap}
-.key-tag{font-size:10px;font-weight:600;background:var(--blue-bg);color:var(--blue);border:1px solid var(--blue-border);border-radius:5px;padding:1px 6px;margin-left:6px;vertical-align:middle;white-space:nowrap}
-/* Exercise cards */
-.ex-card{background:var(--bg3);border:1px solid var(--border);border-radius:14px;margin-bottom:10px;overflow:hidden;transition:border-color 0.18s ease}
-.ex-card.open{border-color:var(--border2)}
-.ex-card-header{display:flex;align-items:center;gap:11px;padding:13px 14px;cursor:pointer;user-select:none}
-.ex-card-header a{pointer-events:auto;position:relative;z-index:20}
-.ex-card-header:active{background:rgba(255,255,255,0.03)}
-.ex-num{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;flex-shrink:0;font-variant-numeric:tabular-nums}
-.ex-title-wrap{flex:1}
-.ex-card-title{font-size:14px;font-weight:700}
-.ex-card-sets{font-size:12px;color:var(--muted);margin-top:2px;font-variant-numeric:tabular-nums}
-.ex-chevron{width:16px;height:16px;color:var(--hint);transition:transform 0.18s ease;flex-shrink:0}
-.ex-card.open .ex-chevron{transform:rotate(180deg)}
-.ex-body{display:none;padding:0 14px 14px}
-.ex-card.open .ex-body{display:block}
-.ex-steps{list-style:none;padding:0;margin-bottom:12px}
-.ex-steps li{display:flex;gap:10px;padding:7px 0;border-bottom:1px solid var(--border);font-size:13px;color:var(--muted);line-height:1.45}
-.ex-steps li:last-child{border-bottom:none}
-.ex-steps li::before{content:attr(data-n);min-width:20px;height:20px;border-radius:6px;background:rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--muted);flex-shrink:0;margin-top:1px}
-.ex-tip{margin:0 0 12px;padding:10px 12px;background:var(--amber-bg);border:1px solid var(--amber-border);border-radius:10px;font-size:12px;color:var(--amber);line-height:1.45}
-.ex-tip::before{content:'важно';display:block;font-size:9px;font-weight:800;letter-spacing:1.4px;text-transform:uppercase;opacity:0.75;margin-bottom:3px}
-.ex-tip.green{background:var(--green-bg);border-color:var(--green-border);color:var(--green)}
-.ex-tip.green::before{content:'заметка'}
-/* Weight tracker */
-.weight-tracker{margin-top:12px;padding-top:12px;border-top:1px solid var(--border)}
-.weight-row{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
-.weight-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1.2px;font-weight:700;margin-bottom:7px}
-.weight-current{display:flex;align-items:center;gap:6px}
-.weight-badge{background:var(--blue-bg);border:1px solid var(--blue-border);border-radius:9px;padding:6px 12px;font-size:15px;font-weight:800;color:var(--blue);min-width:70px;text-align:center;font-variant-numeric:tabular-nums}
-.weight-badge.recommended{background:var(--amber-bg);border-color:var(--amber-border);color:var(--amber)}
-.weight-next{display:flex;align-items:center;gap:6px}
-.weight-next-badge{background:var(--green-bg);border:1px solid var(--green-border);border-radius:9px;padding:6px 12px;font-size:14px;font-weight:700;color:var(--green);min-width:70px;text-align:center;font-variant-numeric:tabular-nums}
-.weight-tag{font-size:10px;color:var(--muted);letter-spacing:0.3px}
-.weight-rule{margin-top:8px;font-size:11px;color:var(--hint);line-height:1.45}
-.weight-label::after{content:' · тап по весу — изменить';letter-spacing:0.3px;text-transform:none;font-weight:500;color:var(--hint)}
-.weight-badge{cursor:pointer}
-.weight-badge::after{content:'✎';font-size:10px;opacity:0.5;margin-left:5px;font-weight:400}
-.weight-badge:has(input)::after{content:none}
-.weight-badge.edited,.weight-next-badge.edited{box-shadow:0 0 0 1px var(--volt-border)}
-.weight-input{background:var(--bg2);border:1px solid var(--volt-border);border-radius:7px;color:var(--text);font-family:inherit;font-size:14px;font-weight:700;width:90px;text-align:center;padding:2px 4px;outline:none}
-/* YouTube */
-.yt-btn{display:flex;align-items:center;gap:9px;padding:10px 14px;background:rgba(255,255,255,0.03);border:1px solid var(--border2);border-radius:10px;color:var(--text);font-size:13px;font-weight:600;text-decoration:none;cursor:pointer;transition:background 0.18s ease,border-color 0.18s ease;position:relative;z-index:20;-webkit-touch-callout:default}
-.yt-btn:hover{background:rgba(255,255,255,0.06)}
-.yt-btn:active{background:rgba(255,255,255,0.08)}
-.yt-btn svg{flex-shrink:0;pointer-events:none}
-/* Week grid */
-.week{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-bottom:12px}
-.day-cell{border-radius:12px;padding:9px 3px 8px;text-align:center;border:1px solid var(--border);background:var(--bg2)}
-.day-cell.gym{background:var(--blue-bg);border-color:var(--blue-border)}
-.day-cell.kick{background:var(--orange-bg);border-color:var(--orange-border)}
-.day-cell.stretch{background:var(--green-bg);border-color:var(--green-border)}
-.day-name{font-size:9px;text-transform:uppercase;letter-spacing:0.6px;font-weight:700;color:var(--muted);margin-bottom:6px}
-.day-cell.gym .day-name{color:var(--blue)}.day-cell.kick .day-name{color:var(--orange)}.day-cell.stretch .day-name{color:var(--green)}
-.day-ic{display:flex;justify-content:center;color:var(--hint)}
-.day-ic .icon{width:17px;height:17px}
-.day-cell.gym .day-ic{color:var(--blue)}.day-cell.kick .day-ic{color:var(--orange)}.day-cell.stretch .day-ic{color:var(--green)}
-.day-type{font-size:9px;margin-top:5px;color:var(--muted)}
-.day-cell.gym .day-type{color:var(--blue)}.day-cell.kick .day-type{color:var(--orange)}.day-cell.stretch .day-type{color:var(--green)}
-/* Body stats */
-.stat-row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--border)}
-.stat-row:last-child{border-bottom:none}
-.stat-name{font-size:13px;color:var(--muted)}
-.stat-values{display:flex;gap:10px;align-items:center;font-variant-numeric:tabular-nums}
-.stat-now{font-size:14px;font-weight:700}
-.stat-arrow{font-size:12px;color:var(--hint)}
-.stat-goal{font-size:13px;font-weight:600;color:var(--green)}
-.stat-diff{font-size:11px;color:var(--muted)}
-.prog-wrap{margin:14px 0}
-.prog-label{display:flex;justify-content:space-between;margin-bottom:6px;font-size:12px;font-variant-numeric:tabular-nums}
-.prog-bar{height:6px;background:rgba(255,255,255,0.08);border-radius:3px;overflow:hidden}
-.prog-fill{height:100%;border-radius:3px}
-.ratio-big{text-align:center;padding:16px 0 10px}
-.ratio-num{font-size:54px;font-weight:900;letter-spacing:-2px;font-variant-numeric:tabular-nums}
-.ratio-scale{display:flex;gap:8px;margin-top:14px}
-.ratio-step{flex:1;padding:9px 6px;border-radius:10px;text-align:center;border:1px solid var(--border)}
-.ratio-step.active-step{border-color:var(--border2);background:var(--bg3)}
-.ratio-step-val{font-size:13px;font-weight:800;font-variant-numeric:tabular-nums}
-.ratio-step-desc{font-size:10px;color:var(--muted);margin-top:2px}
-.vtaper-svg{width:100%;margin:14px 0}
-/* Nutrition */
-.meal{padding:12px 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;gap:12px}
-.meal:last-child{border-bottom:none}
-.meal-left{flex:1}
-.meal-right{text-align:right}
-.meal-time{font-size:10px;letter-spacing:1px;font-weight:700;color:var(--muted);margin-bottom:3px}
-.meal-desc{font-size:14px;font-weight:600}
-.meal-macros{font-size:12px;color:var(--muted);margin-top:2px}
-.meal-kcal{font-size:19px;font-weight:800;color:var(--amber);font-variant-numeric:tabular-nums}
-.meal-kcal-unit{font-size:11px;color:var(--muted);text-align:right}
-.post-workout-badge{display:inline-block;font-size:10px;font-weight:600;background:var(--blue-bg);color:var(--blue);border:1px solid var(--blue-border);border-radius:5px;padding:2px 7px;margin-bottom:4px}
-/* Rules */
-.rule{display:flex;gap:11px;padding:11px 0;border-bottom:1px solid var(--border);align-items:flex-start}
-.rule:last-child{border-bottom:none}
-.rule-marker{width:7px;height:7px;background:var(--volt);border-radius:2px;transform:rotate(45deg);flex-shrink:0;margin-top:7px}
-.rule-text{font-size:14px;line-height:1.45}
-.rule-text strong{color:var(--text);font-weight:700}
-.rule-text span{color:var(--muted)}
-/* Stretch */
-.stretch-item{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);align-items:center;gap:12px}
-.stretch-item:last-child{border-bottom:none}
-.stretch-name{font-size:14px}
-.stretch-time{font-size:13px;font-weight:700;color:var(--green);white-space:nowrap;font-variant-numeric:tabular-nums}
-/* Checklist */
-.check-item{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--border);cursor:pointer}
-.check-item:last-child{border-bottom:none}
-.checkbox{width:22px;height:22px;border-radius:7px;border:1.5px solid var(--hint);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:background 0.18s ease,border-color 0.18s ease}
-.check-item.done .checkbox{background:var(--volt);border-color:var(--volt)}
-.check-item.done .checkbox::after{content:'✓';font-size:13px;color:#0B0C0F;font-weight:800}
-.check-label{font-size:14px}
-.check-item.done .check-label{color:var(--muted);text-decoration:line-through}
-/* Data export/import */
-.data-actions{display:flex;gap:8px;margin-top:2px}
-.btn{appearance:none;flex:1;font-family:inherit;font-size:13px;font-weight:700;letter-spacing:0.3px;padding:11px 12px;border-radius:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;transition:background 0.18s ease,border-color 0.18s ease,opacity 0.18s ease}
-.btn .icon{width:16px;height:16px}
-.btn-primary{background:var(--volt);border:1px solid var(--volt);color:#0B0C0F}
+.card-head{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.card-head .icon{color:var(--muted)}
+.card-title{font-size:13px;font-weight:800;letter-spacing:0.4px;text-transform:uppercase;color:var(--muted)}
+.slabel{font-size:10px;letter-spacing:1.6px;text-transform:uppercase;font-weight:700;color:var(--hint);margin:18px 2px 8px}
+
+/* Hero / character */
+.hero{background:
+radial-gradient(120% 80% at 50% -10%,rgba(214,249,79,0.08),transparent 60%),var(--bg2);
+border:1px solid var(--border);border-radius:18px;padding:18px;margin-bottom:12px;text-align:center;position:relative;overflow:hidden}
+.hero-title{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--volt);font-weight:800}
+.hero-name{font-size:24px;font-weight:900;letter-spacing:-0.3px;margin-top:2px}
+.avatar-wrap{display:flex;justify-content:center;align-items:flex-end;height:188px;margin:6px 0 4px}
+.avatar-wrap svg{height:100%}
+.xp-row{display:flex;align-items:center;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:6px}
+.xp-row b{color:var(--text);font-weight:700}
+.xpbar{height:10px;background:rgba(255,255,255,0.08);border-radius:999px;overflow:hidden}
+.xpbar-fill{height:100%;background:linear-gradient(90deg,#9fe82a,var(--volt));border-radius:999px;transition:width .5s cubic-bezier(.2,.8,.2,1)}
+.hero-sub{font-size:12px;color:var(--muted);margin-top:8px}
+
+/* Stats */
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.stat{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:13px}
+.stat-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.stat-name{font-size:11px;letter-spacing:0.6px;text-transform:uppercase;font-weight:700;color:var(--muted)}
+.stat-val{font-size:22px;font-weight:800}
+.stat-bar{height:6px;background:rgba(255,255,255,0.08);border-radius:999px;overflow:hidden}
+.stat-bar-fill{height:100%;border-radius:999px;transition:width .5s ease}
+.s-str .stat-val{color:var(--red)} .s-str .stat-bar-fill{background:var(--red)}
+.s-end .stat-val{color:var(--blue)} .s-end .stat-bar-fill{background:var(--blue)}
+.s-vol .stat-val{color:var(--orange)} .s-vol .stat-bar-fill{background:var(--orange)}
+.s-con .stat-val{color:var(--green)} .s-con .stat-bar-fill{background:var(--green)}
+
+/* KPI tiles */
+.kpis{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:12px}
+.kpi{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:12px 10px;text-align:center}
+.kpi-val{font-size:22px;font-weight:800;letter-spacing:-0.5px}
+.kpi-lbl{font-size:10px;letter-spacing:0.5px;text-transform:uppercase;color:var(--muted);margin-top:2px}
+
+/* Buttons */
+.btn{appearance:none;font-family:inherit;font-size:14px;font-weight:800;letter-spacing:0.3px;padding:13px 16px;border-radius:12px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;transition:background .18s,border-color .18s,opacity .18s;border:1px solid transparent;width:100%}
+.btn .icon,.btn .icon-sm{flex-shrink:0}
+.btn-primary{background:var(--volt);color:#0B0C0F}
 .btn-primary:hover{background:#c8ef37}
 .btn-ghost{background:transparent;border:1px solid var(--border2);color:var(--text)}
 .btn-ghost:hover{background:rgba(255,255,255,0.05)}
-.data-hint{font-size:12px;color:var(--muted);line-height:1.45;margin-top:10px}
-dialog.sheet{width:min(440px,92vw);max-height:82vh;background:var(--bg2);color:var(--text);border:1px solid var(--border2);border-radius:18px;padding:0;overflow:hidden}
-dialog.sheet::backdrop{background:rgba(0,0,0,0.6);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
-.sheet-inner{padding:18px;display:flex;flex-direction:column;gap:12px;max-height:82vh}
+.btn-row{display:flex;gap:8px}
+.btn-sm{font-size:13px;padding:9px 12px;width:auto}
+
+/* Logging */
+.start-cta{text-align:center;padding:20px 0 6px}
+.session-ex{background:var(--bg3);border:1px solid var(--border);border-radius:14px;padding:13px;margin-bottom:10px}
+.session-ex-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:10px}
+.session-ex-name{font-size:15px;font-weight:700;line-height:1.2}
+.session-ex-cat{font-size:11px;color:var(--muted);margin-top:2px}
+.set-row{display:grid;grid-template-columns:28px 1fr 1fr 34px;gap:8px;align-items:center;margin-bottom:7px}
+.set-no{font-size:12px;font-weight:700;color:var(--hint);text-align:center}
+.set-input{background:var(--bg);border:1px solid var(--border2);border-radius:9px;color:var(--text);font-family:inherit;font-size:16px;font-weight:700;text-align:center;padding:9px 6px;width:100%;outline:none;font-variant-numeric:tabular-nums}
+.set-input:focus{border-color:var(--volt-border)}
+.set-input::placeholder{color:var(--hint);font-weight:500}
+.set-unit{font-size:10px;color:var(--hint);text-align:center;letter-spacing:0.5px;text-transform:uppercase}
+.set-del{appearance:none;background:transparent;border:none;color:var(--hint);cursor:pointer;display:flex;align-items:center;justify-content:center;padding:6px}
+.set-del:hover{color:var(--red)}
+.set-head{display:grid;grid-template-columns:28px 1fr 1fr 34px;gap:8px;margin-bottom:6px}
+.set-head span{font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--hint);text-align:center;font-weight:700}
+.addset{appearance:none;background:transparent;border:1px dashed var(--border2);color:var(--muted);font-family:inherit;font-size:12px;font-weight:700;border-radius:9px;padding:8px;width:100%;cursor:pointer;margin-top:3px}
+.addset:hover{color:var(--text);border-color:var(--volt-border)}
+.xp-preview{display:flex;align-items:center;justify-content:space-between;background:var(--volt-bg);border:1px solid var(--volt-border);border-radius:12px;padding:12px 14px;margin:12px 0}
+.xp-preview-lbl{font-size:11px;letter-spacing:0.6px;text-transform:uppercase;color:var(--volt);font-weight:700}
+.xp-preview-val{font-size:22px;font-weight:900;color:var(--volt)}
+
+/* Exercise picker sheet / modals */
+dialog.sheet{width:min(460px,94vw);max-height:86vh;background:var(--bg2);color:var(--text);border:1px solid var(--border2);border-radius:20px;padding:0;overflow:hidden}
+dialog.sheet::backdrop{background:rgba(0,0,0,0.62);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
+.sheet-inner{padding:16px;display:flex;flex-direction:column;gap:12px;max-height:86vh;overflow:auto;scrollbar-width:none}
+.sheet-inner::-webkit-scrollbar{display:none}
 .sheet-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
-.sheet-title{font-size:17px;font-weight:800}
-.sheet-sub{font-size:12px;color:var(--muted);margin-top:3px}
-.sheet-close{appearance:none;background:transparent;border:none;color:var(--muted);cursor:pointer;padding:2px;flex-shrink:0}
-.sheet-close .icon{width:22px;height:22px}
-.sheet-ta{width:100%;min-height:190px;resize:vertical;background:var(--bg);border:1px solid var(--border);border-radius:12px;color:var(--text);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;line-height:1.5;padding:12px;outline:none}
+.sheet-title{font-size:18px;font-weight:800}
+.sheet-sub{font-size:12px;color:var(--muted);margin-top:2px}
+.sheet-close{appearance:none;background:transparent;border:none;color:var(--muted);cursor:pointer;padding:2px}
+.cat-chips{display:flex;flex-wrap:wrap;gap:7px}
+.cat-chip{appearance:none;background:transparent;border:1px solid var(--border);color:var(--muted);font-family:inherit;font-size:12px;font-weight:700;border-radius:999px;padding:7px 13px;cursor:pointer;transition:all .18s}
+.cat-chip.active{background:var(--volt);border-color:var(--volt);color:#0B0C0F}
+.ex-list{display:flex;flex-direction:column;gap:6px}
+.ex-pick{appearance:none;text-align:left;background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:12px 14px;cursor:pointer;font-family:inherit;color:var(--text);display:flex;align-items:center;justify-content:space-between;gap:10px;transition:border-color .18s,background .18s}
+.ex-pick:hover{border-color:var(--volt-border);background:var(--bg4)}
+.ex-pick-name{font-size:14px;font-weight:700}
+.ex-pick-mus{font-size:11px;color:var(--muted);margin-top:1px}
+.ex-pick-plus{color:var(--volt);flex-shrink:0}
+.sheet-ta{width:100%;min-height:200px;resize:vertical;background:var(--bg);border:1px solid var(--border);border-radius:12px;color:var(--text);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;line-height:1.5;padding:12px;outline:none}
 .sheet-ta:focus{border-color:var(--volt-border)}
-.sheet-actions{display:flex;gap:8px}
-.sheet-msg{font-size:12px;font-weight:600;min-height:16px}
+.sheet-msg{font-size:12px;font-weight:600;min-height:15px}
 .sheet-msg.ok{color:var(--green)}.sheet-msg.err{color:var(--red)}
-.warning-card{background:var(--amber-bg);border:1px solid var(--amber-border);border-radius:14px;padding:14px;margin-bottom:12px}
-.warning-title{font-size:13px;font-weight:700;color:var(--amber);margin-bottom:6px}
-.warning-text{font-size:13px;color:rgba(242,187,76,0.85);line-height:1.5}
+.field{display:flex;flex-direction:column;gap:6px}
+.field label{font-size:11px;letter-spacing:0.5px;text-transform:uppercase;color:var(--muted);font-weight:700}
+.field input{background:var(--bg);border:1px solid var(--border2);border-radius:10px;color:var(--text);font-family:inherit;font-size:16px;font-weight:700;padding:11px 12px;outline:none}
+.field input:focus{border-color:var(--volt-border)}
+.settings-link{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:13px 14px;color:var(--text);text-decoration:none;cursor:pointer;font-weight:700;font-size:14px}
+.settings-link:hover{border-color:var(--border2)}
+.settings-link .icon{color:var(--muted)}
+
+/* Summary modal (level up / rewards) */
+.summary{text-align:center}
+.summary-xp{font-size:44px;font-weight:900;color:var(--volt);letter-spacing:-1px}
+.summary-xp-lbl{font-size:12px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);font-weight:700}
+.levelup{background:var(--gold-bg);border:1px solid var(--gold-border);border-radius:14px;padding:14px;margin:12px 0;animation:pop .4s cubic-bezier(.2,1.3,.4,1)}
+.levelup-lvl{font-size:30px;font-weight:900;color:var(--gold)}
+.levelup-lbl{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);font-weight:800}
+@keyframes pop{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
+.reward-list{display:flex;flex-direction:column;gap:8px;margin:10px 0;text-align:left}
+.reward{display:flex;align-items:center;gap:11px;background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:11px 13px;animation:slidein .4s ease backwards}
+.reward-ic{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.reward-txt b{font-size:14px;font-weight:700;display:block}
+.reward-txt span{font-size:12px;color:var(--muted)}
+@keyframes slidein{from{transform:translateX(-10px);opacity:0}to{transform:none;opacity:1}}
+
+/* Progress charts */
+.exprog{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:13px;margin-bottom:10px}
+.exprog-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:8px}
+.exprog-name{font-size:14px;font-weight:700}
+.exprog-best{font-size:13px;font-weight:800;color:var(--volt);font-variant-numeric:tabular-nums}
+.exprog-chart{width:100%;height:54px}
+.exprog-meta{font-size:11px;color:var(--muted);margin-top:6px;display:flex;justify-content:space-between}
+.distro{display:flex;flex-direction:column;gap:9px}
+.distro-row{display:grid;grid-template-columns:92px 1fr 46px;gap:10px;align-items:center}
+.distro-name{font-size:12px;color:var(--muted);text-transform:capitalize}
+.distro-bar{height:9px;background:rgba(255,255,255,0.07);border-radius:999px;overflow:hidden}
+.distro-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--blue),#8ab8ff)}
+.distro-val{font-size:12px;font-weight:700;text-align:right;color:var(--muted);font-variant-numeric:tabular-nums}
+
+/* Body heatmap */
+.bodymap{display:flex;gap:6px;justify-content:center}
+.bodymap svg{width:50%;max-width:180px;height:auto}
+.body-region{fill:var(--bg4);stroke:rgba(255,255,255,0.10);stroke-width:1;transition:fill .4s ease}
+.body-base{fill:var(--bg3);stroke:rgba(255,255,255,0.08);stroke-width:1}
+.heat-legend{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:12px;font-size:11px;color:var(--muted)}
+.heat-scale{width:90px;height:8px;border-radius:999px;background:linear-gradient(90deg,var(--bg4),#3a5a8c,var(--blue),var(--volt))}
+.seg{display:inline-flex;background:var(--bg3);border:1px solid var(--border);border-radius:999px;padding:3px;gap:3px;margin:0 auto 14px;width:fit-content}
+.seg{display:flex}
+.seg button{appearance:none;background:transparent;border:none;color:var(--muted);font-family:inherit;font-size:12px;font-weight:700;border-radius:999px;padding:6px 15px;cursor:pointer;transition:all .18s}
+.seg button.active{background:var(--volt);color:#0B0C0F}
+.seg-wrap{display:flex;justify-content:center}
+.lag-list{display:flex;flex-direction:column;gap:8px;margin-top:4px}
+.lag{display:flex;align-items:center;gap:10px;background:var(--amber-bg);border:1px solid var(--amber-border);border-radius:12px;padding:11px 13px}
+.lag.ok{background:var(--green-bg);border-color:var(--green-border)}
+.lag-txt{font-size:13px;line-height:1.4}
+.lag-txt b{font-weight:700;text-transform:capitalize}
+
+/* Achievements */
+.ach-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.ach{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:13px;position:relative;overflow:hidden}
+.ach.locked{opacity:0.5}
+.ach-ic{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;margin-bottom:9px}
+.ach-name{font-size:13px;font-weight:700;line-height:1.2}
+.ach-desc{font-size:11px;color:var(--muted);margin-top:3px;line-height:1.3}
+.ach-prog{height:5px;background:rgba(255,255,255,0.08);border-radius:999px;overflow:hidden;margin-top:9px}
+.ach-prog-fill{height:100%;border-radius:999px;background:var(--muted)}
+.ach-rar{position:absolute;top:10px;right:11px;font-size:9px;font-weight:800;letter-spacing:0.8px;text-transform:uppercase;padding:2px 6px;border-radius:5px}
+.r-common{color:var(--muted);background:rgba(255,255,255,0.05)}
+.r-rare{color:var(--blue);background:var(--blue-bg)}
+.r-epic{color:var(--purple);background:var(--purple-bg)}
+.r-legend{color:var(--gold);background:var(--gold-bg)}
+.r-common.ic{background:rgba(255,255,255,0.06);color:var(--muted)}
+.r-rare.ic{background:var(--blue-bg);color:var(--blue)}
+.r-epic.ic{background:var(--purple-bg);color:var(--purple)}
+.r-legend.ic{background:var(--gold-bg);color:var(--gold)}
+
+/* Coach */
+.coach-block{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:10px;border-left:3px solid var(--border2)}
+.coach-block.good{border-left-color:var(--green)}
+.coach-block.warn{border-left-color:var(--amber)}
+.coach-block.info{border-left-color:var(--blue)}
+.coach-block.pr{border-left-color:var(--volt)}
+.coach-h{font-size:12px;font-weight:800;letter-spacing:0.5px;text-transform:uppercase;margin-bottom:6px;display:flex;align-items:center;gap:7px}
+.coach-block.good .coach-h{color:var(--green)}
+.coach-block.warn .coach-h{color:var(--amber)}
+.coach-block.info .coach-h{color:var(--blue)}
+.coach-block.pr .coach-h{color:var(--volt)}
+.coach-p{font-size:13px;line-height:1.5;color:var(--text)}
+.coach-p .mus{text-transform:capitalize;font-weight:700}
+
+/* Empty states */
+.empty{text-align:center;color:var(--muted);padding:34px 16px}
+.empty .icon{width:40px;height:40px;margin:0 auto 12px;color:var(--hint)}
+.empty-t{font-size:15px;font-weight:700;color:var(--text);margin-bottom:5px}
+.empty-s{font-size:13px;line-height:1.5}
+
+/* Bottom nav */
+.nav{position:fixed;bottom:0;left:0;right:0;max-width:480px;margin:0 auto;z-index:95;
+display:grid;grid-template-columns:repeat(5,1fr);
+background:rgba(11,12,15,0.92);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+border-top:1px solid var(--border);padding:7px 6px calc(7px + env(safe-area-inset-bottom))}
+.nav-btn{appearance:none;background:transparent;border:none;color:var(--hint);font-family:inherit;cursor:pointer;
+display:flex;flex-direction:column;align-items:center;gap:3px;padding:5px 2px;border-radius:12px;transition:color .18s}
+.nav-btn .icon{width:22px;height:22px}
+.nav-lbl{font-size:10px;font-weight:700;letter-spacing:0.2px}
+.nav-btn.active{color:var(--volt)}
+.nav-btn.log-cta .icon{width:24px;height:24px}
+
+.toast{position:fixed;left:50%;bottom:calc(88px + env(safe-area-inset-bottom));transform:translateX(-50%);
+background:var(--bg4);border:1px solid var(--border2);color:var(--text);font-size:13px;font-weight:700;
+padding:10px 16px;border-radius:999px;z-index:200;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(-4px)}
+
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
 <body>
 
-<header class="header">
-  <div class="header-label">Персональный план</div>
-  <h1 class="header-title">Тело мечты</h1>
-  <div class="header-chips">
-    <span class="chip">26 лет</span><span class="chip">187 см</span><span class="chip">88 кг</span><span class="chip">~20% жира (оценка)</span><span class="chip chip-goal">цель — V-тейпер</span>
+<header class="appbar">
+  <div class="appbar-title">ТЕЛО<b>·</b>RPG</div>
+  <div class="appbar-right">
+    <div class="lvl-chip"><svg class="icon-sm" viewBox="0 0 24 24"><path d="M12 3l2.5 5.5L20 9l-4 4 1 6-5-3-5 3 1-6-4-4 5.5-.5L12 3z"/></svg><span id="lvlChip" class="num">1</span></div>
+    <button class="icon-btn" id="settingsBtn" aria-label="Настройки"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 0 0-.1-1.2l2-1.5-2-3.4-2.3 1a7 7 0 0 0-2-1.2l-.4-2.5h-4l-.3 2.5a7 7 0 0 0-2.1 1.2l-2.3-1-2 3.4 2 1.5A7 7 0 0 0 5 12c0 .4 0 .8.1 1.2l-2 1.5 2 3.4 2.3-1a7 7 0 0 0 2 1.2l.4 2.5h4l.3-2.5a7 7 0 0 0 2.1-1.2l2.3 1 2-3.4-2-1.5c.1-.4.1-.8.1-1.2z"/></svg></button>
   </div>
 </header>
 
-<nav class="tabs" role="tablist">
-  <button class="tab active" data-tab="week" role="tab" aria-selected="true">Неделя</button>
-  <button class="tab" data-tab="body" role="tab" aria-selected="false">Параметры</button>
-  <button class="tab" data-tab="day-a" role="tab" aria-selected="false">День A</button>
-  <button class="tab" data-tab="day-b" role="tab" aria-selected="false">День B</button>
-  <button class="tab" data-tab="food" role="tab" aria-selected="false">Питание</button>
-  <button class="tab" data-tab="rules" role="tab" aria-selected="false">Правила</button>
+<!-- ГЕРОЙ -->
+<main id="hero" class="screen active">
+  <div class="hero">
+    <div class="hero-title">Атлет</div>
+    <div class="hero-name" id="rankName">Новобранец</div>
+    <div class="avatar-wrap" id="avatarWrap"></div>
+    <div class="xp-row"><span>Уровень <b id="lvlNum" class="num">1</b></span><span><b id="xpNow" class="num">0</b> / <span id="xpNext" class="num">100</span> XP</span></div>
+    <div class="xpbar"><div class="xpbar-fill" id="xpFill" style="width:0%"></div></div>
+    <div class="hero-sub" id="heroSub">Запиши первую тренировку, чтобы начать прокачку</div>
+  </div>
+
+  <div class="slabel">Характеристики</div>
+  <div class="stats">
+    <div class="stat s-str"><div class="stat-top"><span class="stat-name">Сила</span><span class="stat-val num" id="stStr">0</span></div><div class="stat-bar"><div class="stat-bar-fill" id="barStr" style="width:0%"></div></div></div>
+    <div class="stat s-end"><div class="stat-top"><span class="stat-name">Выносливость</span><span class="stat-val num" id="stEnd">0</span></div><div class="stat-bar"><div class="stat-bar-fill" id="barEnd" style="width:0%"></div></div></div>
+    <div class="stat s-vol"><div class="stat-top"><span class="stat-name">Объём</span><span class="stat-val num" id="stVol">0</span></div><div class="stat-bar"><div class="stat-bar-fill" id="barVol" style="width:0%"></div></div></div>
+    <div class="stat s-con"><div class="stat-top"><span class="stat-name">Постоянство</span><span class="stat-val num" id="stCon">0</span></div><div class="stat-bar"><div class="stat-bar-fill" id="barCon" style="width:0%"></div></div></div>
+  </div>
+
+  <div class="slabel">Последние награды</div>
+  <div id="recentAch"></div>
+  <div id="allAchHost"></div>
+</main>
+
+<!-- ЗАПИСЬ -->
+<main id="log" class="screen">
+  <div id="logBody"></div>
+</main>
+
+<!-- ПРОГРЕСС -->
+<main id="progress" class="screen">
+  <div class="kpis">
+    <div class="kpi"><div class="kpi-val num" id="kWorkouts">0</div><div class="kpi-lbl">тренировок</div></div>
+    <div class="kpi"><div class="kpi-val num" id="kTonnage">0</div><div class="kpi-lbl">тонн всего</div></div>
+    <div class="kpi"><div class="kpi-val num" id="kStreak">0</div><div class="kpi-lbl">дней подряд</div></div>
+  </div>
+  <div class="slabel">Объём по группам · 30 дней</div>
+  <div class="card" id="distroCard"><div class="distro" id="distro"></div></div>
+  <div class="slabel">Рост весов</div>
+  <div id="exProgList"></div>
+</main>
+
+<!-- ТЕЛО -->
+<main id="body-map" class="screen">
+  <div class="seg-wrap"><div class="seg" id="bodySeg">
+    <button data-win="today">Сегодня</button>
+    <button data-win="30" class="active">30 дней</button>
+  </div></div>
+  <div class="card">
+    <div class="bodymap" id="bodymap"></div>
+    <div class="heat-legend"><span>мало</span><span class="heat-scale"></span><span>много</span></div>
+  </div>
+  <div class="slabel">Что дорабатывать</div>
+  <div class="lag-list" id="lagList"></div>
+</main>
+
+<!-- КОУЧ -->
+<main id="coach" class="screen">
+  <div class="slabel">Разбор тренировок</div>
+  <div id="coachBody"></div>
+  <div class="slabel">Глубокий разбор и бэкап</div>
+  <button class="btn btn-primary" id="exportCoachBtn" style="margin-bottom:8px"><svg class="icon-sm" viewBox="0 0 24 24"><path d="M12 15V4M12 4L8 8M12 4l4 4M5 20h14"/></svg>Разбор у Claude (экспорт)</button>
+  <div class="btn-row">
+    <button class="btn btn-ghost btn-sm" id="backupExportBtn" style="flex:1"><svg class="icon-sm" viewBox="0 0 24 24"><path d="M12 4v11M12 15l-4-4M12 15l4-4M5 20h14"/></svg>Экспорт</button>
+    <button class="btn btn-ghost btn-sm" id="backupImportBtn" style="flex:1"><svg class="icon-sm" viewBox="0 0 24 24"><path d="M12 15V4M12 4L8 8M12 4l4 4M5 20h14"/></svg>Импорт</button>
+  </div>
+</main>
+
+<!-- NAV -->
+<nav class="nav" role="tablist">
+  <button class="nav-btn active" data-screen="hero" role="tab"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="7" r="3.2"/><path d="M5.5 20a6.5 6.5 0 0 1 13 0"/></svg><span class="nav-lbl">Герой</span></button>
+  <button class="nav-btn" data-screen="progress" role="tab"><svg class="icon" viewBox="0 0 24 24"><path d="M4 19V5M4 19h16M8 16v-4M12 16V8M16 16v-7"/></svg><span class="nav-lbl">Прогресс</span></button>
+  <button class="nav-btn log-cta" data-screen="log" role="tab"><svg class="icon" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg><span class="nav-lbl">Запись</span></button>
+  <button class="nav-btn" data-screen="body-map" role="tab"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="4.5" r="2"/><path d="M12 7v7M12 9l-5-2M12 9l5-2M12 14l-3 6M12 14l3 6"/></svg><span class="nav-lbl">Тело</span></button>
+  <button class="nav-btn" data-screen="coach" role="tab"><svg class="icon" viewBox="0 0 24 24"><path d="M12 3a7 7 0 0 0-4 12.7V18a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.3A7 7 0 0 0 12 3zM9.5 22h5"/></svg><span class="nav-lbl">Коуч</span></button>
 </nav>
 
-<!-- НЕДЕЛЯ -->
-<div id="week" class="section active">
-  <div class="slabel">Расписание недели</div>
-  <div class="week">
-    <div class="day-cell"><div class="day-name">Пн</div><div class="day-ic"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 13.5A8.5 8.5 0 1 1 10.5 4a7 7 0 0 0 9.5 9.5z"/></svg></div><div class="day-type">отдых</div></div>
-    <div class="day-cell gym"><div class="day-name">Вт</div><div class="day-ic"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7.5v9M17 7.5v9M3.5 10v4M20.5 10v4M7 12h10"/></svg></div><div class="day-type">День A</div></div>
-    <div class="day-cell"><div class="day-name">Ср</div><div class="day-ic"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 13.5A8.5 8.5 0 1 1 10.5 4a7 7 0 0 0 9.5 9.5z"/></svg></div><div class="day-type">отдых</div></div>
-    <div class="day-cell gym"><div class="day-name">Чт</div><div class="day-ic"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7.5v9M17 7.5v9M3.5 10v4M20.5 10v4M7 12h10"/></svg></div><div class="day-type">День B</div></div>
-    <div class="day-cell"><div class="day-name">Пт</div><div class="day-ic"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 13.5A8.5 8.5 0 1 1 10.5 4a7 7 0 0 0 9.5 9.5z"/></svg></div><div class="day-type">отдых</div></div>
-    <div class="day-cell kick"><div class="day-name">Сб</div><div class="day-ic"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M13 3L5.5 13.5H11L10 21l7.5-10.5H12L13 3z"/></svg></div><div class="day-type">кикбокс</div></div>
-    <div class="day-cell stretch"><div class="day-name">Вс</div><div class="day-ic"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="5" r="2"/><path d="M12 8v5M12 13l-4.5 6M12 13l4.5 6M5.5 10.5L12 9l6.5 1.5"/></svg></div><div class="day-type">растяжка</div></div>
-  </div>
-  <div class="metrics">
-    <div class="metric metric-blue"><div class="metric-label">Калории/день</div><div class="metric-value">2600</div><div class="metric-unit">дефицит ~300 от 2900</div></div>
-    <div class="metric metric-green"><div class="metric-label">Белок</div><div class="metric-value">175г</div><div class="metric-unit">приоритет #1</div></div>
-    <div class="metric metric-amber"><div class="metric-label">Углеводы</div><div class="metric-value">240г</div><div class="metric-unit">больше в день трен.</div></div>
-    <div class="metric metric-orange"><div class="metric-label">Жиры</div><div class="metric-value">70г</div><div class="metric-unit">ненасыщенные</div></div>
-  </div>
-  <div class="warning-card">
-    <div class="warning-title">Главное правило — двойная прогрессия</div>
-    <div class="warning-text">Работаешь в диапазоне повторов (напр. 8–12). Добил <b>верх диапазона</b> чисто во всех подходах (запас 1–2 повтора, не до отказа) → +минимальный вес. Упадёшь к низу — снова растишь повторами до верха, потом опять +вес. Так по кругу. <b>Исключение — средняя и задняя дельта</b> (махи, обратная бабочка): их вес почти не берёт, там растишь только повторами и добивками, вес — в последнюю очередь. Записывай веса после каждой тренировки.</div>
-  </div>
-  <div class="card">
-    <div class="card-header">
-      <div class="card-icon icon-blue"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20v-8M12 20V5M19 20v-6"/></svg></div>
-      <div><div class="card-title">Контроль</div><div class="card-sub">что и когда замерять</div></div>
-    </div>
-    <div class="exercise"><div class="exercise-name">Взвешивание утром натощак</div><div class="exercise-sets" style="color:var(--muted)">каждые 2 нед.</div></div>
-    <div class="exercise"><div class="exercise-name">Замеры: талия, грудь, плечи, руки, бёдра</div><div class="exercise-sets" style="color:var(--muted)">раз в мес.</div></div>
-    <div class="exercise"><div class="exercise-name">DEXA или калипер → пересмотр стратегии</div><div class="exercise-sets" style="color:var(--muted)">через 3 мес.</div></div>
-  </div>
-</div>
-
-<!-- ПАРАМЕТРЫ -->
-<div id="body" class="section">
-  <div class="card">
-    <div class="card-header">
-      <div class="card-icon icon-blue"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19V6M5 19h14M5 19L18 6M9 19v-3M13 19v-3"/></svg></div>
-      <div><div class="card-title">Коэффициент V-тейпера</div><div class="card-sub">плечи ÷ талия · цель ≥ 1.50</div></div>
-    </div>
-    <div class="ratio-big">
-      <div class="ratio-num" style="color:var(--orange)">1.44</div>
-      <div style="font-size:13px;color:var(--muted);margin-top:4px">сейчас (127 ÷ 88.5) · узкая часть</div>
-    </div>
-    <div class="ratio-scale">
-      <div class="ratio-step active-step"><div class="ratio-step-val" style="color:var(--orange)">1.44</div><div class="ratio-step-desc">сейчас</div></div>
-      <div class="ratio-step"><div class="ratio-step-val" style="color:var(--amber)">1.40</div><div class="ratio-step-desc">заметно</div></div>
-      <div class="ratio-step"><div class="ratio-step-val" style="color:var(--blue)">1.50</div><div class="ratio-step-desc">атлет.</div></div>
-      <div class="ratio-step"><div class="ratio-step-val" style="color:var(--green)">1.60+</div><div class="ratio-step-desc">идеал</div></div>
-    </div>
-    <div class="prog-wrap" style="margin-top:16px">
-      <div class="prog-label"><span style="color:var(--muted);font-size:12px">Прогресс к атлетичному V (1.50)</span><span style="color:var(--blue);font-size:12px">65%</span></div>
-      <div class="prog-bar"><div class="prog-fill" style="width:65%;background:var(--blue)"></div></div>
-    </div>
-  </div>
-  <div class="card">
-    <div class="card-header">
-      <div class="card-icon icon-orange"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/></svg></div>
-      <div><div class="card-title">Текущий vs Цель</div><div class="card-sub">визуальный силуэт</div></div>
-    </div>
-    <svg class="vtaper-svg" viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg">
-      <g>
-        <text x="80" y="18" fill="#8B90A0" font-size="11" text-anchor="middle" font-family="Archivo,sans-serif">сейчас</text>
-        <ellipse cx="80" cy="50" rx="42" ry="10" fill="none" stroke="#FF9D57" stroke-width="2"/>
-        <path d="M38,50 L48,110 L45,150 L115,150 L112,110 L122,50" fill="rgba(255,157,87,0.08)" stroke="#FF9D57" stroke-width="1.5" stroke-dasharray="4,3"/>
-        <line x1="48" y1="110" x2="112" y2="110" stroke="rgba(255,157,87,0.3)" stroke-width="1" stroke-dasharray="3,3"/>
-        <text x="80" y="107" fill="#FF9D57" font-size="9" text-anchor="middle" font-family="Archivo,sans-serif">талия 88.5</text>
-        <text x="80" y="65" fill="#FF9D57" font-size="9" text-anchor="middle" font-family="Archivo,sans-serif">плечи 127</text>
-        <text x="80" y="170" fill="#FF9D57" font-size="13" font-weight="700" text-anchor="middle" font-family="Archivo,sans-serif">1.44</text>
-        <text x="80" y="184" fill="#8B90A0" font-size="10" text-anchor="middle" font-family="Archivo,sans-serif">лёгкий V</text>
-      </g>
-      <line x1="160" y1="20" x2="160" y2="185" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
-      <text x="160" y="104" fill="rgba(255,255,255,0.15)" font-size="18" text-anchor="middle" font-family="Archivo,sans-serif">→</text>
-      <g>
-        <text x="240" y="18" fill="#8B90A0" font-size="11" text-anchor="middle" font-family="Archivo,sans-serif">цель</text>
-        <ellipse cx="240" cy="50" rx="44" ry="10" fill="none" stroke="#53C98F" stroke-width="2"/>
-        <path d="M196,50 L212,110 L206,150 L274,150 L268,110 L284,50" fill="rgba(83,201,143,0.08)" stroke="#53C98F" stroke-width="1.5"/>
-        <line x1="212" y1="110" x2="268" y2="110" stroke="rgba(83,201,143,0.3)" stroke-width="1" stroke-dasharray="3,3"/>
-        <text x="240" y="107" fill="#53C98F" font-size="9" text-anchor="middle" font-family="Archivo,sans-serif">талия 82</text>
-        <text x="240" y="65" fill="#53C98F" font-size="9" text-anchor="middle" font-family="Archivo,sans-serif">плечи 128+</text>
-        <text x="240" y="170" fill="#53C98F" font-size="13" font-weight="700" text-anchor="middle" font-family="Archivo,sans-serif">1.56</text>
-        <text x="240" y="184" fill="#8B90A0" font-size="10" text-anchor="middle" font-family="Archivo,sans-serif">V-тейпер</text>
-      </g>
-    </svg>
-  </div>
-  <div class="card">
-    <div class="card-header">
-      <div class="card-icon icon-green"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="9" width="18" height="7" rx="1.5"/><path d="M7.5 9v3M12 9v3M16.5 9v3"/></svg></div>
-      <div><div class="card-title">Замеры · 3 октября</div><div class="card-sub">обновлено 3 октября</div></div>
-    </div>
-    <div class="stat-row"><div class="stat-name">Вес</div><div class="stat-values"><div class="stat-now" style="color:var(--amber)">88 кг</div><div class="stat-arrow">→</div><div class="stat-goal">86–87 кг</div><div class="stat-diff">−1–2</div></div></div>
-    <div class="stat-row"><div class="stat-name">Талия</div><div class="stat-values"><div class="stat-now" style="color:var(--red)">88.5 см</div><div class="stat-arrow">→</div><div class="stat-goal">80–84 см</div><div class="stat-diff">−4.5–8.5</div></div></div>
-    <div class="stat-row"><div class="stat-name">Грудь</div><div class="stat-values"><div class="stat-now" style="color:var(--green)">112 см</div><div class="stat-arrow">→</div><div class="stat-goal">115+ см</div><div class="stat-diff">+3</div></div></div>
-    <div class="stat-row"><div class="stat-name">Плечи</div><div class="stat-values"><div class="stat-now" style="color:var(--amber)">127 см</div><div class="stat-arrow">→</div><div class="stat-goal">130+ см</div><div class="stat-diff">+3</div></div></div>
-    <div class="stat-row"><div class="stat-name">Руки (ср.)</div><div class="stat-values"><div class="stat-now" style="color:var(--muted)">34.75 см</div><div class="stat-arrow">→</div><div class="stat-goal">38–40 см</div><div class="stat-diff">+3–5</div></div></div>
-    <div class="stat-row"><div class="stat-name">Бёдра</div><div class="stat-values"><div class="stat-now" style="color:var(--muted)">104 см</div><div class="stat-arrow">→</div><div class="stat-goal">~100 см</div><div class="stat-diff">−4</div></div></div>
-    <div class="stat-row"><div class="stat-name">Жир</div><div class="stat-values"><div class="stat-now" style="color:var(--red)">~20%</div><div class="stat-arrow">→</div><div class="stat-goal">12–14%</div><div class="stat-diff">−4–6%</div></div></div>
-  </div>
-  <div class="card">
-    <div class="card-header">
-      <div class="card-icon icon-blue"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5l8 14H4l8-14z"/></svg></div>
-      <div><div class="card-title">Как строится V-тейпер</div><div class="card-sub">два рычага одновременно</div></div>
-    </div>
-    <div class="rule"><div class="rule-marker"></div><div class="rule-text"><strong>Убираем талию.</strong> <span>Дефицит 300 ккал + высокий белок. −12 см на талии дадут коэффициент 1.45 уже при нынешних плечах.</span></div></div>
-    <div class="rule"><div class="rule-marker"></div><div class="rule-text"><strong>Растим ширину плеч.</strong> <span>Жим штанги стоя — база, именно на нём должна расти нагрузка. Махи в тренажёре, лёжа на боку и на блоке добивают среднюю дельту в трёх разных фазах амплитуды.</span></div></div>
-    <div class="rule"><div class="rule-marker"></div><div class="rule-text"><strong>Ширина спины.</strong> <span>Тяги блоков строят широчайшие — они создают V снизу. Широкий хват обязателен.</span></div></div>
-    <div class="rule"><div class="rule-marker"></div><div class="rule-text"><strong>Горизонт.</strong> <span>Первые изменения — через 2–3 месяца. Уверенный V-тейпер — через 9–12 месяцев.</span></div></div>
-  </div>
-</div>
-
-<!-- ДЕНЬ A -->
-<div id="day-a" class="section">
-  <div class="card" style="margin-bottom:12px">
-    <div class="card-header">
-      <div class="card-icon icon-blue">A</div>
-      <div><div class="card-title">Вторник — спина + плечи</div><div class="card-sub">V-тейпер: ширина и объём верха · ~80–90 мин с кардио</div></div>
-    </div>
-    <div class="slabel" style="margin-top:0">разминка</div>
-    <div class="exercise"><div class="exercise-name">5 мин дорожка/велотренажёр (пульс ~110)</div><div class="exercise-sets" style="color:var(--muted)">5 мин</div></div>
-    <div class="exercise"><div class="exercise-name">Суставная сверху вниз + грудной отдел позвоночника</div><div class="exercise-sets" style="color:var(--muted)">3–4 мин</div></div>
-  </div>
-
-  <div class="slabel" style="padding:0 2px">спина</div>
-
-  <div class="ex-card" onclick="toggleEx(this,event)">
-    <div class="ex-card-header">
-      <div class="ex-num" style="background:var(--blue-bg);color:var(--blue)">1</div>
-      <div class="ex-title-wrap"><div class="ex-card-title">Подтягивания широким хватом</div><div class="ex-card-sets" style="color:var(--blue)">3 × 6–10 · база V-тейпера · отдых 2–3 мин</div></div>
-      <div class="ex-chevron"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></div>
-    </div>
-    <div class="ex-body">
-      <ol class="ex-steps">
-        <li data-n="1">Возьмись за перекладину широким хватом — заметно шире плеч, ладони от себя.</li>
-        <li data-n="2">Повисни, сведи лопатки вниз и назад — плечи не у ушей.</li>
-        <li data-n="3">Тянись грудью к перекладине, локти идут вниз и в стороны.</li>
-        <li data-n="4">Подбородок выше перекладины или максимально близко — без рывков ногами.</li>
-        <li data-n="5">Опускайся медленно — 2–3 сек, до почти полного выпрямления рук.</li>
-      </ol>
-      <div class="ex-tip">Главное базовое упражнение для ширины спины. Если меньше 6 повторений — используй гравитрон или резинку. Раскачка и киппинг — не считаются.</div>
-      <div class="weight-tracker">
-        <div class="weight-label">Рабочий вес</div>
-        <div class="weight-row">
-          <div class="weight-current"><div><div class="weight-tag">текущий</div><div class="weight-badge recommended">свой вес</div></div></div>
-          <div style="color:var(--hint);font-size:18px">→</div>
-          <div class="weight-next"><div><div class="weight-tag">после чистых</div><div class="weight-next-badge">+ пояс</div></div></div>
-        </div>
-        <div class="weight-rule">Двойная прогрессия: 10 чисто во всех подходах (запас 1–2) → вес на поясе +2.5 кг. Упадёшь к 6 — снова расти повторами до 10.</div>
-      </div>
-      <a class="yt-btn" href="https://www.youtube.com/watch?v=-VaMVXrq8vw" target="_blank">
-        <svg width="20" height="14" viewBox="0 0 20 14" fill="none"><rect width="20" height="14" rx="3" fill="#FF0000"/><path d="M8 3.5L14 7L8 10.5V3.5Z" fill="white"/></svg>
-        Смотреть технику на YouTube
-      </a>
-    </div>
-  </div>
-
-  <div class="ex-card" onclick="toggleEx(this,event)">
-    <div class="ex-card-header">
-      <div class="ex-num" style="background:var(--blue-bg);color:var(--blue)">2</div>
-      <div class="ex-title-wrap"><div class="ex-card-title">Тяга горизонтального блока широким хватом</div><div class="ex-card-sets" style="color:var(--blue)">3 × 8–12 · спина · отдых 90 сек</div></div>
-      <div class="ex-chevron"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></div>
-    </div>
-    <div class="ex-body">
-      <ol class="ex-steps">
-        <li data-n="1">Сядь, упрись ногами в подставку. Возьмись широким хватом — руки чуть шире плеч.</li>
-        <li data-n="2">Выпрями спину, слегка отклонись назад — 10–15°. Грудь вперёд.</li>
-        <li data-n="3">Тяни рукоять к животу, сводя лопатки. Локти идут назад вдоль корпуса.</li>
-        <li data-n="4">В конечной точке задержись 1 сек — почувствуй сжатие спины.</li>
-        <li data-n="5">Медленно возвращай вперёд — 2–3 сек, не роняй вес.</li>
-      </ol>
-      <div class="ex-tip">Не горби спину и не раскачивайся корпусом. Работает спина — не инерция.</div>
-
-      <div class="weight-tracker">
-        <div class="weight-label">Рабочий вес</div>
-        <div class="weight-row">
-          <div class="weight-current"><div><div class="weight-tag">текущий</div><div class="weight-badge">55</div></div></div>
-          <div style="color:var(--hint);font-size:18px">→</div>
-          <div class="weight-next"><div><div class="weight-tag">после чистых</div><div class="weight-next-badge">57</div></div></div>
-        </div>
-        <div class="weight-rule">8–12 чисто во всех подходах → +2 кг</div>
-      </div>
-      <a class="yt-btn" href="https://www.youtube.com/watch?v=q-0E4X2D_gU" target="_blank">
-        <svg width="20" height="14" viewBox="0 0 20 14" fill="none"><rect width="20" height="14" rx="3" fill="#FF0000"/><path d="M8 3.5L14 7L8 10.5V3.5Z" fill="white"/></svg>
-        Смотреть технику на YouTube
-      </a>
-    </div>
-  </div>
-
-  <div class="ex-card" onclick="toggleEx(this,event)">
-    <div class="ex-card-header">
-      <div class="ex-num" style="background:var(--blue-bg);color:var(--blue)">3</div>
-      <div class="ex-title-wrap"><div class="ex-card-title">Пуловер на блоке прямыми руками</div><div class="ex-card-sets" style="color:var(--blue)">3 × 12–15 · широчайшие в растяжении · отдых 60 сек</div></div>
-      <div class="ex-chevron"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></div>
-    </div>
-    <div class="ex-body">
-      <ol class="ex-steps">
-        <li data-n="1">Встань лицом к верхнему блоку, возьмись за прямую рукоять или канат хватом на ширине плеч.</li>
-        <li data-n="2">Отступи на шаг, наклонись вперёд примерно на 20°, руки вытянуты вверх-вперёд — здесь широчайшие максимально растянуты.</li>
-        <li data-n="3">Руки прямые всё движение, локти лишь чуть согнуты и угол не меняется — работают только плечевые суставы.</li>
-        <li data-n="4">Тяни рукоять по дуге вниз до бёдер, сводя лопатки вниз и назад.</li>
-        <li data-n="5">Возвращай медленно, 3 сек, до полного растяжения вверху. Растяжка здесь важнее сокращения.</li>
-      </ol>
-      <div class="ex-tip">Заменил тягу верхнего блока: она дублировала подтягивания — то же вертикальное движение с пиком в середине амплитуды. Пуловер грузит широчайшие в растянутой фазе, которой в программе не было вообще. Локти не сгибать — иначе превращается в тягу и смысл теряется.</div>
-
-      <div class="weight-tracker">
-        <div class="weight-label">Рабочий вес</div>
-        <div class="weight-row">
-          <div class="weight-current"><div><div class="weight-tag">стартовый</div><div class="weight-badge recommended">25</div></div></div>
-          <div style="color:var(--hint);font-size:18px">→</div>
-          <div class="weight-next"><div><div class="weight-tag">после чистых</div><div class="weight-next-badge">30</div></div></div>
-        </div>
-        <div class="weight-rule">12–15 чисто с прямыми руками → +5 кг. Если сгибаешь локти — вес великоват.</div>
-      </div>
-      <a class="yt-btn" href="https://www.youtube.com/watch?v=AJc-oynbspA" target="_blank">
-        <svg width="20" height="14" viewBox="0 0 20 14" fill="none"><rect width="20" height="14" rx="3" fill="#FF0000"/><path d="M8 3.5L14 7L8 10.5V3.5Z" fill="white"/></svg>
-        Смотреть технику на YouTube
-      </a>
-    </div>
-  </div>
-
-
-  <div class="slabel" style="padding:0 2px">плечи — ключ к V-тейперу</div>
-
-  <div class="ex-card" onclick="toggleEx(this,event)">
-    <div class="ex-card-header">
-      <div class="ex-num" style="background:var(--orange-bg);color:var(--orange)">4</div>
-      <div class="ex-title-wrap"><div class="ex-card-title">Жим штанги стоя над головой</div><div class="ex-card-sets" style="color:var(--orange)">4 × 8–10 · база для плеч · отдых 2–3 мин</div></div>
-      <div class="ex-chevron"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></div>
-    </div>
-    <div class="ex-body">
-      <ol class="ex-steps">
-        <li data-n="1">Штанга на передних дельтах, хват чуть шире плеч, локти смотрят вперёд-вниз.</li>
-        <li data-n="2">Ноги на ширине плеч, пресс и ягодицы напряжены — корпус жёсткий.</li>
-        <li data-n="3">Выжимай штангу строго вверх, слегка убирая голову назад, чтобы гриф прошёл мимо лица.</li>
-        <li data-n="4">В верхней точке штанга над серединой головы, руки почти прямые.</li>
-        <li data-n="5">Опускай на грудь медленно — 2–3 сек, не роняй на ключицы.</li>
-      </ol>
-      <div class="ex-tip">Главное упражнение для массы плеч — тяжёлый жим над головой даёт больше, чем любая изоляция. Не прогибай поясницу: если приходится отклоняться назад — вес великоват.</div>
-
-      <div class="weight-tracker">
-        <div class="weight-label">Рабочий вес</div>
-        <div class="weight-row">
-          <div class="weight-current"><div><div class="weight-tag">текущий</div><div class="weight-badge">45</div></div></div>
-          <div style="color:var(--hint);font-size:18px">→</div>
-          <div class="weight-next"><div><div class="weight-tag">после чистых</div><div class="weight-next-badge">47.5</div></div></div>
-        </div>
-        <div class="weight-rule">35 → 45 кг за месяц. 8–10 чисто → +2.5 кг</div>
-      </div>
-      <a class="yt-btn" href="https://www.youtube.com/watch?v=rLTulc8Gbe8" target="_blank">
-        <svg width="20" height="14" viewBox="0 0 20 14" fill="none"><rect width="20" height="14" rx="3" fill="#FF0000"/><path d="M8 3.5L14 7L8 10.5V3.5Z" fill="white"/></svg>
-        Смотреть технику на YouTube
-      </a>
-    </div>
-  </div>
-
-
-  <div class="ex-card" onclick="toggleEx(this,event)">
-    <div class="ex-card-header">
-      <div class="ex-num" style="background:var(--orange-bg);color:var(--orange)">5</div>
-      <div class="ex-title-wrap"><div class="ex-card-title">Махи в тренажёре (Lateral Raise Machine)</div><div class="ex-card-sets" style="color:var(--orange)">4 × 10–12 · ширина плеч · ПРИОРИТЕТ · отдых 60 сек</div></div>
-      <div class="ex-chevron"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></div>
-    </div>
-    <div class="ex-body">
-      <ol class="ex-steps">
-        <li data-n="1">Выстави рычаги по ширине плеч, а высоту сиденья — так, чтобы подмышки лежали на упорах.</li>
-        <li data-n="2">Сядь, спина прямая и прижата, плечи опущены вниз — не тяни их к ушам.</li>
-        <li data-n="3">Возьмись за рукояти, локти прижаты к подушкам — именно они ведут движение.</li>
-        <li data-n="4">Поднимай локти в стороны, пока они не выйдут на уровень плеч. Выше не надо.</li>
-        <li data-n="5">Опускай медленно, 2–3 сек, до полного контроля. Негатив здесь важнее подъёма.</li>
-      </ol>
-      <div class="ex-tip green">Средняя дельта почти не растёт добавлением веса — это нормально, не твой косяк. Прогрессируй В ТАКОМ ПОРЯДКЕ: ① чистые повторы (доведи до 5×20), ② темп (3 сек вниз), ③ частичные добивки (после отказа — 5–8 коротких повторов из нижней трети), и ТОЛЬКО потом +1 кг. Гнаться за килограммами здесь = включать трапецию и терять дельту.</div>
-
-      <div class="weight-tracker">
-        <div class="weight-label">Рабочий вес · вес — последний рычаг</div>
-        <div class="weight-row">
-          <div class="weight-current"><div><div class="weight-tag">текущий</div><div class="weight-badge">77</div></div></div>
-          <div style="color:var(--hint);font-size:18px">→</div>
-          <div class="weight-next"><div><div class="weight-tag">когда 5×20 чисто</div><div class="weight-next-badge">79</div></div></div>
-        </div>
-        <div class="weight-rule">10–12 чисто без подъёма плеч → следующая ступень стека</div>
-      </div>
-      <a class="yt-btn" href="https://www.youtube.com/watch?v=NSk-rzNGRn4" target="_blank">
-        <svg width="20" height="14" viewBox="0 0 20 14" fill="none"><rect width="20" height="14" rx="3" fill="#FF0000"/><path d="M8 3.5L14 7L8 10.5V3.5Z" fill="white"/></svg>
-        Смотреть технику на YouTube
-      </a>
-    </div>
-  </div>
-
-  <div class="ex-card" onclick="toggleEx(this,event)">
-    <div class="ex-card-header">
-      <div class="ex-num" style="background:var(--orange-bg);color:var(--orange)">6</div>
-      <div class="ex-title-wrap"><div class="ex-card-title">Махи гантелью лёжа на боку</div><div class="ex-card-sets" style="color:var(--orange)">3 × 12–15 каждой · растянутая фаза · отдых 60 сек</div></div>
-      <div class="ex-chevron"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></div>
-    </div>
-    <div class="ex-body">
-      <ol class="ex-steps">
-        <li data-n="1">Ляг на скамью боком, опорной рукой держись за край или подложи под голову. Корпус строго на боку, не заваливайся на спину.</li>
-        <li data-n="2">Гантель в верхней руке, лежит на бедре. Локоть слегка согнут — держи угол всё время.</li>
-        <li data-n="3">Поднимай руку вверх по дуге примерно до вертикали — выше не надо, там нагрузка уходит.</li>
-        <li data-n="4">Опускай медленно, 3 сек, до касания бедра. Внизу мышца растянута под нагрузкой — это главная ценность упражнения.</li>
-        <li data-n="5">Сделай все повторы одной рукой, потом перевернись на другой бок.</li>
-      </ol>
-      <div class="ex-tip">Даёт то, чего нет ни в тренажёре, ни на блоке — нагрузку на среднюю дельту в нижней, растянутой точке. Вес очень лёгкий: 4–6 кг, больше не нужно. Если тянешь 8+ кг, значит помогаешь корпусом.</div>
-
-      <div class="weight-tracker">
-        <div class="weight-label">Рабочий вес</div>
-        <div class="weight-row">
-          <div class="weight-current"><div><div class="weight-tag">стартовый</div><div class="weight-badge recommended">5</div></div></div>
-          <div style="color:var(--hint);font-size:18px">→</div>
-          <div class="weight-next"><div><div class="weight-tag">после чистых</div><div class="weight-next-badge">6</div></div></div>
-        </div>
-        <div class="weight-rule">12–15 чисто на каждую руку без раскачки корпусом → +1 кг. Не гонись за весом, здесь работает амплитуда.</div>
-      </div>
-      <a class="yt-btn" href="https://www.youtube.com/watch?v=t1GeYIUxTMs" target="_blank">
-        <svg width="20" height="14" viewBox="0 0 20 14" fill="none"><rect width="20" height="14" rx="3" fill="#FF0000"/><path d="M8 3.5L14 7L8 10.5V3.5Z" fill="white"/></svg>
-        Смотреть технику на YouTube
-      </a>
-    </div>
-  </div>
-
-
-  <div class="ex-card" onclick="toggleEx(this,event)">
-    <div class="ex-card-header">
-      <div class="ex-num" style="background:var(--orange-bg);color:var(--orange)">7</div>
-      <div class="ex-title-wrap"><div class="ex-card-title">Обратная бабочка (Reverse Pec Deck)</div><div class="ex-card-sets" style="color:var(--orange)">3 × 12–15 · задняя дельта · отдых 60 сек</div></div>
-      <div class="ex-chevron"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></div>
-    </div>
-    <div class="ex-body">
-      <ol class="ex-steps">
-        <li data-n="1">Сядь лицом к спинке тренажёра для бабочки. Отрегулируй сиденье — ручки на уровне плеч.</li>
-        <li data-n="2">Возьмись за ручки нейтральным хватом, руки слегка согнуты в локтях — держи этот угол всё время.</li>
-        <li data-n="3">Разводи руки назад и в стороны по дуге — медленно, 2 сек. Локти ведут движение.</li>
-        <li data-n="4">В крайней точке сожми лопатки и заднюю дельту — задержись 1 сек.</li>
-        <li data-n="5">Медленно возвращай вперёд — 3 сек. Это важнее подъёма.</li>
-      </ol>
-      <div class="ex-tip">Вес очень лёгкий — задняя дельта у боксёров почти не развита. Не тяни трапецией, не поднимай плечи. Если плечи лезут вверх — вес слишком тяжёлый.</div>
-      <div class="weight-tracker">
-        <div class="weight-label">Рабочий вес</div>
-        <div class="weight-row">
-          <div class="weight-current"><div><div class="weight-tag">текущий</div><div class="weight-badge">55</div></div></div>
-          <div style="color:var(--hint);font-size:18px">→</div>
-          <div class="weight-next"><div><div class="weight-tag">после чистых</div><div class="weight-next-badge">58</div></div></div>
-        </div>
-        <div class="weight-rule">47 → 55 кг за месяц. 12–15 чисто → +3 кг</div>
-      </div>
-      <a class="yt-btn" href="https://www.youtube.com/watch?v=zEKEiMIBBQs" target="_blank">
-        <svg width="20" height="14" viewBox="0 0 20 14" fill="none"><rect width="20" height="14" rx="3" fill="#FF0000"/><path d="M8 3.5L14 7L8 10.5V3.5Z" fill="white"/></svg>
-        Смотреть технику на YouTube
-      </a>
-    </div>
-  </div>
-
-  <div class="ex-card" onclick="toggleEx(this,event)">
-    <div class="ex-card-header">
-      <div class="ex-num" style="background:var(--blue-bg);color:var(--blue)">8</div>
-      <div class="ex-title-wrap"><div class="ex-card-title">Отжимания на брусьях с наклоном (грудь)</div><div class="ex-card-sets" style="color:var(--blue)">3 × 8–12 · грудь · отдых 90 сек</div></div>
-      <div class="ex-chevron"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></div>
-    </div>
-    <div class="ex-body">
-      <ol class="ex-steps">
-        <li data-n="1">Запрыгни на брусья, наклони корпус вперёд на 25–30° — это ключ, именно наклон переводит нагрузку с трицепса на грудь.</li>
-        <li data-n="2">Локти разведи чуть в стороны, не прижимай к бокам.</li>
-        <li data-n="3">Опускайся медленно, 2–3 сек, пока не почувствуешь растяжение груди — примерно до угла 90° в локте.</li>
-        <li data-n="4">Выжимай вверх, сохраняя наклон. Не выпрямляй корпус в верхней точке.</li>
-        <li data-n="5">Ноги согни и скрести, чтобы не раскачиваться.</li>
-      </ol>
-      <div class="ex-tip">Перенесены из дня B. Вертикальный корпус грузит трицепс, наклон вперёд — грудь. Здесь нужен наклон: грудь получает вторую тренировку в неделю, а это главная причина, почему она стоит на 111 см.</div>
-      <div class="weight-tracker">
-        <div class="weight-label">Рабочий вес</div>
-        <div class="weight-row">
-          <div class="weight-current"><div><div class="weight-tag">текущий</div><div class="weight-badge recommended">свой вес</div></div></div>
-          <div style="color:var(--hint);font-size:18px">→</div>
-          <div class="weight-next"><div><div class="weight-tag">после чистых</div><div class="weight-next-badge">+ пояс</div></div></div>
-        </div>
-        <div class="weight-rule">Двойная прогрессия: 12 чисто во всех подходах (запас 1–2) → вес на поясе +2.5 кг. Упадёшь к 8 — снова расти повторами до 12.</div>
-      </div>
-      <a class="yt-btn" href="https://www.youtube.com/watch?v=q-8bWppi3oU" target="_blank">
-        <svg width="20" height="14" viewBox="0 0 20 14" fill="none"><rect width="20" height="14" rx="3" fill="#FF0000"/><path d="M8 3.5L14 7L8 10.5V3.5Z" fill="white"/></svg>
-        Смотреть технику на YouTube
-      </a>
-    </div>
-  </div>
-
-
-
-  <div class="slabel" style="padding:0 2px">коррекция кифоза + кор — обязательно</div>
-
-  <div class="ex-card" onclick="toggleEx(this,event)">
-    <div class="ex-card-header">
-      <div class="ex-num" style="background:var(--green-bg);color:var(--green)">9</div>
-      <div class="ex-title-wrap"><div class="ex-card-title">Face pull с канатом</div><div class="ex-card-sets" style="color:var(--green)">3 × 12–15 · кифоз · отдых 60 сек</div></div>
-      <div class="ex-chevron"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></div>
-    </div>
-    <div class="ex-body">
-      <ol class="ex-steps">
-        <li data-n="1">Установи блок на уровне лица. Возьмись за канат нейтральным хватом.</li>
-        <li data-n="2">Отступи назад, натяни трос. Руки прямые перед собой — исходная позиция.</li>
-        <li data-n="3">Тяни канат к лицу, разводя локти в стороны и вверх — выше плеч.</li>
-        <li data-n="4">Запястья у висков, локти максимально назад. Лопатки сведены.</li>
-        <li data-n="5">Медленно возвращай вперёд.</li>
-      </ol>
-      <div class="ex-tip green">Корректирует кифоз, укрепляет задние дельты и ромбовидные. Никогда не пропускай.</div>
-
-      <div class="weight-tracker">
-        <div class="weight-label">Рабочий вес</div>
-        <div class="weight-row">
-          <div class="weight-current"><div><div class="weight-tag">текущий</div><div class="weight-badge">36</div></div></div>
-          <div style="color:var(--hint);font-size:18px">→</div>
-          <div class="weight-next"><div><div class="weight-tag">после чистых</div><div class="weight-next-badge">38</div></div></div>
-        </div>
-        <div class="weight-rule">12–15 чисто → +2 кг. Стоит на 36 с 20.08 — пора двигать</div>
-      </div>
-      <a class="yt-btn" href="https://www.youtube.com/watch?v=IzaevEuD50s" target="_blank">
-        <svg width="20" height="14" viewBox="0 0 20 14" fill="none"><rect width="20" height="14" rx="3" fill="#FF0000"/><path d="M8 3.5L14 7L8 10.5V3.5Z" fill="white"/></svg>
-        Смотреть технику на YouTube
-      </a>
-    </div>
-  </div>
-
-
-  <div class="ex-card" onclick="toggleEx(this,event)">
-    <div class="ex-card-header">
-      <div class="ex-num" style="background:var(--green-bg);color:var(--green)">10</div>
-      <div class="ex-title-wrap"><div class="ex-card-title">Планка</div><div class="ex-card-sets" style="color:var(--green)">2 × 60 сек · кор · без отдыха</div></div>
-      <div class="ex-chevron"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></div>
-    </div>
-    <div class="ex-body">
-      <ol class="ex-steps">
-        <li data-n="1">Упор на предплечья и носки. Локти строго под плечами.</li>
-        <li data-n="2">Тело — прямая линия от пяток до макушки. Не поднимай таз, не проваливай живот.</li>
-        <li data-n="3">Напряги пресс, ягодицы и квадрицепсы одновременно.</li>
-        <li data-n="4">Дыши равномерно. Не задерживай дыхание.</li>
-      </ol>
-      <div class="ex-tip">Если форма нарушается — заканчивай. Планка в плохой форме бесполезна.</div>
-
-      <div class="weight-tracker">
-        <div class="weight-label">Рабочее время</div>
-        <div class="weight-row">
-          <div class="weight-current">
-            <div>
-              <div class="weight-tag">текущее</div>
-              <div class="weight-badge">3 × 60 сек</div>
-            </div>
-          </div>
-          <div style="color:var(--hint);font-size:18px">→</div>
-          <div class="weight-next">
-            <div>
-              <div class="weight-tag">следующая</div>
-              <div class="weight-next-badge">3 × 75 сек</div>
-            </div>
-          </div>
-        </div>
-        <div class="weight-rule">✓ Цель 60 сек достигнута (07.07) → следующая 75 сек</div>
-      </div>
-      <a class="yt-btn" href="https://www.youtube.com/watch?v=_E7Vg4ECFYA" target="_blank">
-        <svg width="20" height="14" viewBox="0 0 20 14" fill="none"><rect width="20" height="14" rx="3" fill="#FF0000"/><path d="M8 3.5L14 7L8 10.5V3.5Z" fill="white"/></svg>
-        Смотреть технику на YouTube
-      </a>
-    </div>
-  </div>
-
-
-  <div class="ex-card" onclick="toggleEx(this,event)">
-    <div class="ex-card-header">
-      <div class="ex-num" style="background:var(--green-bg);color:var(--green)">11</div>
-      <div class="ex-title-wrap"><div class="ex-card-title">Wall angel</div><div class="ex-card-sets" style="color:var(--green)">2 × 10 · кифоз · без отдыха</div></div>
-      <div class="ex-chevron"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></div>
-    </div>
-    <div class="ex-body">
-      <ol class="ex-steps">
-        <li data-n="1">Встань спиной к стене. Прижми: затылок, лопатки, поясницу, ягодицы, пятки.</li>
-        <li data-n="2">Подними руки — локти согнуты 90°, прижми к стене тыльную сторону рук и локти.</li>
-        <li data-n="3">Медленно скользи руками вверх, не отрывая ни локти, ни запястья, ни спину.</li>
-        <li data-n="4">Поднимись максимально высоко без отрыва, вернись вниз.</li>
-      </ol>
-      <div class="ex-tip green">Не требует оборудования. Делай на обеих тренировках — простой и эффективный против кифоза.</div>
-      <a class="yt-btn" href="https://www.youtube.com/watch?v=w_aI31xL3KU" target="_blank">
-        <svg width="20" height="14" viewBox="0 0 20 14" fill="none"><rect width="20" height="14" rx="3" fill="#FF0000"/><path d="M8 3.5L14 7L8 10.5V3.5Z" fill="white"/></svg>
-        Смотреть технику на YouTube
-      </a>
-    </div>
-  </div>
-
-  <div class="card" style="margin-top:10px">
-    <div class="slabel" style="margin-top:0">заминка</div>
-    <div class="exercise"><div class="exercise-name">Растяжка грудного отдела позвоночника</div><div class="exercise-sets" style="color:var(--muted)">5 мин</div></div>
-  </div>
-
-  <div class="card" style="margin-top:10px;border-color:var(--orange-border)">
-    <div class="card-header" style="margin-bottom:10px;padding-bottom:10px">
-      <div class="card-icon icon-orange"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h4l2-5 4 10 2-5h6"/></svg></div>
-      <div><div class="card-title">Кардио — заминка</div><div class="card-sub">после силовой · жиросжигание</div></div>
-    </div>
-    <div class="exercise"><div class="exercise-name">Беговая дорожка или велотренажёр</div><div class="exercise-sets" style="color:var(--orange)">15–20 мин</div></div>
-    <div class="exercise" style="border-bottom:none;padding-bottom:0"><div class="exercise-name" style="color:var(--muted);font-size:13px">Пульс 130–150 уд/мин · умеренный темп · можешь говорить короткими фразами · не спринт</div></div>
-  </div>
-
-</div>
-
-<!-- ДЕНЬ B -->
-<div id="day-b" class="section">
-  <div class="card" style="margin-bottom:12px">
-    <div class="card-header">
-      <div class="card-icon icon-orange">B</div>
-      <div><div class="card-title">Четверг — грудь + руки + пресс</div><div class="card-sub">объём, руки, пресс · ~85–95 мин с кардио</div></div>
-    </div>
-    <div class="slabel" style="margin-top:0">разминка</div>
-    <div class="exercise"><div class="exercise-name">5 мин дорожка/велотренажёр (пульс ~110)</div><div class="exercise-sets" style="color:var(--muted)">5 мин</div></div>
-    <div class="exercise"><div class="exercise-name">Суставная сверху вниз: шея → плечи → локти → запястья → тазобедренные → колени → голеностоп</div><div class="exercise-sets" style="color:var(--muted)">3–4 мин</div></div>
-  </div>
-
-  <div class="slabel" style="padding:0 2px">грудь</div>
-
-  <div class="ex-card" onclick="toggleEx(this,event)">
-    <div class="ex-card-header">
-      <div class="ex-num" style="background:var(--orange-bg);color:var(--orange)">1</div>
-      <div class="ex-title-wrap"><div class="ex-card-title">Жим штанги лёжа</div><div class="ex-card-sets" style="color:var(--orange)">4 × 6–10 · грудь · отдых 2–3 мин</div></div>
-      <div class="ex-chevron"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></div>
-    </div>
-    <div class="ex-body">
-      <ol class="ex-steps">
-        <li data-n="1">Ляг на скамью, возьмись за гриф хватом чуть шире плеч. Сведи лопатки и прижми к скамье — грудь будет выше.</li>
-        <li data-n="2">Сними штангу со стоек. Локти ~45–75° к корпусу, не разводи на 90°.</li>
-        <li data-n="3">Опускай штангу к нижней части груди медленно — 2–3 сек. Касаешься груди или чуть выше.</li>
-        <li data-n="4">Жми вверх по дуге — мощно, выдох в момент усилия.</li>
-        <li data-n="5">Не разгибай руки полностью в верхней точке — лёгкий сгиб в локте.</li>
-      </ol>
-      <div class="ex-tip">Ступни прижаты к полу. Не отрывай ягодицы от скамьи. Лопатки не двигаются всё время.</div>
-
-      <div class="weight-tracker">
-        <div class="weight-label">Рабочий вес</div>
-        <div class="weight-row">
-          <div class="weight-current"><div><div class="weight-tag">текущий</div><div class="weight-badge">75</div></div></div>
-          <div style="color:var(--hint);font-size:18px">→</div>
-          <div class="weight-next"><div><div class="weight-tag">после чистых</div><div class="weight-next-badge">77</div></div></div>
-        </div>
-        <div class="weight-rule">70 → 75 кг. 6–10 чисто во всех подходах → +2 кг</div>
-      </div>
-      <a class="yt-btn" href="https://www.youtube.com/watch?v=rT7DgCr-3pg" target="_blank">
-        <svg width="20" height="14" viewBox="0 0 20 14" fill="none"><rect width="20" height="14" rx="3" fill="#FF0000"/><path d="M8 3.5L14 7L8 10.5V3.5Z" fill="white"/></svg>
-        Смотреть технику на YouTube
-      </a>
-    </div>
-  </div>
-
-
-  <div class="ex-card" onclick="toggleEx(this,event)">
-    <div class="ex-card-header">
-      <div class="ex-num" style="background:var(--orange-bg);color:var(--orange)">2</div>
-      <div class="ex-title-wrap"><div class="ex-card-title">Жим гантелей на наклонной скамье 30°</div><div class="ex-card-sets" style="color:var(--orange)">3 × 8–12 · верхняя грудь · отдых 90 сек</div></div>
-      <div class="ex-chevron"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></div>
-    </div>
-    <div class="ex-body">
-      <ol class="ex-steps">
-        <li data-n="1">Выставь скамью под 30°, выше не надо — с 45° нагрузка уходит в передние дельты.</li>
-        <li data-n="2">Ляг, сведи лопатки и прижми к скамье. Гантели на уровне груди, локти под 45° к корпусу.</li>
-        <li data-n="3">Жми вверх по дуге, сближая гантели над верхом груди, но не касаясь ими.</li>
-        <li data-n="4">Не разгибай руки полностью — лёгкий сгиб в локте в верхней точке.</li>
-        <li data-n="5">Опускай медленно, 2–3 сек, чувствуя растяжение верха груди.</li>
-      </ol>
-      <div class="ex-tip">Закрывает верхнюю грудь — до этого её в программе не было совсем. Для V-силуэта она заметна — визуально соединяет грудь с плечами. Угол именно 30°, на 45° работа уходит в дельты.</div>
-
-      <div class="weight-tracker">
-        <div class="weight-label">Рабочий вес</div>
-        <div class="weight-row">
-          <div class="weight-current"><div><div class="weight-tag">стартовый</div><div class="weight-badge recommended">20</div></div></div>
-          <div style="color:var(--hint);font-size:18px">→</div>
-          <div class="weight-next"><div><div class="weight-tag">после чистых</div><div class="weight-next-badge">22</div></div></div>
-        </div>
-        <div class="weight-rule">8–12 чисто во всех подходах → +2 кг на гантель.</div>
-      </div>
-      <a class="yt-btn" href="https://www.youtube.com/watch?v=drTzH4ywDDw" target="_blank">
-        <svg width="20" height="14" viewBox="0 0 20 14" fill="none"><rect width="20" height="14" rx="3" fill="#FF0000"/><path d="M8 3.5L14 7L8 10.5V3.5Z" fill="white"/></svg>
-        Смотреть технику на YouTube
-      </a>
-    </div>
-  </div>
-
-  <div class="ex-card" onclick="toggleEx(this,event)">
-    <div class="ex-card-header">
-      <div class="ex-num" style="background:var(--orange-bg);color:var(--orange)">3</div>
-      <div class="ex-title-wrap"><div class="ex-card-title">Сведение рук в тренажёре («Бабочка»)</div><div class="ex-card-sets" style="color:var(--orange)">3 × 10–15 · грудь · отдых 60 сек</div></div>
-      <div class="ex-chevron"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></div>
-    </div>
-    <div class="ex-body">
-      <ol class="ex-steps">
-        <li data-n="1">Сядь в тренажёр, спина плотно к спинке. Возьмись за ручки — руки слегка согнуты в локтях, держи этот угол всё время.</li>
-        <li data-n="2">Отрегулируй сиденье — ручки на уровне груди, не выше плеч.</li>
-        <li data-n="3">Своди руки вперёд по дуге — медленно, 2 сек. В конечной точке сожми грудные максимально — 1 сек паузы.</li>
-        <li data-n="4">Медленно возвращай назад — 3 сек, чувствуй растяжение груди.</li>
-        <li data-n="5">Не бросай вес назад — контролируй всё движение.</li>
-      </ol>
-      <div class="ex-tip">Не разводи руки слишком далеко назад — плечевой сустав под риском. Амплитуда комфортная, без боли в плечах.</div>
-
-      <div class="weight-tracker">
-        <div class="weight-label">Рабочий вес</div>
-        <div class="weight-row">
-          <div class="weight-current"><div><div class="weight-tag">текущий</div><div class="weight-badge">82</div></div></div>
-          <div style="color:var(--hint);font-size:18px">→</div>
-          <div class="weight-next"><div><div class="weight-tag">после чистых</div><div class="weight-next-badge">85</div></div></div>
-        </div>
-        <div class="weight-rule">10–15 чисто → +3 кг</div>
-      </div>
-      <a class="yt-btn" href="https://www.youtube.com/watch?v=Z57CtFmRMxA" target="_blank">
-        <svg width="20" height="14" viewBox="0 0 20 14" fill="none"><rect width="20" height="14" rx="3" fill="#FF0000"/><path d="M8 3.5L14 7L8 10.5V3.5Z" fill="white"/></svg>
-        Смотреть технику на YouTube
-      </a>
-    </div>
-  </div>
-
-
-  <div class="slabel" style="padding:0 2px">руки + кор</div>
-
-  <div class="ex-card" onclick="toggleEx(this,event)">
-    <div class="ex-card-header">
-      <div class="ex-num" style="background:var(--blue-bg);color:var(--blue)">4</div>
-      <div class="ex-title-wrap"><div class="ex-card-title">Подъём штанги на бицепс</div><div class="ex-card-sets" style="color:var(--blue)">3 × 8–12 · база бицепса · отдых 90 сек</div></div>
-      <div class="ex-chevron"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></div>
-    </div>
-    <div class="ex-body">
-      <ol class="ex-steps">
-        <li data-n="1">Возьми штангу или EZ-гриф хватом на ширине плеч, ладони от себя.</li>
-        <li data-n="2">Локти прижаты к корпусу — они не двигаются всё упражнение.</li>
-        <li data-n="3">Сгибай руки, поднимая штангу к груди — без рывка, без помощи корпусом.</li>
-        <li data-n="4">В верхней точке сожми бицепс — 1 сек паузы.</li>
-        <li data-n="5">Опускай медленно — 2–3 сек, до полного выпрямления внизу.</li>
-      </ol>
-      <div class="ex-tip">EZ-гриф (изогнутый) комфортнее для запястий — если есть, бери его. Штанга позволяет прогрессировать агрессивнее гантелей — это главная база для массы бицепса.</div>
-      <div class="weight-tracker">
-        <div class="weight-label">Рабочий вес</div>
-        <div class="weight-row">
-          <div class="weight-current"><div><div class="weight-tag">текущий</div><div class="weight-badge recommended">35</div></div></div>
-          <div style="color:var(--hint);font-size:18px">→</div>
-          <div class="weight-next"><div><div class="weight-tag">после чистых</div><div class="weight-next-badge">37.5</div></div></div>
-        </div>
-        <div class="weight-rule">Стоит на 35 кг с 4 августа — два месяца. Руки не растут именно поэтому. 8–12 чисто → +2.5 кг</div>
-      </div>
-      <a class="yt-btn" href="https://www.youtube.com/watch?v=APGw5Xi8xfQ" target="_blank">
-        <svg width="20" height="14" viewBox="0 0 20 14" fill="none"><rect width="20" height="14" rx="3" fill="#FF0000"/><path d="M8 3.5L14 7L8 10.5V3.5Z" fill="white"/></svg>
-        Смотреть технику на YouTube
-      </a>
-    </div>
-  </div>
-
-
-  <div class="ex-card" onclick="toggleEx(this,event)">
-    <div class="ex-card-header">
-      <div class="ex-num" style="background:var(--blue-bg);color:var(--blue)">5</div>
-      <div class="ex-title-wrap"><div class="ex-card-title">Молотковые сгибания (Hammer curl)</div><div class="ex-card-sets" style="color:var(--blue)">3 × 10–15 · брахиалис · отдых 60 сек</div></div>
-      <div class="ex-chevron"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></div>
-    </div>
-    <div class="ex-body">
-      <ol class="ex-steps">
-        <li data-n="1">Стоя, гантели в руках, ладони смотрят друг на друга (нейтральный хват) — держи так всё время.</li>
-        <li data-n="2">Локти прижаты к корпусу, не двигаются.</li>
-        <li data-n="3">Сгибай руки вверх — движение то же что у обычного бицепса, только хват нейтральный.</li>
-        <li data-n="4">В верхней точке — сожми, задержись 1 сек.</li>
-        <li data-n="5">Медленно опускай — 2–3 сек.</li>
-      </ol>
-      <div class="ex-tip">Брахиалис — мышца под бицепсом, визуально "выталкивает" бицепс наружу и даёт толщину руки. Молотковый хват грузит именно его.</div>
-      <div class="weight-tracker">
-        <div class="weight-label">Рабочий вес</div>
-        <div class="weight-row">
-          <div class="weight-current"><div><div class="weight-tag">текущий</div><div class="weight-badge">12.5</div></div></div>
-          <div style="color:var(--hint);font-size:18px">→</div>
-          <div class="weight-next"><div><div class="weight-tag">после чистых</div><div class="weight-next-badge">14.5</div></div></div>
-        </div>
-        <div class="weight-rule">Стоит на 12.5 кг с 11 августа. 10–15 чисто → +2 кг</div>
-      </div>
-      <a class="yt-btn" href="https://www.youtube.com/watch?v=Pd4WUV-boGA" target="_blank">
-        <svg width="20" height="14" viewBox="0 0 20 14" fill="none"><rect width="20" height="14" rx="3" fill="#FF0000"/><path d="M8 3.5L14 7L8 10.5V3.5Z" fill="white"/></svg>
-        Смотреть технику на YouTube
-      </a>
-    </div>
-  </div>
-
-  <div class="ex-card" onclick="toggleEx(this,event)">
-    <div class="ex-card-header">
-      <div class="ex-num" style="background:var(--blue-bg);color:var(--blue)">6</div>
-      <div class="ex-title-wrap"><div class="ex-card-title">Сгибания на бицепс на наклонной скамье</div><div class="ex-card-sets" style="color:var(--blue)">3 × 10–12 · бицепс в растяжении · отдых 60 сек</div></div>
-      <div class="ex-chevron"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></div>
-    </div>
-    <div class="ex-body">
-      <ol class="ex-steps">
-        <li data-n="1">Выставь спинку скамьи под 45–60°, сядь и прижми спину. Руки свободно свисают вдоль корпуса.</li>
-        <li data-n="2">В этом положении руки уходят за линию корпуса — именно здесь бицепс растянут, чего нет в подъёме штанги.</li>
-        <li data-n="3">Сгибай руки, не двигая локтями вперёд. Плечо остаётся неподвижным.</li>
-        <li data-n="4">В верхней точке пауза 1 сек, затем опускай медленно, 3 сек, до полного выпрямления.</li>
-        <li data-n="5">Внизу не расслабляй руку полностью — держи напряжение.</li>
-      </ol>
-      <div class="ex-tip">Штанга и молотковые грузят бицепс в середине амплитуды, растянутой фазы в программе не было. На наклонной руки уходят за корпус и бицепс работает в удлинённом положении. Вес будет заметно меньше, чем стоя — это нормально.</div>
-
-      <div class="weight-tracker">
-        <div class="weight-label">Рабочий вес</div>
-        <div class="weight-row">
-          <div class="weight-current"><div><div class="weight-tag">стартовый</div><div class="weight-badge recommended">10</div></div></div>
-          <div style="color:var(--hint);font-size:18px">→</div>
-          <div class="weight-next"><div><div class="weight-tag">после чистых</div><div class="weight-next-badge">12</div></div></div>
-        </div>
-        <div class="weight-rule">10–12 чисто без движения локтей вперёд → +2 кг.</div>
-      </div>
-      <a class="yt-btn" href="https://www.youtube.com/watch?v=Rab2kGLC9_g" target="_blank">
-        <svg width="20" height="14" viewBox="0 0 20 14" fill="none"><rect width="20" height="14" rx="3" fill="#FF0000"/><path d="M8 3.5L14 7L8 10.5V3.5Z" fill="white"/></svg>
-        Смотреть технику на YouTube
-      </a>
-    </div>
-  </div>
-
-
-  <div class="ex-card" onclick="toggleEx(this,event)">
-    <div class="ex-card-header">
-      <div class="ex-num" style="background:var(--blue-bg);color:var(--blue)">7</div>
-      <div class="ex-title-wrap"><div class="ex-card-title">Трицепс — блок с канатом</div><div class="ex-card-sets" style="color:var(--blue)">3 × 10–15 · трицепс · отдых 60 сек</div></div>
-      <div class="ex-chevron"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></div>
-    </div>
-    <div class="ex-body">
-      <ol class="ex-steps">
-        <li data-n="1">Встань у блока, канат на верхнем блоке. Локти прижми к корпусу.</li>
-        <li data-n="2">Слегка наклонись вперёд — 10–15°. Локти неподвижны.</li>
-        <li data-n="3">Разгибай руки вниз, в нижней точке разведи концы каната в стороны.</li>
-        <li data-n="4">Сожми трицепс в нижней точке — 1 сек.</li>
-        <li data-n="5">Медленно возвращай вверх до угла 90° в локте.</li>
-      </ol>
-      <div class="ex-tip">Локти не двигаются и не уходят вперёд. Если едут — вес слишком тяжёлый.</div>
-
-      <div class="weight-tracker">
-        <div class="weight-label">Рабочий вес</div>
-        <div class="weight-row">
-          <div class="weight-current"><div><div class="weight-tag">текущий</div><div class="weight-badge">57</div></div></div>
-          <div style="color:var(--hint);font-size:18px">→</div>
-          <div class="weight-next"><div><div class="weight-tag">после чистых</div><div class="weight-next-badge">60</div></div></div>
-        </div>
-        <div class="weight-rule">43 → 57 кг за месяц, лучший рост в программе. 10–15 чисто → +3 кг</div>
-      </div>
-      <a class="yt-btn" href="https://www.youtube.com/watch?v=g0zATahj9Tc" target="_blank">
-        <svg width="20" height="14" viewBox="0 0 20 14" fill="none"><rect width="20" height="14" rx="3" fill="#FF0000"/><path d="M8 3.5L14 7L8 10.5V3.5Z" fill="white"/></svg>
-        Смотреть технику на YouTube
-      </a>
-    </div>
-  </div>
-
-  <div class="ex-card" onclick="toggleEx(this,event)">
-    <div class="ex-card-header">
-      <div class="ex-num" style="background:var(--blue-bg);color:var(--blue)">8</div>
-      <div class="ex-title-wrap"><div class="ex-card-title">Французский жим гантели из-за головы</div><div class="ex-card-sets" style="color:var(--blue)">3 × 10–15 · длинная головка трицепса · отдых 60 сек</div></div>
-      <div class="ex-chevron"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></div>
-    </div>
-    <div class="ex-body">
-      <ol class="ex-steps">
-        <li data-n="1">Сядь на скамью со спинкой. Возьми одну гантель двумя руками за верхний блин, подними над головой.</li>
-        <li data-n="2">Плечи вертикально и неподвижно, прижаты к ушам — двигаются только предплечья.</li>
-        <li data-n="3">Опускай гантель за голову медленно, 3 сек, до ощущения растяжения в трицепсе.</li>
-        <li data-n="4">Разгибай руки вверх, не выпрямляя до конца — лёгкий сгиб в локте остаётся.</li>
-        <li data-n="5">Локти не разъезжаются в стороны, держи их узко.</li>
-      </ol>
-      <div class="ex-tip">Единственное упражнение в программе, которое грузит длинную головку трицепса в растянутом положении — она растягивается только при поднятой над головой руке. Длинная головка это самая крупная часть трицепса, а трицепс — две трети объёма руки. Блок с канатом эту фазу не даёт совсем.</div>
-
-      <div class="weight-tracker">
-        <div class="weight-label">Рабочий вес</div>
-        <div class="weight-row">
-          <div class="weight-current"><div><div class="weight-tag">стартовый</div><div class="weight-badge recommended">15</div></div></div>
-          <div style="color:var(--hint);font-size:18px">→</div>
-          <div class="weight-next"><div><div class="weight-tag">после чистых</div><div class="weight-next-badge">17.5</div></div></div>
-        </div>
-        <div class="weight-rule">10–15 чисто без разъезда локтей → +2.5 кг.</div>
-      </div>
-      <a class="yt-btn" href="https://www.youtube.com/watch?v=771oE2RjSYc" target="_blank">
-        <svg width="20" height="14" viewBox="0 0 20 14" fill="none"><rect width="20" height="14" rx="3" fill="#FF0000"/><path d="M8 3.5L14 7L8 10.5V3.5Z" fill="white"/></svg>
-        Смотреть технику на YouTube
-      </a>
-    </div>
-  </div>
-
-
-
-
-  <div class="ex-card" onclick="toggleEx(this,event)">
-    <div class="ex-card-header">
-      <div class="ex-num" style="background:var(--blue-bg);color:var(--blue)">9</div>
-      <div class="ex-title-wrap"><div class="ex-card-title">Скручивания на блоке (Cable crunch)</div><div class="ex-card-sets" style="color:var(--blue)">3 × 12–20 · пресс · отдых 60 сек</div></div>
-      <div class="ex-chevron"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></div>
-    </div>
-    <div class="ex-body">
-      <ol class="ex-steps">
-        <li data-n="1">Встань на колени перед верхним блоком, возьмись за канат или верёвку над головой.</li>
-        <li data-n="2">Бёдра неподвижны всё время — скручиваешь только корпус вниз.</li>
-        <li data-n="3">Тяни локти к коленям, округляя спину — именно скручивание, не наклон.</li>
-        <li data-n="4">В нижней точке — пауза 1 сек, максимальное сжатие пресса.</li>
-        <li data-n="5">Медленно возвращайся вверх — 2 сек, не расслабляй пресс полностью.</li>
-      </ol>
-      <div class="ex-tip">Единственное упражнение на пресс с прогрессией веса — только так пресс растёт как мышца. Начни с лёгкого веса, следи за техникой.</div>
-      <div class="weight-tracker">
-        <div class="weight-label">Рабочий вес</div>
-        <div class="weight-row">
-          <div class="weight-current"><div><div class="weight-tag">стартовый</div><div class="weight-badge recommended">15</div></div></div>
-          <div style="color:var(--hint);font-size:18px">→</div>
-          <div class="weight-next"><div><div class="weight-tag">после чистых 3×</div><div class="weight-next-badge">17</div></div></div>
-        </div>
-        <div class="weight-rule">Стоит на 15 кг с 11 августа. 12–20 чисто → +2 кг</div>
-      </div>
-      <a class="yt-btn" href="https://www.youtube.com/watch?v=5Dgj7Q-ZjeE" target="_blank">
-        <svg width="20" height="14" viewBox="0 0 20 14" fill="none"><rect width="20" height="14" rx="3" fill="#FF0000"/><path d="M8 3.5L14 7L8 10.5V3.5Z" fill="white"/></svg>
-        Смотреть технику на YouTube
-      </a>
-    </div>
-  </div>
-
-
-  <div class="slabel" style="padding:0 2px">плечи — бонус-объём · частота 2×/нед</div>
-
-  <div class="ex-card" onclick="toggleEx(this,event)">
-    <div class="ex-card-header">
-      <div class="ex-num" style="background:var(--orange-bg);color:var(--orange)">10</div>
-      <div class="ex-title-wrap"><div class="ex-card-title">Махи на блоке (Cable lateral raise)</div><div class="ex-card-sets" style="color:var(--orange)">3 × 15–20 · плечи 2×/нед · отдых 60 сек</div></div>
-      <div class="ex-chevron"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></div>
-    </div>
-    <div class="ex-body">
-      <ol class="ex-steps">
-        <li data-n="1">Нижний блок, рукоять в дальней руке — трос идёт перед корпусом. Встань боком.</li>
-        <li data-n="2">Веди локтём в сторону до уровня плеча, кисть чуть ниже локтя.</li>
-        <li data-n="3">Плечо вниз, корпус не раскачивай — работает только дельта.</li>
-        <li data-n="4">Опускай 2–3 сек, натяжение троса не отпускай в самом низу.</li>
-      </ol>
-      <div class="ex-tip green">Зачем ещё раз в День B: средняя дельта быстро восстанавливается и любит частоту — 2 тренировки в неделю дадут больше, чем весь объём в один день. Блок держит натяжение по всей амплитуде (гантель внизу «отдыхает») — идеально добить дельту лёгким весом на 15–20 чистых повторов.</div>
-      <div class="weight-tracker">
-        <div class="weight-label">Рабочий вес · лёгкий</div>
-        <div class="weight-row">
-          <div class="weight-current"><div><div class="weight-tag">старт</div><div class="weight-badge recommended">лёгкий</div></div></div>
-          <div style="color:var(--hint);font-size:18px">→</div>
-          <div class="weight-next"><div><div class="weight-tag">когда 3×20 чисто</div><div class="weight-next-badge">+1 ступень</div></div></div>
-        </div>
-        <div class="weight-rule">Подбери вес, на котором 15 повторов даются чисто без раскачки. Прогрессия — повторы до 20, потом одна ступень на блоке.</div>
-      </div>
-      <a class="yt-btn" href="https://www.youtube.com/watch?v=PPrz4Wr724g" target="_blank">
-        <svg width="20" height="14" viewBox="0 0 20 14" fill="none"><rect width="20" height="14" rx="3" fill="#FF0000"/><path d="M8 3.5L14 7L8 10.5V3.5Z" fill="white"/></svg>
-        Смотреть технику на YouTube
-      </a>
-    </div>
-  </div>
-
-  <div class="slabel" style="padding:0 2px">коррекция кифоза + кор — обязательно</div>
-
-  <div class="ex-card" onclick="toggleEx(this,event)">
-    <div class="ex-card-header">
-      <div class="ex-num" style="background:var(--green-bg);color:var(--green)">11</div>
-      <div class="ex-title-wrap"><div class="ex-card-title">Bird-dog</div><div class="ex-card-sets" style="color:var(--green)">2 × 10 каждой · кифоз · без отдыха</div></div>
-      <div class="ex-chevron"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></div>
-    </div>
-    <div class="ex-body">
-      <ol class="ex-steps">
-        <li data-n="1">Встань на четвереньки: запястья под плечами, колени под бёдрами. Спина нейтральна.</li>
-        <li data-n="2">Одновременно вытяни правую руку вперёд и левую ногу назад — до параллели с полом.</li>
-        <li data-n="3">Удержи 2–3 сек. Бёдра не разворачивай — таз смотрит вниз.</li>
-        <li data-n="4">Вернись, повтори другой стороной.</li>
-      </ol>
-      <div class="ex-tip green">Медленно = эффективно. Тренирует стабилизацию позвоночника.</div>
-      <a class="yt-btn" href="https://www.youtube.com/watch?v=asjqq8ZqbvQ" target="_blank">
-        <svg width="20" height="14" viewBox="0 0 20 14" fill="none"><rect width="20" height="14" rx="3" fill="#FF0000"/><path d="M8 3.5L14 7L8 10.5V3.5Z" fill="white"/></svg>
-        Смотреть технику на YouTube
-      </a>
-    </div>
-  </div>
-
-  <div class="ex-card" onclick="toggleEx(this,event)">
-    <div class="ex-card-header">
-      <div class="ex-num" style="background:var(--green-bg);color:var(--green)">12</div>
-      <div class="ex-title-wrap"><div class="ex-card-title">Wall angel</div><div class="ex-card-sets" style="color:var(--green)">2 × 10 · кифоз · без отдыха</div></div>
-      <div class="ex-chevron"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></div>
-    </div>
-    <div class="ex-body">
-      <ol class="ex-steps">
-        <li data-n="1">Встань спиной к стене. Прижми: затылок, лопатки, поясницу, ягодицы, пятки.</li>
-        <li data-n="2">Подними руки — локти согнуты 90°, прижми к стене тыльную сторону рук и локти.</li>
-        <li data-n="3">Медленно скользи руками вверх, не отрывая ни локти, ни запястья, ни спину.</li>
-        <li data-n="4">Поднимись максимально высоко без отрыва, вернись вниз.</li>
-      </ol>
-      <div class="ex-tip green">Если локти отрываются до верха — это твоя текущая амплитуда. Работай в ней.</div>
-      <a class="yt-btn" href="https://www.youtube.com/watch?v=w_aI31xL3KU" target="_blank">
-        <svg width="20" height="14" viewBox="0 0 20 14" fill="none"><rect width="20" height="14" rx="3" fill="#FF0000"/><path d="M8 3.5L14 7L8 10.5V3.5Z" fill="white"/></svg>
-        Смотреть технику на YouTube
-      </a>
-    </div>
-  </div>
-
-  <div class="card" style="margin-top:10px">
-    <div class="slabel" style="margin-top:0">заминка</div>
-    <div class="exercise"><div class="exercise-name">Растяжка грудного отдела + ног</div><div class="exercise-sets" style="color:var(--muted)">5 мин</div></div>
-  </div>
-
-  <div class="card" style="margin-top:10px;border-color:var(--orange-border)">
-    <div class="card-header" style="margin-bottom:10px;padding-bottom:10px">
-      <div class="card-icon icon-orange"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h4l2-5 4 10 2-5h6"/></svg></div>
-      <div><div class="card-title">Кардио — заминка</div><div class="card-sub">после силовой · жиросжигание</div></div>
-    </div>
-    <div class="exercise"><div class="exercise-name">Беговая дорожка или велотренажёр</div><div class="exercise-sets" style="color:var(--orange)">15–20 мин</div></div>
-    <div class="exercise" style="border-bottom:none;padding-bottom:0"><div class="exercise-name" style="color:var(--muted);font-size:13px">Пульс 130–150 уд/мин · умеренный темп · можешь говорить короткими фразами · не спринт</div></div>
-  </div>
-
-</div>
-
-<!-- ПИТАНИЕ -->
-<div id="food" class="section">
-  <div class="metrics">
-    <div class="metric metric-blue"><div class="metric-label">Цель/день</div><div class="metric-value">2600</div><div class="metric-unit">ккал · дефицит 300</div></div>
-    <div class="metric metric-green"><div class="metric-label">Белок</div><div class="metric-value">175г</div><div class="metric-unit">приоритет #1</div></div>
-  </div>
-  <div class="card">
-    <div class="card-header">
-      <div class="card-icon icon-amber"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 0 0 16 0H4z"/><path d="M9 5v3M12 4v4M15 5v3"/></svg></div>
-      <div><div class="card-title">Структура дня</div><div class="card-sub">4 приёма · в день тренировки углеводов больше</div></div>
-    </div>
-    <div class="meal"><div class="meal-left"><div class="meal-time">ЗАВТРАК</div><div class="meal-desc">Яйца + овсянка + фрукт</div><div class="meal-macros">~35г белка · ~60г углеводов</div></div><div class="meal-right"><div class="meal-kcal">500</div><div class="meal-kcal-unit">ккал</div></div></div>
-    <div class="meal"><div class="meal-left"><div class="meal-time">ОБЕД</div><div class="meal-desc">Мясо/рыба + крупа + овощи</div><div class="meal-macros">~50г белка · ~80г углеводов</div></div><div class="meal-right"><div class="meal-kcal">700</div><div class="meal-kcal-unit">ккал</div></div></div>
-    <div class="meal"><div class="meal-left"><div class="post-workout-badge">после тренировки</div><div class="meal-desc">Белок + быстрые углеводы</div><div class="meal-macros">~40г белка · рис/банан/хлеб</div></div><div class="meal-right"><div class="meal-kcal">500</div><div class="meal-kcal-unit">ккал</div></div></div>
-    <div class="meal"><div class="meal-left"><div class="meal-time">УЖИН / НА НОЧЬ</div><div class="meal-desc">Творог / казеин</div><div class="meal-macros">~50г белка · медленный протеин</div></div><div class="meal-right"><div class="meal-kcal">600</div><div class="meal-kcal-unit">ккал</div></div></div>
-  </div>
-  <div class="card">
-    <div class="card-header">
-      <div class="card-icon icon-green"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="8.5" width="14" height="8" rx="4"/><path d="M12 8.5v8"/></svg></div>
-      <div><div class="card-title">Добавки (назначены врачом)</div><div class="card-sub">не менять без консультации</div></div>
-    </div>
-    <div class="exercise"><div class="exercise-name">Омега-3</div><div class="exercise-sets" style="color:var(--green)">✓ есть</div></div>
-    <div class="exercise"><div class="exercise-name">Цинк</div><div class="exercise-sets" style="color:var(--green)">✓ есть</div></div>
-    <div class="exercise"><div class="exercise-name">Йод</div><div class="exercise-sets" style="color:var(--green)">✓ есть</div></div>
-    <div class="exercise"><div class="exercise-name">B-комплекс с фолатом</div><div class="exercise-sets" style="color:var(--amber)">курс 4–6 нед.</div></div>
-  </div>
-  <div class="warning-card">
-    <div class="warning-title">Исключить полностью</div>
-    <div class="warning-text">Алкоголь · Соя и фитоэстрогены · Быстрые углеводы вне посттренировочного окна</div>
-  </div>
-</div>
-
-<!-- ПРАВИЛА -->
-<div id="rules" class="section">
-  <div class="warning-card">
-    <div class="warning-title">⏱ Программа сокращена — цель 75 минут</div>
-    <div class="warning-text">Было 41 подход в дне A и 38 в дне B — отсюда 2.5 часа. Убраны дубли: тяга в тренажёре, подъём ног, dead bug. Тяга верхнего блока заменена на пуловер, махи гантелями — на тренажёр.<br><br>
-    Стало 26 подходов в дне A и 24 в дне B. <b>Отдых теперь указан у каждого упражнения</b> — это половина экономии времени. Базовые движения 2–3 мин, изоляция 60 сек, кор без отдыха подряд.<br><br>
-    Если всё равно не укладываешься — режь кардио до 10 минут, но не подходы.</div>
-  </div>
-
-  <div class="warning-card">
-    <div class="warning-title">Решение 03.10 — сначала талия, потом набор</div>
-    <div class="warning-text">Рассматривали переход на набор массы ради верха. Решено: <b>держим 2600 ккал и доводим талию до 84–85 см</b>, это ~2 месяца. Потом переход на набор.<br><br>
-    <b>Почему так:</b> при плечах 127 коэффициент 1.50 достигается талией 84.7 — минус 3.8 см, около 2 месяцев по текущему темпу. Через плечи та же точка потребовала бы 132.8 см, то есть +5.8 см и ~5 месяцев. Плюс при 20% жира в профицит уходит треть в мышцы и две трети в жир — коэффициент от этого падает.<br><br>
-    <b>Набор начинаем с 15% жира, не раньше</b> — партишнинг там заметно лучше.<br><br>
-    Верх при этом не стоит: за последние 2 месяца плечи выросли на 3 см, находясь в дефиците.</div>
-  </div>
-
-  <div class="warning-card">
-    <div class="warning-title">Приоритет октября — руки и сон</div>
-    <div class="warning-text"><b>Руки отстают:</b> 35.25 → 34.75. Причина та же, что была с плечами — вес не растёт. Штанга на бицепс стоит на 35 кг с 4 августа, молотковые на 12.5 кг с 11 августа. Два месяца без прогрессии.<br><br>
-    На ближайшем дне B взять 37.5 на штангу и 14.5 на молотковые, диапазон 8–12. Не добьёшь — вернёшься, но попытку сделай. Трицепс за тот же месяц вырос 43 → 57 кг: при нагрузке руки отзываются.<br><br>
-    <b>Сон — нетронутый рычаг.</b> Отбой в час ночи с июня, четыре месяца. Для роста массы это сильнее, чем 300 ккал, и это бесплатно. Сдвигай на 30 минут раньше каждые 5–7 дней.</div>
-  </div>
-
-  
-  <div class="warning-card" style="background:rgba(74,158,255,0.08);border-color:rgba(74,158,255,0.25)">
-    <div class="warning-title" style="color:var(--blue)">Методика замера талии</div>
-    <div class="warning-text" style="color:rgba(74,158,255,0.85)">С 31.08 меряем <b>по самой узкой части</b> — это стандарт для V-тейпера. Раньше мерил по пупку, разница ≈3 см.<br><br>
-    Для сравнения со старыми замерами: 31.08 по пупку = 93 см, по узкой части = 90 см. Дальше только узкая часть, чтобы серия была единой.</div>
-  </div>
-
-  
-  <div class="card">
-    <div class="card-header">
-      <div class="card-icon icon-blue"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M15 9l-1.8 4.5L9 15l1.8-4.5L15 9z"/></svg></div>
-      <div><div class="card-title">Стратегия</div><div class="card-sub">почему именно так</div></div>
-    </div>
-    <div class="rule"><div class="rule-marker"></div><div class="rule-text"><strong>Умеренный дефицит, не жёсткая сушка.</strong> <span>При ~20% жира и уже набранной мышечной массе жёсткий дефицит уберёт и жир, и мышцы.</span></div></div>
-    <div class="rule"><div class="rule-marker"></div><div class="rule-text"><strong>Белок — приоритет #1.</strong> <span>Держи 175 г — это 2.0 г на кг веса при 88 кг, рабочая норма для роста в дефиците. Ниже 160 г мышцы не растут.</span></div></div>
-    <div class="rule"><div class="rule-marker"></div><div class="rule-text"><strong>Двойная прогрессия.</strong> <span>Работай в диапазоне повторов. Добил верх диапазона чисто во всех подходах → +минимальный вес (упадёшь к низу — снова расти повторами). Дельты — исключение: только повторы, не вес.</span></div></div>
-    <div class="rule"><div class="rule-marker"></div><div class="rule-text"><strong>Коррекционные упражнения — обязательны.</strong> <span>Face pull, bird-dog, wall angel — лечебная работа по кифозу. Каждая тренировка.</span></div></div>
-  </div>
-  <div class="card">
-    <div class="card-header">
-      <div class="card-icon icon-amber"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 13.5A8.5 8.5 0 1 1 10.5 4a7 7 0 0 0 9.5 9.5z"/></svg></div>
-      <div><div class="card-title">Сон — не опция</div><div class="card-sub">засыпать до 23:00</div></div>
-    </div>
-    <div class="rule"><div class="rule-marker"></div><div class="rule-text"><strong>Гормон роста пикует в первые 2–3 часа сна.</strong> <span>Засыпание в час ночи срезает самый продуктивный гормональный цикл.</span></div></div>
-    <div class="rule"><div class="rule-marker"></div><div class="rule-text"><strong>Тактика.</strong> <span>Сдвигай отбой на 30 мин раньше каждые 5–7 дней.</span></div></div>
-  </div>
-  <div class="card">
-    <div class="card-header">
-      <div class="card-icon icon-green"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="5" r="2"/><path d="M12 8v5M12 13l-4.5 6M12 13l4.5 6M5.5 10.5L12 9l6.5 1.5"/></svg></div>
-      <div><div class="card-title">Воскресенье — растяжка</div><div class="card-sub">таз, ноги, позвоночник · 20–25 мин</div></div>
-    </div>
-    <div class="stretch-item"><div class="stretch-name">Низкий выпад с поворотом (hip flexor)</div><div class="stretch-time">60 сек × 2</div></div>
-    <div class="stretch-item"><div class="stretch-name">Голубь (pigeon pose)</div><div class="stretch-time">90 сек × 2</div></div>
-    <div class="stretch-item"><div class="stretch-name">Задняя поверхность бедра лёжа</div><div class="stretch-time">60 сек × 2</div></div>
-    <div class="stretch-item"><div class="stretch-name">Приводящие в широкой стойке</div><div class="stretch-time">60 сек</div></div>
-    <div class="stretch-item"><div class="stretch-name">Скручивание позвоночника лёжа</div><div class="stretch-time">45 сек × 2</div></div>
-  </div>
-  <div class="card">
-    <div class="card-header">
-      <div class="card-icon icon-green"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M12 15l-4-4M12 15l4-4M5 21h14"/></svg></div>
-      <div><div class="card-title">Бэкап весов</div><div class="card-sub">выгрузить прогресс или перенести на другое устройство</div></div>
-    </div>
-    <div class="data-actions">
-      <button class="btn btn-primary" type="button" onclick="openExport()"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15V4M12 4L8 8M12 4l4 4M5 20h14"/></svg>Экспорт</button>
-      <button class="btn btn-ghost" type="button" onclick="openImport()"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M12 15l-4-4M12 15l4-4M5 20h14"/></svg>Импорт</button>
-    </div>
-    <div class="data-hint">Веса живут только в этом браузере. «Экспорт» соберёт их в текст — скопируй и пришли мне или сохрани файлом. «Импорт» вернёт их из такого текста в новый браузер.</div>
-  </div>
-</div>
-
-<dialog class="sheet" id="export-sheet">
+<!-- SHEETS -->
+<dialog class="sheet" id="pickSheet">
   <div class="sheet-inner">
-    <div class="sheet-head">
-      <div><div class="sheet-title">Экспорт весов</div><div class="sheet-sub">Скопируй текст или скачай файлом</div></div>
-      <button class="sheet-close" type="button" aria-label="Закрыть" onclick="closeSheet('export-sheet')"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
-    </div>
-    <textarea class="sheet-ta" id="export-ta" readonly></textarea>
-    <div class="sheet-msg ok" id="export-msg"></div>
-    <div class="sheet-actions">
-      <button class="btn btn-primary" type="button" onclick="copyExport()"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg>Копировать</button>
-      <button class="btn btn-ghost" type="button" onclick="downloadExport()"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M12 15l-4-4M12 15l4-4M5 20h14"/></svg>Скачать .txt</button>
-    </div>
+    <div class="sheet-head"><div><div class="sheet-title">Выбрать упражнение</div><div class="sheet-sub">категория, затем движение</div></div>
+      <button class="sheet-close" onclick="document.getElementById('pickSheet').close()" aria-label="Закрыть"><svg class="icon" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+    <div class="cat-chips" id="catChips"></div>
+    <div class="ex-list" id="exList"></div>
   </div>
 </dialog>
 
-<dialog class="sheet" id="import-sheet">
+<dialog class="sheet" id="summarySheet">
+  <div class="sheet-inner summary" id="summaryInner"></div>
+</dialog>
+
+<dialog class="sheet" id="settingsSheet">
   <div class="sheet-inner">
-    <div class="sheet-head">
-      <div><div class="sheet-title">Импорт весов</div><div class="sheet-sub">Вставь текст, полученный при экспорте</div></div>
-      <button class="sheet-close" type="button" aria-label="Закрыть" onclick="closeSheet('import-sheet')"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
-    </div>
-    <textarea class="sheet-ta" id="import-ta" placeholder="Вставь сюда текст экспорта…"></textarea>
-    <div class="sheet-msg" id="import-msg"></div>
-    <div class="sheet-actions">
-      <button class="btn btn-primary" type="button" onclick="doImport()"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg>Загрузить</button>
-      <button class="btn btn-ghost" type="button" onclick="closeSheet('import-sheet')">Отмена</button>
-    </div>
+    <div class="sheet-head"><div><div class="sheet-title">Настройки</div><div class="sheet-sub">профиль и данные</div></div>
+      <button class="sheet-close" onclick="document.getElementById('settingsSheet').close()" aria-label="Закрыть"><svg class="icon" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+    <div class="field"><label for="bwInput">Вес тела, кг</label><input id="bwInput" type="number" inputmode="decimal" step="0.5"></div>
+    <button class="btn btn-ghost btn-sm" id="saveBwBtn" style="width:auto;align-self:flex-start"><svg class="icon-sm" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>Сохранить</button>
+    <a class="settings-link" href="program.html"><span>Программа тренировок</span><svg class="icon" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></a>
+    <button class="settings-link" id="resetBtn" style="color:var(--red)"><span>Сбросить весь прогресс</span><svg class="icon" viewBox="0 0 24 24"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/></svg></button>
   </div>
 </dialog>
+
+<dialog class="sheet" id="dataSheet">
+  <div class="sheet-inner">
+    <div class="sheet-head"><div><div class="sheet-title" id="dataTitle">Экспорт</div><div class="sheet-sub" id="dataSub"></div></div>
+      <button class="sheet-close" onclick="document.getElementById('dataSheet').close()" aria-label="Закрыть"><svg class="icon" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+    <textarea class="sheet-ta" id="dataTa"></textarea>
+    <div class="sheet-msg" id="dataMsg"></div>
+    <div class="btn-row" id="dataBtns"></div>
+  </div>
+</dialog>
+
+<div class="toast" id="toast"></div>
 
 <script>
-const TABS=['week','body','day-a','day-b','food','rules'];
-function showTab(id){
-  document.querySelectorAll('.section').forEach(s=>s.classList.toggle('active',s.id===id));
-  document.querySelectorAll('.tab').forEach(t=>{
-    const on=t.dataset.tab===id;
-    t.classList.toggle('active',on);
-    t.setAttribute('aria-selected',on?'true':'false');
+"use strict";
+/* ===================== Каталог упражнений ===================== */
+// t: тип — 'w' взвешенное (reps×kg), 'bw' свой вес (+доп кг), 't' время (мин)
+// m: мышцы [primary...]; s: вторичные
+const CAT_ORDER=["Грудь","Спина","Плечи","Руки","Ноги","Пресс","Кардио"];
+const EXERCISES=[
+ {id:"bench",n:"Жим штанги лёжа",c:"Грудь",t:"w",m:["chest"],s:["triceps","shoulders"]},
+ {id:"bench_inc_db",n:"Жим гантелей на наклонной",c:"Грудь",t:"w",m:["chest"],s:["shoulders","triceps"]},
+ {id:"hammer_press",n:"Жим в хаммере",c:"Грудь",t:"w",m:["chest"],s:["triceps"]},
+ {id:"pec_deck",n:"Сведение рук (бабочка)",c:"Грудь",t:"w",m:["chest"],s:[]},
+ {id:"dips_chest",n:"Брусья (грудь)",c:"Грудь",t:"bw",m:["chest"],s:["triceps","shoulders"]},
+ {id:"pushup",n:"Отжимания",c:"Грудь",t:"bw",m:["chest"],s:["triceps","shoulders"]},
+ {id:"pullup",n:"Подтягивания",c:"Спина",t:"bw",m:["back"],s:["biceps","forearms"]},
+ {id:"lat_pulldown",n:"Тяга верхнего блока",c:"Спина",t:"w",m:["back"],s:["biceps"]},
+ {id:"row_cable",n:"Тяга горизонтального блока",c:"Спина",t:"w",m:["back"],s:["biceps"]},
+ {id:"row_db",n:"Тяга гантели в наклоне",c:"Спина",t:"w",m:["back"],s:["biceps"]},
+ {id:"row_bb",n:"Тяга штанги в наклоне",c:"Спина",t:"w",m:["back"],s:["biceps","lowerback"]},
+ {id:"row_machine",n:"Тяга в тренажёре",c:"Спина",t:"w",m:["back"],s:["biceps"]},
+ {id:"pullover",n:"Пуловер на блоке",c:"Спина",t:"w",m:["back"],s:["chest"]},
+ {id:"deadlift",n:"Становая тяга",c:"Спина",t:"w",m:["back","hamstrings","glutes"],s:["lowerback","traps","forearms"]},
+ {id:"ohp_bb",n:"Жим штанги стоя",c:"Плечи",t:"w",m:["shoulders"],s:["triceps","traps"]},
+ {id:"ohp_db",n:"Жим гантелей сидя",c:"Плечи",t:"w",m:["shoulders"],s:["triceps"]},
+ {id:"arnold",n:"Жим Арнольда",c:"Плечи",t:"w",m:["shoulders"],s:["triceps"]},
+ {id:"lateral_db",n:"Махи гантелями в стороны",c:"Плечи",t:"w",m:["shoulders"],s:[]},
+ {id:"lateral_cable",n:"Махи на блоке",c:"Плечи",t:"w",m:["shoulders"],s:[]},
+ {id:"lateral_machine",n:"Махи в тренажёре",c:"Плечи",t:"w",m:["shoulders"],s:[]},
+ {id:"lateral_lying",n:"Махи лёжа на боку",c:"Плечи",t:"w",m:["shoulders"],s:[]},
+ {id:"rear_pec",n:"Обратная бабочка",c:"Плечи",t:"w",m:["shoulders"],s:["back"]},
+ {id:"face_pull",n:"Face pull",c:"Плечи",t:"w",m:["shoulders"],s:["traps","back"]},
+ {id:"upright_row",n:"Тяга к подбородку",c:"Плечи",t:"w",m:["shoulders"],s:["traps"]},
+ {id:"curl_bb",n:"Подъём штанги на бицепс",c:"Руки",t:"w",m:["biceps"],s:["forearms"]},
+ {id:"curl_hammer",n:"Молотковые сгибания",c:"Руки",t:"w",m:["biceps"],s:["forearms"]},
+ {id:"curl_incline",n:"Сгибания на наклонной",c:"Руки",t:"w",m:["biceps"],s:[]},
+ {id:"curl_db",n:"Сгибания гантелей",c:"Руки",t:"w",m:["biceps"],s:["forearms"]},
+ {id:"tri_pushdown",n:"Трицепс на блоке",c:"Руки",t:"w",m:["triceps"],s:[]},
+ {id:"tri_overhead",n:"Французский жим",c:"Руки",t:"w",m:["triceps"],s:[]},
+ {id:"dips_tri",n:"Брусья (трицепс)",c:"Руки",t:"bw",m:["triceps"],s:["chest","shoulders"]},
+ {id:"close_bench",n:"Жим узким хватом",c:"Руки",t:"w",m:["triceps"],s:["chest"]},
+ {id:"squat",n:"Приседания со штангой",c:"Ноги",t:"w",m:["quads","glutes"],s:["hamstrings","lowerback"]},
+ {id:"front_squat",n:"Фронтальный присед",c:"Ноги",t:"w",m:["quads"],s:["glutes","abs"]},
+ {id:"leg_press",n:"Жим ногами",c:"Ноги",t:"w",m:["quads","glutes"],s:["hamstrings"]},
+ {id:"leg_ext",n:"Разгибания ног",c:"Ноги",t:"w",m:["quads"],s:[]},
+ {id:"leg_curl",n:"Сгибания ног",c:"Ноги",t:"w",m:["hamstrings"],s:[]},
+ {id:"rdl",n:"Румынская тяга",c:"Ноги",t:"w",m:["hamstrings","glutes"],s:["lowerback"]},
+ {id:"lunge",n:"Выпады",c:"Ноги",t:"w",m:["quads","glutes"],s:["hamstrings"]},
+ {id:"hip_thrust",n:"Ягодичный мост",c:"Ноги",t:"w",m:["glutes"],s:["hamstrings"]},
+ {id:"calf",n:"Подъём на носки",c:"Ноги",t:"w",m:["calves"],s:[]},
+ {id:"cable_crunch",n:"Скручивания на блоке",c:"Пресс",t:"w",m:["abs"],s:[]},
+ {id:"hanging_leg",n:"Подъём ног в висе",c:"Пресс",t:"bw",m:["abs"],s:[]},
+ {id:"crunch",n:"Скручивания",c:"Пресс",t:"bw",m:["abs"],s:[]},
+ {id:"plank",n:"Планка",c:"Пресс",t:"t",m:["abs"],s:[]},
+ {id:"ab_wheel",n:"Ролик для пресса",c:"Пресс",t:"bw",m:["abs"],s:[]},
+ {id:"run",n:"Бег / дорожка",c:"Кардио",t:"t",m:["cardio"],s:[]},
+ {id:"bike",n:"Велотренажёр",c:"Кардио",t:"t",m:["cardio"],s:[]},
+ {id:"row_erg",n:"Гребля",c:"Кардио",t:"t",m:["cardio"],s:["back"]},
+ {id:"jump_rope",n:"Скакалка",c:"Кардио",t:"t",m:["cardio"],s:["calves"]},
+];
+const EXMAP={}; EXERCISES.forEach(e=>EXMAP[e.id]=e);
+const MUS_RU={chest:"грудь",back:"спина",shoulders:"плечи",biceps:"бицепс",triceps:"трицепс",forearms:"предплечья",abs:"пресс",quads:"квадрицепс",hamstrings:"бицепс бедра",glutes:"ягодицы",calves:"икры",traps:"трапеции",lowerback:"поясница",cardio:"кардио"};
+const MAJOR_MUSCLES=["chest","back","shoulders","biceps","triceps","quads","hamstrings","glutes","abs","calves"];
+const ALL_MUSCLES=MAJOR_MUSCLES.concat(["forearms","traps","lowerback"]);
+const RANKS=[[1,"Новобранец"],[3,"Атлет"],[6,"Боец"],[10,"Ветеран"],[15,"Чемпион"],[22,"Элита"],[30,"Легенда"]];
+
+/* ===================== Хранилище ===================== */
+const LS={char:"rpg.character",sess:"rpg.sessions",pr:"rpg.prs",ach:"rpg.achievements",draft:"rpg.draft"};
+function load(k,def){try{const v=localStorage.getItem(k);return v?JSON.parse(v):def;}catch(e){return def;}}
+function save(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
+let character=load(LS.char,null);
+let sessions=load(LS.sess,[]);
+let prs=load(LS.pr,{});
+let achieved=load(LS.ach,{});
+let draft=load(LS.draft,null);
+function freshChar(){return {created:new Date().toISOString(),bodyweight:85,xp:0,totalXp:0,level:1,migrated:false};}
+if(!character) character=freshChar();
+
+/* Миграция из старой памятки (plan-weights того же origin) */
+(function migrate(){
+  if(character.migrated) return;
+  character.migrated=true;
+  let pw=null; try{pw=JSON.parse(localStorage.getItem("plan-weights")||"null");}catch(e){}
+  if(!pw){ save(LS.char,character); return; }
+  const MAP={
+    "Тяга горизонтального блока широким хватом":"row_cable","Тяга верхнего блока к груди":"lat_pulldown",
+    "Жим штанги лёжа":"bench","Подъём штанги на бицепс":"curl_bb","Молотковые сгибания (Hammer curl)":"curl_hammer",
+    "Трицепс — блок с канатом":"tri_pushdown","Жим штанги стоя над головой":"ohp_bb","Сведение рук в тренажёре («Бабочка»)":"pec_deck",
+    "Обратная бабочка (Reverse Pec Deck)":"rear_pec","Face pull с канатом":"face_pull","Махи в тренажёре (Lateral Raise Machine)":"lateral_machine",
+    "Скручивания на блоке (Cable crunch)":"cable_crunch","Жим гантелей на наклонной скамье 30°":"bench_inc_db","Французский жим гантели из-за головы":"tri_overhead"
+  };
+  let seeded=0;
+  Object.keys(pw).forEach(k=>{
+    const title=k.split("|").pop(); const exId=MAP[title]; if(!exId) return;
+    const cur=pw[k]&&pw[k].cur&&parseFloat(String(pw[k].cur.v).replace(",","."));
+    if(cur&&cur>0){ prs[exId]={weight:cur,e1rm:cur,vol:cur*8,at:pw[k].cur.d||new Date().toISOString(),seeded:true}; seeded++; }
   });
+  if(seeded){ save(LS.pr,prs); }
+  save(LS.char,character);
+})();
+
+/* ===================== Математика XP / уровней / характеристик ===================== */
+function xpToNext(level){return 100+(level-1)*45;}
+function e1rm(w,reps){return Math.round(w*(1+reps/30));}
+function setVolume(ex,set){
+  const reps=Math.max(0,+set.reps||0);
+  if(ex.t==="t"){ return reps*45; }
+  if(ex.t==="bw"){ return reps*(character.bodyweight+(+set.weight||0)); }
+  return reps*Math.max(0,+set.weight||0);
+}
+function itemVolume(it){const ex=EXMAP[it.exId];if(!ex)return 0;return (it.sets||[]).reduce((a,s)=>a+setVolume(ex,s),0);}
+function sessionVolume(items){return items.reduce((a,it)=>a+itemVolume(it),0);}
+function bestOfItem(it){
+  const ex=EXMAP[it.exId]; let w=0,e=0,vol=itemVolume(it);
+  (it.sets||[]).forEach(s=>{const sw=+s.weight||0,r=+s.reps||0; if(sw>w)w=sw; const est=ex&&ex.t==="w"?e1rm(sw,r):0; if(est>e)e=est;});
+  return {weight:w,e1rm:e,vol};
+}
+function computeSessionXP(items){
+  const vol=sessionVolume(items);
+  let setsCount=0; items.forEach(it=>setsCount+=(it.sets||[]).filter(s=>(+s.reps>0)).length);
+  let base=Math.round(vol/100)+setsCount*4;
+  let prBonus=0;
+  items.forEach(it=>{const b=bestOfItem(it);const cur=prs[it.exId]; if(b.weight>0 && (!cur||b.weight>(cur.weight||0))) prBonus+=25;});
+  return Math.max(0,base+prBonus);
+}
+
+/* ===================== Характеристики (0-100) ===================== */
+function allSetsFlat(){const out=[];sessions.forEach(ss=>ss.items.forEach(it=>{const ex=EXMAP[it.exId];if(!ex)return;it.sets.forEach(s=>out.push({ex,s,date:ss.date}));}));return out;}
+function clamp(v,a,b){return Math.max(a,Math.min(b,v));}
+function daysAgo(dStr){const d=new Date(dStr);const n=new Date();return Math.floor((n-d)/86400000);}
+function sessionsInLastDays(n){return sessions.filter(ss=>daysAgo(ss.date)<n);}
+function currentStreak(){
+  if(!sessions.length)return 0;
+  const days=new Set(sessions.map(ss=>ss.date.slice(0,10)));
+  let streak=0; let d=new Date(); const iso=x=>x.toISOString().slice(0,10);
+  if(!days.has(iso(d))) d.setDate(d.getDate()-1);
+  while(days.has(iso(d))){streak++; d.setDate(d.getDate()-1);}
+  return streak;
+}
+function computeStats(){
+  const totalVol=sessions.reduce((a,ss)=>a+(ss.volume||0),0);
+  let bestE=0; Object.keys(prs).forEach(id=>{const ex=EXMAP[id]; if(ex&&ex.t==="w"&&prs[id].e1rm>bestE)bestE=prs[id].e1rm;});
+  const strRatio=bestE/Math.max(40,character.bodyweight);
+  const strength=clamp(Math.round((strRatio/2.5)*100),0,100);
+  const flat=allSetsFlat().filter(x=>x.ex.t!=="t");
+  const avgReps=flat.length?flat.reduce((a,x)=>a+(+x.s.reps||0),0)/flat.length:0;
+  const endurance=clamp(Math.round((avgReps/15)*60 + Math.min(40,flat.length/5)),0,100);
+  const volume=clamp(Math.round(Math.log10(Math.max(1,totalVol))/Math.log10(2000000)*100),0,100);
+  const w30=sessionsInLastDays(30).length;
+  const streak=currentStreak();
+  const consistency=clamp(Math.round(Math.min(70,w30*6)+Math.min(30,streak*4)),0,100);
+  return {strength,endurance,volume,consistency,totalVol,bestE,streak,w30};
+}
+
+/* ===================== Мышечный объём ===================== */
+function muscleVolume(windowDays){
+  const vol={}; ALL_MUSCLES.forEach(m=>vol[m]=0);
+  const today=new Date().toISOString().slice(0,10);
+  const list = windowDays==="today" ? sessions.filter(ss=>ss.date.slice(0,10)===today) : sessionsInLastDays(windowDays);
+  list.forEach(ss=>ss.items.forEach(it=>{
+    const ex=EXMAP[it.exId]; if(!ex)return; const v=itemVolume(it);
+    (ex.m||[]).forEach(mu=>{ if(mu in vol) vol[mu]+=v; });
+    (ex.s||[]).forEach(mu=>{ if(mu in vol) vol[mu]+=v*0.5; });
+  }));
+  return vol;
+}
+
+/* ===================== Достижения ===================== */
+const ACHIEVEMENTS=[
+ {id:"first",n:"Первый шаг",d:"Записать первую тренировку",r:"common",ic:"flag",prog:s=>Math.min(1,s.workouts/1),done:s=>s.workouts>=1},
+ {id:"w5",n:"Разогрев",d:"5 тренировок",r:"common",ic:"dumbbell",prog:s=>s.workouts/5,done:s=>s.workouts>=5},
+ {id:"w25",n:"Привычка",d:"25 тренировок",r:"rare",ic:"dumbbell",prog:s=>s.workouts/25,done:s=>s.workouts>=25},
+ {id:"w50",n:"Машина",d:"50 тренировок",r:"epic",ic:"dumbbell",prog:s=>s.workouts/50,done:s=>s.workouts>=50},
+ {id:"w100",n:"Одержимость",d:"100 тренировок",r:"legend",ic:"dumbbell",prog:s=>s.workouts/100,done:s=>s.workouts>=100},
+ {id:"streak3",n:"Разгон",d:"3 дня подряд",r:"common",ic:"fire",prog:s=>s.streak/3,done:s=>s.streak>=3},
+ {id:"streak7",n:"В огне",d:"7 дней подряд",r:"rare",ic:"fire",prog:s=>s.streak/7,done:s=>s.streak>=7},
+ {id:"streak30",n:"Несгораемый",d:"30 дней подряд",r:"legend",ic:"fire",prog:s=>s.streak/30,done:s=>s.streak>=30},
+ {id:"ton10",n:"10 тонн",d:"10 000 кг суммарно",r:"common",ic:"weight",prog:s=>s.totalVol/10000,done:s=>s.totalVol>=10000},
+ {id:"ton100",n:"100 тонн",d:"100 000 кг суммарно",r:"rare",ic:"weight",prog:s=>s.totalVol/100000,done:s=>s.totalVol>=100000},
+ {id:"ton500",n:"Титан",d:"500 000 кг суммарно",r:"epic",ic:"weight",prog:s=>s.totalVol/500000,done:s=>s.totalVol>=500000},
+ {id:"lvl5",n:"Уровень 5",d:"Достичь 5 уровня",r:"common",ic:"star",prog:s=>s.level/5,done:s=>s.level>=5},
+ {id:"lvl10",n:"Уровень 10",d:"Достичь 10 уровня",r:"rare",ic:"star",prog:s=>s.level/10,done:s=>s.level>=10},
+ {id:"lvl20",n:"Уровень 20",d:"Достичь 20 уровня",r:"epic",ic:"star",prog:s=>s.level/20,done:s=>s.level>=20},
+ {id:"bench_bw",n:"Жим = вес тела",d:"Жим лёжа ≥ своего веса",r:"rare",ic:"bench",prog:s=>s.benchRatio,done:s=>s.benchRatio>=1},
+ {id:"squat_bw15",n:"Присед 1.5×",d:"Присед ≥ 1.5 веса тела",r:"epic",ic:"legs",prog:s=>s.squatRatio/1.5,done:s=>s.squatRatio>=1.5},
+ {id:"dead_bw2",n:"Становая 2×",d:"Становая ≥ 2 веса тела",r:"epic",ic:"legs",prog:s=>s.deadRatio/2,done:s=>s.deadRatio>=2},
+ {id:"pull10",n:"10 подтягиваний",d:"10 повторов в подходе",r:"rare",ic:"pull",prog:s=>s.bestPull/10,done:s=>s.bestPull>=10},
+ {id:"fullbody",n:"Всё тело",d:"6+ групп мышц за неделю",r:"rare",ic:"body",prog:s=>s.groups7/6,done:s=>s.groups7>=6},
+ {id:"heavy",n:"Тяжёлая сессия",d:"20 000 кг за тренировку",r:"epic",ic:"flame",prog:s=>s.maxSessionVol/20000,done:s=>s.maxSessionVol>=20000},
+];
+function achStats(){
+  const base=computeStats();
+  const workouts=sessions.length;
+  const benchRatio=(prs.bench?prs.bench.weight:0)/Math.max(40,character.bodyweight);
+  const squatRatio=(prs.squat?prs.squat.weight:0)/Math.max(40,character.bodyweight);
+  const deadRatio=(prs.deadlift?prs.deadlift.weight:0)/Math.max(40,character.bodyweight);
+  let bestPull=0; sessions.forEach(ss=>ss.items.forEach(it=>{if(it.exId==="pullup")it.sets.forEach(s=>{if(+s.reps>bestPull)bestPull=+s.reps;});}));
+  const mv7=muscleVolume(7); let groups7=0; MAJOR_MUSCLES.forEach(m=>{if(mv7[m]>0)groups7++;});
+  const maxSessionVol=sessions.reduce((a,ss)=>Math.max(a,ss.volume||0),0);
+  return Object.assign(base,{workouts,benchRatio,squatRatio,deadRatio,bestPull,groups7,maxSessionVol,level:character.level});
+}
+function checkAchievements(){
+  const s=achStats(); const newly=[];
+  ACHIEVEMENTS.forEach(a=>{ if(!achieved[a.id] && a.done(s)){ achieved[a.id]={at:new Date().toISOString()}; newly.push(a);} });
+  if(newly.length) save(LS.ach,achieved);
+  return newly;
+}
+
+/* ===================== Рендер ===================== */
+function rankFor(level){let r=RANKS[0][1];for(const pair of RANKS){if(level>=pair[0])r=pair[1];}return r;}
+function fmtNum(n){return Math.round(n).toLocaleString("ru-RU");}
+function fmtTon(kg){return (kg/1000).toFixed(kg<10000?1:0);}
+function plural(n,a,b,c){n=Math.abs(n)%100;const n1=n%10;if(n>10&&n<20)return c;if(n1>1&&n1<5)return b;if(n1===1)return a;return c;}
+
+function renderHero(){
+  const s=computeStats();
+  document.getElementById("lvlNum").textContent=character.level;
+  document.getElementById("lvlChip").textContent=character.level;
+  document.getElementById("rankName").textContent=rankFor(character.level);
+  const need=xpToNext(character.level);
+  document.getElementById("xpNow").textContent=character.xp;
+  document.getElementById("xpNext").textContent=need;
+  document.getElementById("xpFill").style.width=clamp(character.xp/need*100,0,100)+"%";
+  document.getElementById("heroSub").textContent = sessions.length ? (s.streak>0?("Серия "+s.streak+" "+plural(s.streak,"день","дня","дней")+" — не сбавляй"):"Разомнись сегодня, верни серию") : "Запиши первую тренировку, чтобы начать прокачку";
+  setStat("Str",s.strength);setStat("End",s.endurance);setStat("Vol",s.volume);setStat("Con",s.consistency);
+  drawAvatar(character.level,s);
+  renderRecentAch();
+}
+function setStat(key,v){document.getElementById("st"+key).textContent=v;document.getElementById("bar"+key).style.width=v+"%";}
+
+function drawAvatar(level,s){
+  const g=clamp((level-1)/25,0,1);
+  const sh=42+g*26;
+  const wa=20+(1-g)*8;
+  const cx=80;
+  const strongTint=s.strength>60;
+  const shoulderY=70, neck=52, waistY=150, hipY=168, footY=250;
+  const aura = level>=10 ? `<ellipse cx="${cx}" cy="150" rx="${sh+30}" ry="120" fill="url(#aura)" opacity="${clamp((level-10)/20,0.15,0.6)}"/>`:"";
+  const defs=`<defs>
+    <linearGradient id="body" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2a2f3c"/><stop offset="1" stop-color="#1a1d25"/></linearGradient>
+    <linearGradient id="bodyStrong" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a4256"/><stop offset="1" stop-color="#20242e"/></linearGradient>
+    <radialGradient id="aura"><stop offset="0" stop-color="var(--volt)" stop-opacity="0.5"/><stop offset="1" stop-color="var(--volt)" stop-opacity="0"/></radialGradient>
+  </defs>`;
+  const fill = strongTint?'url(#bodyStrong)':'url(#body)';
+  const body=`
+    <path d="M ${cx-sh} ${shoulderY}
+             C ${cx-sh-6} ${shoulderY+26} ${cx-wa-10} ${waistY-20} ${cx-wa} ${waistY}
+             L ${cx-wa-2} ${hipY} L ${cx-wa-10} ${footY} L ${cx-6} ${footY}
+             L ${cx-4} ${hipY} L ${cx+4} ${hipY} L ${cx+6} ${footY}
+             L ${cx+wa+10} ${footY} L ${cx+wa+2} ${hipY} L ${cx+wa} ${waistY}
+             C ${cx+wa+10} ${waistY-20} ${cx+sh+6} ${shoulderY+26} ${cx+sh} ${shoulderY}
+             C ${cx+sh*0.5} ${shoulderY-10} ${cx-sh*0.5} ${shoulderY-10} ${cx-sh} ${shoulderY} Z"
+          fill="${fill}" stroke="var(--volt-border)" stroke-width="1.5"/>
+    <circle cx="${cx}" cy="${neck-18}" r="15" fill="${fill}" stroke="var(--volt-border)" stroke-width="1.5"/>
+    <rect x="${cx-5}" y="${neck-5}" width="10" height="12" rx="3" fill="${fill}"/>
+    <path d="M ${cx-sh+2} ${shoulderY+2} C ${cx-sh-14} ${shoulderY+40} ${cx-sh-16} ${waistY-10} ${cx-sh-6} ${waistY+6}" fill="none" stroke="${fill}" stroke-width="${10+g*8}" stroke-linecap="round"/>
+    <path d="M ${cx+sh-2} ${shoulderY+2} C ${cx+sh+14} ${shoulderY+40} ${cx+sh+16} ${waistY-10} ${cx+sh+6} ${waistY+6}" fill="none" stroke="${fill}" stroke-width="${10+g*8}" stroke-linecap="round"/>
+  `;
+  const detail = g>0.3 ? `
+    <line x1="${cx}" y1="${shoulderY+14}" x2="${cx}" y2="${waistY-16}" stroke="rgba(0,0,0,0.25)" stroke-width="2"/>
+    <line x1="${cx-18}" y1="${shoulderY+22}" x2="${cx+18}" y2="${shoulderY+22}" stroke="rgba(0,0,0,0.18)" stroke-width="2"/>`:"";
+  const abs = g>0.55 ? `
+    <line x1="${cx-12}" y1="${waistY-32}" x2="${cx+12}" y2="${waistY-32}" stroke="rgba(0,0,0,0.18)" stroke-width="1.5"/>
+    <line x1="${cx-12}" y1="${waistY-20}" x2="${cx+12}" y2="${waistY-20}" stroke="rgba(0,0,0,0.18)" stroke-width="1.5"/>`:"";
+  document.getElementById("avatarWrap").innerHTML=`<svg viewBox="0 0 160 260" xmlns="http://www.w3.org/2000/svg" aria-label="Персонаж, уровень ${level}">${defs}${aura}${body}${detail}${abs}</svg>`;
+}
+
+function achIcon(ic){
+  const p={flag:'<path d="M5 21V4M5 4h11l-2 4 2 4H5"/>',dumbbell:'<path d="M6 7v10M18 7v10M3 10v4M21 10v4M6 12h12"/>',fire:'<path d="M12 3c1 3 4 4 4 8a4 4 0 0 1-8 0c0-2 1-3 1-5 2 1 3 2 3 2z"/>',weight:'<path d="M7 9h10l1.5 10H5.5L7 9zM9 9a3 3 0 0 1 6 0"/>',star:'<path d="M12 3l2.5 5.5L20 9l-4 4 1 6-5-3-5 3 1-6-4-4 5.5-.5L12 3z"/>',bench:'<path d="M4 10h16M6 10v6M18 10v6M9 7h6v3H9z"/>',legs:'<path d="M9 3v8l-2 10M15 3v8l2 10M9 7h6"/>',pull:'<path d="M6 4h12M12 4v6a3 3 0 0 1-3 3M12 10a3 3 0 0 0 3 3M9 13v7M15 13v7"/>',body:'<circle cx="12" cy="4.5" r="2"/><path d="M12 7v7M12 9l-5-2M12 9l5-2M12 14l-3 6M12 14l3 6"/>',flame:'<path d="M12 3c1 3 4 4 4 8a4 4 0 0 1-8 0c0-2 1-3 1-5 2 1 3 2 3 2z"/>'};
+  return '<svg class="icon" viewBox="0 0 24 24">'+(p[ic]||p.star)+'</svg>';
+}
+const RAR_RU={common:"обычное",rare:"редкое",epic:"эпик",legend:"легенда"};
+function achCard(a,done,prog){
+  const rc="r-"+a.r;
+  return `<div class="ach ${done?'':'locked'}">
+    <div class="ach-rar ${rc}">${RAR_RU[a.r]}</div>
+    <div class="ach-ic ${rc} ic">${achIcon(a.ic)}</div>
+    <div class="ach-name">${a.n}</div>
+    <div class="ach-desc">${a.d}</div>
+    ${done?'':`<div class="ach-prog"><div class="ach-prog-fill" style="width:${clamp(prog*100,0,100)}%"></div></div>`}
+  </div>`;
+}
+function renderRecentAch(){
+  const el=document.getElementById("recentAch");
+  const unlocked=ACHIEVEMENTS.filter(a=>achieved[a.id]).sort((x,y)=>new Date(achieved[y.id].at)-new Date(achieved[x.id].at));
+  if(!unlocked.length){ el.innerHTML='<div class="card"><div class="empty" style="padding:18px"><div class="empty-s">Наград пока нет. Тренируйся — они откроются сами.</div></div></div>'; }
+  else { el.innerHTML='<div class="ach-grid">'+unlocked.slice(0,4).map(a=>achCard(a,true,1)).join("")+'</div>'; }
+  const s=achStats();
+  const locked=ACHIEVEMENTS.filter(a=>!achieved[a.id]);
+  const host=document.getElementById("allAchHost");
+  host.innerHTML= locked.length ? ('<div class="slabel">В процессе</div><div class="ach-grid">'+locked.map(a=>achCard(a,false,a.prog(s))).join("")+'</div>') : "";
+}
+
+/* ----- Запись тренировки ----- */
+function renderLog(){
+  const el=document.getElementById("logBody");
+  if(!draft){
+    el.innerHTML=`<div class="start-cta">
+      <div class="empty"><svg class="icon" viewBox="0 0 24 24"><path d="M6 7v10M18 7v10M3 10v4M21 10v4M6 12h12"/></svg>
+      <div class="empty-t">Готов тренироваться?</div>
+      <div class="empty-s">Начни сессию, добавляй упражнения и подходы. За объём и рекорды капает XP.</div></div>
+      <button class="btn btn-primary" id="startBtn"><svg class="icon-sm" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Начать тренировку</button>
+    </div>`;
+    document.getElementById("startBtn").onclick=()=>{draft={date:new Date().toISOString(),items:[]};save(LS.draft,draft);renderLog();};
+    return;
+  }
+  const xp=computeSessionXP(draft.items);
+  let html=`<div class="card-head"><svg class="icon" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><div class="card-title">Тренировка · ${new Date(draft.date).toLocaleDateString("ru-RU",{day:"numeric",month:"long"})}</div></div>`;
+  if(!draft.items.length){ html+=`<div class="empty" style="padding:22px"><div class="empty-s">Пока пусто. Добавь первое упражнение.</div></div>`; }
+  draft.items.forEach((it,ii)=>{
+    const ex=EXMAP[it.exId]; if(!ex)return;
+    html+=`<div class="session-ex">
+      <div class="session-ex-head">
+        <div><div class="session-ex-name">${ex.n}</div><div class="session-ex-cat">${ex.c} · ${(ex.m||[]).map(m=>MUS_RU[m]).join(", ")}</div></div>
+        <button class="set-del" data-del-item="${ii}" aria-label="Убрать упражнение"><svg class="icon-sm" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+      </div>
+      <div class="set-head"><span>#</span><span>${ex.t==="t"?"Минуты":"Повторы"}</span><span>${ex.t==="t"?"&nbsp;":(ex.t==="bw"?"Доп. кг":"Вес, кг")}</span><span>&nbsp;</span></div>`;
+    (it.sets||[]).forEach((st,si)=>{
+      html+=`<div class="set-row">
+        <div class="set-no num">${si+1}</div>
+        <input class="set-input num" inputmode="numeric" placeholder="0" value="${st.reps??""}" data-i="${ii}" data-s="${si}" data-f="reps">
+        ${ex.t==="t"?'<div></div>':`<input class="set-input num" inputmode="decimal" placeholder="0" value="${st.weight??""}" data-i="${ii}" data-s="${si}" data-f="weight">`}
+        <button class="set-del" data-del-set="${ii}:${si}" aria-label="Удалить подход"><svg class="icon-sm" viewBox="0 0 24 24"><path d="M5 12h14"/></svg></button>
+      </div>`;
+    });
+    html+=`<button class="addset" data-add-set="${ii}">+ подход</button></div>`;
+  });
+  html+=`<button class="btn btn-ghost" id="addExBtn" style="margin-top:4px"><svg class="icon-sm" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Добавить упражнение</button>`;
+  html+=`<div class="xp-preview"><span class="xp-preview-lbl">Заработаешь</span><span class="xp-preview-val num">+${xp} XP</span></div>`;
+  html+=`<div class="btn-row"><button class="btn btn-primary" id="finishBtn" style="flex:2"><svg class="icon-sm" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>Завершить</button><button class="btn btn-ghost btn-sm" id="cancelBtn" style="flex:1">Отмена</button></div>`;
+  el.innerHTML=html;
+  bindLog();
+}
+function bindLog(){
+  const el=document.getElementById("logBody");
+  const addEx=document.getElementById("addExBtn"); if(addEx) addEx.onclick=openPicker;
+  const fin=document.getElementById("finishBtn"); if(fin) fin.onclick=finishSession;
+  const can=document.getElementById("cancelBtn"); if(can) can.onclick=()=>{ if(confirm("Отменить тренировку? Записи не сохранятся.")){draft=null;save(LS.draft,draft);renderLog();} };
+  el.querySelectorAll("input[data-f]").forEach(inp=>{
+    inp.addEventListener("input",()=>{
+      const i=+inp.dataset.i,s=+inp.dataset.s,f=inp.dataset.f;
+      draft.items[i].sets[s][f]=inp.value; save(LS.draft,draft);
+      const xp=computeSessionXP(draft.items); const pv=document.querySelector(".xp-preview-val"); if(pv)pv.textContent="+"+xp+" XP";
+    });
+  });
+  el.querySelectorAll("[data-add-set]").forEach(b=>b.onclick=()=>{
+    const i=+b.dataset.addSet; const prev=draft.items[i].sets.slice(-1)[0]||{};
+    draft.items[i].sets.push({reps:prev.reps||"",weight:prev.weight||""}); save(LS.draft,draft); renderLog();
+  });
+  el.querySelectorAll("[data-del-set]").forEach(b=>b.onclick=()=>{
+    const parts=b.dataset.delSet.split(":"); const i=+parts[0],s=+parts[1]; draft.items[i].sets.splice(s,1);
+    if(!draft.items[i].sets.length) draft.items[i].sets.push({reps:"",weight:""});
+    save(LS.draft,draft); renderLog();
+  });
+  el.querySelectorAll("[data-del-item]").forEach(b=>b.onclick=()=>{ draft.items.splice(+b.dataset.delItem,1); save(LS.draft,draft); renderLog(); });
+}
+
+/* ----- Выбор упражнения ----- */
+let pickCat=CAT_ORDER[0];
+function openPicker(){ pickCat=CAT_ORDER[0]; renderPicker(); document.getElementById("pickSheet").showModal(); }
+function renderPicker(){
+  document.getElementById("catChips").innerHTML=CAT_ORDER.map(c=>`<button class="cat-chip ${c===pickCat?'active':''}" data-cat="${c}">${c}</button>`).join("");
+  document.getElementById("catChips").querySelectorAll(".cat-chip").forEach(b=>b.onclick=()=>{pickCat=b.dataset.cat;renderPicker();});
+  const list=EXERCISES.filter(e=>e.c===pickCat);
+  document.getElementById("exList").innerHTML=list.map(e=>`<button class="ex-pick" data-ex="${e.id}">
+    <div><div class="ex-pick-name">${e.n}</div><div class="ex-pick-mus">${(e.m||[]).map(m=>MUS_RU[m]).join(", ")}</div></div>
+    <span class="ex-pick-plus"><svg class="icon" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span></button>`).join("");
+  document.getElementById("exList").querySelectorAll(".ex-pick").forEach(b=>b.onclick=()=>{
+    draft.items.push({exId:b.dataset.ex,sets:[{reps:"",weight:""}]}); save(LS.draft,draft);
+    document.getElementById("pickSheet").close(); renderLog();
+  });
+}
+
+/* ----- Завершение сессии ----- */
+function finishSession(){
+  const items=draft.items.map(it=>({exId:it.exId,sets:(it.sets||[]).filter(s=>(+s.reps>0)).map(s=>({reps:+s.reps||0,weight:+s.weight||0}))})).filter(it=>it.sets.length&&EXMAP[it.exId]);
+  if(!items.length){ toast("Добавь хотя бы один подход"); return; }
+  const vol=sessionVolume(items);
+  const xp=computeSessionXP(items);
+  const newPRs=[];
+  items.forEach(it=>{const b=bestOfItem(it);const cur=prs[it.exId];
+    if(b.weight>0 && (!cur||b.weight>(cur.weight||0))){ newPRs.push({exId:it.exId,weight:b.weight,prev:cur?cur.weight||0:0}); }
+    if(!cur || b.weight>(cur.weight||0) || b.e1rm>(cur.e1rm||0) || b.vol>(cur.vol||0)){
+      prs[it.exId]={weight:Math.max(b.weight,cur?cur.weight||0:0),e1rm:Math.max(b.e1rm,cur?cur.e1rm||0:0),vol:Math.max(b.vol,cur?cur.vol||0:0),at:new Date().toISOString()};
+    }
+  });
+  save(LS.pr,prs);
+  const session={id:Date.now(),date:new Date().toISOString(),items,volume:vol,xp};
+  sessions.push(session); save(LS.sess,sessions);
+  character.xp+=xp; character.totalXp+=xp;
+  let leveled=[];
+  while(character.xp>=xpToNext(character.level)){ character.xp-=xpToNext(character.level); character.level++; leveled.push(character.level); }
+  save(LS.char,character);
+  const newly=checkAchievements();
+  draft=null; save(LS.draft,draft);
+  showSummary({xp,vol,newPRs,leveled,newly,items});
+  renderHero();
+}
+function showSummary(o){
+  const musToday={}; o.items.forEach(it=>{const ex=EXMAP[it.exId];(ex.m||[]).forEach(m=>musToday[m]=1);});
+  const mus=Object.keys(musToday).map(m=>MUS_RU[m]);
+  let h=`<div class="sheet-head" style="justify-content:flex-end"><button class="sheet-close" onclick="document.getElementById('summarySheet').close()" aria-label="Закрыть"><svg class="icon" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>`;
+  h+=`<div class="summary-xp-lbl">Тренировка засчитана</div><div class="summary-xp num">+${o.xp} XP</div>`;
+  if(o.leveled.length){ h+=`<div class="levelup"><div class="levelup-lbl">Новый уровень</div><div class="levelup-lvl num">${o.leveled[o.leveled.length-1]}</div><div style="font-size:12px;color:var(--gold);margin-top:2px">${rankFor(character.level)}</div></div>`; }
+  h+=`<div class="reward-list">`;
+  h+=`<div class="reward" style="animation-delay:.05s"><div class="reward-ic" style="background:var(--orange-bg);color:var(--orange)"><svg class="icon" viewBox="0 0 24 24"><path d="M7 9h10l1.5 10H5.5L7 9zM9 9a3 3 0 0 1 6 0"/></svg></div><div class="reward-txt"><b>${fmtNum(o.vol)} кг объёма</b><span>проработано: ${mus.join(", ")||"—"}</span></div></div>`;
+  o.newPRs.forEach((p,i)=>{ h+=`<div class="reward" style="animation-delay:${.1+i*.05}s"><div class="reward-ic" style="background:var(--volt-bg);color:var(--volt)"><svg class="icon" viewBox="0 0 24 24"><path d="M12 3l2.5 5.5L20 9l-4 4 1 6-5-3-5 3 1-6-4-4 5.5-.5L12 3z"/></svg></div><div class="reward-txt"><b>Рекорд: ${EXMAP[p.exId].n}</b><span>${p.weight} кг${p.prev?" (было "+p.prev+")":""}</span></div></div>`; });
+  o.newly.forEach((a,i)=>{ const rc="r-"+a.r; h+=`<div class="reward" style="animation-delay:${.15+i*.05}s"><div class="reward-ic ${rc} ic">${achIcon(a.ic)}</div><div class="reward-txt"><b>Достижение: ${a.n}</b><span>${RAR_RU[a.r]} · ${a.d}</span></div></div>`; });
+  h+=`</div><button class="btn btn-primary" onclick="document.getElementById('summarySheet').close()">Отлично</button>`;
+  document.getElementById("summaryInner").innerHTML=h;
+  document.getElementById("summarySheet").showModal();
+}
+
+/* ----- Прогресс ----- */
+function renderProgress(){
+  const s=computeStats();
+  document.getElementById("kWorkouts").textContent=sessions.length;
+  document.getElementById("kTonnage").textContent=fmtTon(s.totalVol);
+  document.getElementById("kStreak").textContent=s.streak;
+  const mv=muscleVolume(30); const entries=MAJOR_MUSCLES.map(m=>[m,mv[m]||0]).sort((a,b)=>b[1]-a[1]);
+  const max=Math.max(1,entries[0][1]);
+  if(s.totalVol===0){ document.getElementById("distroCard").innerHTML='<div class="empty" style="padding:16px"><div class="empty-s">Запиши тренировки — покажу баланс по группам мышц.</div></div>'; }
+  else { document.getElementById("distroCard").innerHTML='<div class="distro">'+entries.map(e=>`<div class="distro-row"><div class="distro-name">${MUS_RU[e[0]]}</div><div class="distro-bar"><div class="distro-fill" style="width:${e[1]/max*100}%"></div></div><div class="distro-val num">${fmtTon(e[1])}т</div></div>`).join("")+'</div>'; }
+  const byEx={};
+  sessions.forEach(ss=>ss.items.forEach(it=>{const b=bestOfItem(it);if(b.weight>0&&EXMAP[it.exId]){(byEx[it.exId]=byEx[it.exId]||[]).push({d:ss.date,w:b.weight});}}));
+  const list=Object.keys(byEx).map(id=>({id,pts:byEx[id]})).sort((a,b)=>b.pts.length-a.pts.length);
+  const host=document.getElementById("exProgList");
+  if(!list.length){ host.innerHTML='<div class="card"><div class="empty" style="padding:16px"><div class="empty-s">Здесь появится график роста весов по каждому упражнению.</div></div></div>'; return; }
+  host.innerHTML=list.map(x=>{
+    const ex=EXMAP[x.id]; const pts=x.pts; const best=Math.max.apply(null,pts.map(p=>p.w)); const first=pts[0].w; const last=pts[pts.length-1].w; const delta=last-first;
+    return `<div class="exprog"><div class="exprog-head"><div class="exprog-name">${ex.n}</div><div class="exprog-best num">${best} кг</div></div>
+      ${sparkline(pts.map(p=>p.w))}
+      <div class="exprog-meta"><span>${pts.length} ${plural(pts.length,"сессия","сессии","сессий")}</span><span class="num" style="color:${delta>0?'var(--green)':delta<0?'var(--red)':'var(--muted)'}">${delta>0?"+":""}${delta} кг</span></div></div>`;
+  }).join("");
+}
+function sparkline(vals){
+  if(vals.length<2){ return `<svg class="exprog-chart" viewBox="0 0 100 40" preserveAspectRatio="none"><circle cx="50" cy="20" r="3" fill="var(--volt)"/></svg>`; }
+  const min=Math.min.apply(null,vals),max=Math.max.apply(null,vals),rng=max-min||1;
+  const n=vals.length; const x=i=>i/(n-1)*96+2; const y=v=>36-((v-min)/rng)*32;
+  let d="M"+x(0)+" "+y(vals[0]); for(let i=1;i<n;i++)d+=" L"+x(i)+" "+y(vals[i]);
+  const area=d+` L${x(n-1)} 40 L${x(0)} 40 Z`;
+  return `<svg class="exprog-chart" viewBox="0 0 100 40" preserveAspectRatio="none">
+    <defs><linearGradient id="sg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--volt)" stop-opacity="0.25"/><stop offset="1" stop-color="var(--volt)" stop-opacity="0"/></linearGradient></defs>
+    <path d="${area}" fill="url(#sg)"/><path d="${d}" fill="none" stroke="var(--volt)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="${x(n-1)}" cy="${y(vals[n-1])}" r="2.6" fill="var(--volt)"/></svg>`;
+}
+
+/* ----- Тело / тепловая карта ----- */
+let bodyWin="30";
+function heatColor(t){
+  if(t<=0) return "var(--bg4)";
+  const stops=[[35,39,51],[58,90,140],[106,166,255],[214,249,79]];
+  const seg=clamp(t,0,1)*3; const i=Math.min(2,Math.floor(seg)); const f=seg-i;
+  const a=stops[i],b=stops[i+1]; const c=a.map((v,k)=>Math.round(v+(b[k]-v)*f));
+  return `rgb(${c[0]},${c[1]},${c[2]})`;
+}
+function renderBody(){
+  const mv=muscleVolume(bodyWin==="today"?"today":30);
+  const max=Math.max.apply(null,[1].concat(ALL_MUSCLES.map(m=>mv[m]||0)));
+  document.getElementById("bodymap").innerHTML=bodySVG();
+  Object.keys(mv).forEach(m=>{ document.querySelectorAll('[data-m="'+m+'"]').forEach(node=>{ node.style.fill=heatColor((mv[m]||0)/max); }); });
+  const trained=MAJOR_MUSCLES.map(m=>[m,mv[m]||0]).sort((a,b)=>a[1]-b[1]);
+  const total=trained.reduce((a,x)=>a+x[1],0);
+  const lag=document.getElementById("lagList");
+  if(total===0){ lag.innerHTML='<div class="lag ok"><svg class="icon" viewBox="0 0 24 24" style="color:var(--green);flex-shrink:0"><path d="M12 3a7 7 0 0 0-4 12.7V18a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.3A7 7 0 0 0 12 3z"/></svg><div class="lag-txt">Данных пока нет. Запиши несколько тренировок — покажу, какие группы отстают.</div></div>'; return; }
+  const laggers=trained.filter(x=>x[1]/total<0.07).slice(0,3);
+  if(!laggers.length){ lag.innerHTML='<div class="lag ok"><svg class="icon" viewBox="0 0 24 24" style="color:var(--green);flex-shrink:0"><path d="M5 13l4 4L19 7"/></svg><div class="lag-txt">Баланс ровный — за '+(bodyWin==="today"?"сегодня":"30 дней")+' перекосов по группам нет.</div></div>'; return; }
+  lag.innerHTML=laggers.map(e=>`<div class="lag"><svg class="icon" viewBox="0 0 24 24" style="color:var(--amber);flex-shrink:0"><path d="M12 9v4M12 17h.01M10.3 3.9 2.4 18a2 2 0 0 0 1.7 3h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg><div class="lag-txt"><b>${MUS_RU[e[0]]}</b> ${e[1]===0?"совсем не качал":"мало объёма"}. Добавь 2–3 подхода на ближайшей тренировке.</div></div>`).join("");
+}
+function bodySVG(){
+  const front=`<svg viewBox="0 0 120 240" xmlns="http://www.w3.org/2000/svg" aria-label="Вид спереди">
+    <circle cx="60" cy="20" r="11" class="body-base"/>
+    <path class="body-base" d="M48 32h24l4 6-4 6H44l-4-6z"/>
+    <ellipse data-m="shoulders" class="body-region" cx="36" cy="48" rx="11" ry="9"/>
+    <ellipse data-m="shoulders" class="body-region" cx="84" cy="48" rx="11" ry="9"/>
+    <path data-m="chest" class="body-region" d="M44 46 h32 a6 6 0 0 1 6 6 v14 a8 8 0 0 1-8 8 H46 a8 8 0 0 1-8-8 V52 a6 6 0 0 1 6-6z"/>
+    <ellipse data-m="biceps" class="body-region" cx="30" cy="72" rx="7" ry="13"/>
+    <ellipse data-m="biceps" class="body-region" cx="90" cy="72" rx="7" ry="13"/>
+    <ellipse data-m="forearms" class="body-region" cx="26" cy="98" rx="6" ry="12"/>
+    <ellipse data-m="forearms" class="body-region" cx="94" cy="98" rx="6" ry="12"/>
+    <rect data-m="abs" class="body-region" x="48" y="80" width="24" height="34" rx="6"/>
+    <path data-m="quads" class="body-region" d="M46 118 h12 v40 l-4 14 h-6 l-4-14z"/>
+    <path data-m="quads" class="body-region" d="M62 118 h12 l2 40 l-4 14 h-6 l-4-14z"/>
+    <ellipse data-m="calves" class="body-region" cx="50" cy="196" rx="7" ry="16"/>
+    <ellipse data-m="calves" class="body-region" cx="70" cy="196" rx="7" ry="16"/>
+  </svg>`;
+  const back=`<svg viewBox="0 0 120 240" xmlns="http://www.w3.org/2000/svg" aria-label="Вид сзади">
+    <circle cx="60" cy="20" r="11" class="body-base"/>
+    <path data-m="traps" class="body-region" d="M44 34 h32 l6 12 H38z"/>
+    <ellipse data-m="shoulders" class="body-region" cx="34" cy="50" rx="10" ry="9"/>
+    <ellipse data-m="shoulders" class="body-region" cx="86" cy="50" rx="10" ry="9"/>
+    <path data-m="back" class="body-region" d="M44 48 h32 a6 6 0 0 1 6 6 l-4 24 a6 6 0 0 1-6 5 H48 a6 6 0 0 1-6-5 l-4-24 a6 6 0 0 1 6-6z"/>
+    <ellipse data-m="triceps" class="body-region" cx="30" cy="74" rx="7" ry="13"/>
+    <ellipse data-m="triceps" class="body-region" cx="90" cy="74" rx="7" ry="13"/>
+    <rect data-m="lowerback" class="body-region" x="50" y="84" width="20" height="18" rx="5"/>
+    <ellipse data-m="glutes" class="body-region" cx="52" cy="116" rx="11" ry="11"/>
+    <ellipse data-m="glutes" class="body-region" cx="68" cy="116" rx="11" ry="11"/>
+    <path data-m="hamstrings" class="body-region" d="M44 128 h14 v38 h-12 l-4-14z"/>
+    <path data-m="hamstrings" class="body-region" d="M62 128 h14 l2 24 l-4 14 h-12z"/>
+    <ellipse data-m="calves" class="body-region" cx="50" cy="196" rx="7" ry="16"/>
+    <ellipse data-m="calves" class="body-region" cx="70" cy="196" rx="7" ry="16"/>
+  </svg>`;
+  return front+back;
+}
+
+/* ----- Коуч ----- */
+function cIcon(k){const p={check:'<path d="M5 13l4 4L19 7"/>',alert:'<path d="M12 9v4M12 17h.01M10.3 3.9 2.4 18a2 2 0 0 0 1.7 3h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/>',balance:'<path d="M12 3v18M4 7h16M7 7l-3 6a3 3 0 0 0 6 0zM17 7l-3 6a3 3 0 0 0 6 0z"/>',flat:'<path d="M4 12h16"/>',trophy:'<path d="M8 4h8v4a4 4 0 0 1-8 0zM6 4H4v2a3 3 0 0 0 3 3M18 4h2v2a3 3 0 0 1-3 3M10 13v4M14 13v4M8 20h8"/>',fire:'<path d="M12 3c1 3 4 4 4 8a4 4 0 0 1-8 0c0-2 1-3 1-5 2 1 3 2 3 2z"/>',cal:'<rect x="4" y="5" width="16" height="16" rx="2"/><path d="M4 9h16M8 3v4M16 3v4"/>'};return '<svg class="icon-sm" viewBox="0 0 24 24">'+(p[k]||p.check)+'</svg>';}
+function renderCoach(){
+  const el=document.getElementById("coachBody");
+  if(!sessions.length){ el.innerHTML='<div class="card"><div class="empty" style="padding:16px"><svg class="icon" viewBox="0 0 24 24"><path d="M12 3a7 7 0 0 0-4 12.7V18a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.3A7 7 0 0 0 12 3z"/></svg><div class="empty-t">Коуч ждёт данных</div><div class="empty-s">Запиши хотя бы одну тренировку — разберу мышцы, отстающие группы и застрявшие веса.</div></div></div>'; return; }
+  const blocks=buildCoach();
+  el.innerHTML=blocks.map(b=>`<div class="coach-block ${b.type}"><div class="coach-h">${b.icon} ${b.h}</div><div class="coach-p">${b.p}</div></div>`).join("");
+}
+function buildCoach(){
+  const out=[]; const s=achStats();
+  const last=sessions[sessions.length-1];
+  const lastMus={}; last.items.forEach(it=>{const ex=EXMAP[it.exId];if(ex)(ex.m||[]).forEach(m=>lastMus[m]=1);});
+  const lastMusList=Object.keys(lastMus).map(m=>`<span class="mus">${MUS_RU[m]}</span>`).join(", ");
+  out.push({type:"good",icon:cIcon("check"),h:"Последняя тренировка",p:`Проработал: ${lastMusList||"—"}. Объём ${fmtNum(last.volume)} кг за ${last.items.length} ${plural(last.items.length,"упражнение","упражнения","упражнений")}.`});
+  const mv=muscleVolume(30); const tot=MAJOR_MUSCLES.reduce((a,m)=>a+(mv[m]||0),0);
+  if(tot>0){
+    const lag=MAJOR_MUSCLES.map(m=>[m,mv[m]||0]).filter(x=>x[1]/tot<0.07).sort((a,b)=>a[1]-b[1]).slice(0,3);
+    if(lag.length) out.push({type:"warn",icon:cIcon("alert"),h:"Отстают за 30 дней",p:`${lag.map(x=>`<span class="mus">${MUS_RU[x[0]]}</span>`).join(", ")}. Добавь по 2–3 подхода на эти группы, чтобы выровнять баланс и не копить слабые места.`});
+    else out.push({type:"info",icon:cIcon("balance"),h:"Баланс",p:"За 30 дней группы проработаны ровно, явных провалов нет. Так держать."});
+  }
+  const byEx={}; sessions.forEach(ss=>ss.items.forEach(it=>{const b=bestOfItem(it);if(b.weight>0&&EXMAP[it.exId]){(byEx[it.exId]=byEx[it.exId]||[]).push(b.weight);}}));
+  const stalled=[]; Object.keys(byEx).forEach(id=>{const arr=byEx[id];if(arr.length>=3){const l3=arr.slice(-3);if(l3[2]<=l3[0]&&Math.max.apply(null,l3)<=Math.max.apply(null,arr.slice(0,-2)))stalled.push({id,w:l3[2]});}});
+  if(stalled.length) out.push({type:"warn",icon:cIcon("flat"),h:"Вес стоит",p:`${stalled.slice(0,3).map(x=>`${EXMAP[x.id].n} (${x.w} кг)`).join(", ")} не растёт последние сессии. Двойная прогрессия: добей верх диапазона чисто во всех подходах, потом +минимальный вес. На дельтах не гонись весом — добавляй повторы.`});
+  const recentPR=[]; Object.keys(prs).forEach(id=>{if(EXMAP[id]&&prs[id].at&&daysAgo(prs[id].at)<7&&!prs[id].seeded)recentPR.push(id);});
+  if(recentPR.length) out.push({type:"pr",icon:cIcon("trophy"),h:"Свежие рекорды",p:`За неделю обновил: ${recentPR.slice(0,4).map(id=>EXMAP[id].n).join(", ")}. Отличный импульс — зафиксируй технику на этих весах.`});
+  if(s.streak>=3) out.push({type:"good",icon:cIcon("fire"),h:"Серия "+s.streak,p:`Ты тренируешься ${s.streak} ${plural(s.streak,"день","дня","дней")} подряд. Постоянство решает больше, чем отдельная тяжёлая тренировка.`});
+  else if(s.w30>0) out.push({type:"info",icon:cIcon("cal"),h:"Темп",p:`${s.w30} ${plural(s.w30,"тренировка","тренировки","тренировок")} за 30 дней. Цель — 3–4 в неделю для стабильного роста.`});
+  return out;
+}
+
+/* ===================== Экспорт / импорт ===================== */
+const WMARK="RPG-DATA::";
+function fmtDT(iso){const d=new Date(iso);const p=n=>String(n).padStart(2,"0");return p(d.getDate())+"."+p(d.getMonth()+1)+"."+d.getFullYear()+" "+p(d.getHours())+":"+p(d.getMinutes());}
+function allData(){return {character,sessions,prs,achieved,v:1};}
+function buildCoachExport(){
+  const s=achStats();
+  const L=["ТЕЛО RPG — выгрузка для разбора","Сгенерировано: "+fmtDT(new Date().toISOString()),"",
+    `Уровень ${character.level} (${rankFor(character.level)}), вес тела ${character.bodyweight} кг`,
+    `Тренировок: ${sessions.length}, тоннаж: ${fmtNum(s.totalVol)} кг, серия: ${s.streak} дн.`,
+    `Характеристики (0-100): сила ${s.strength}, выносливость ${s.endurance}, объём ${s.volume}, постоянство ${s.consistency}`,""];
+  const mv=muscleVolume(30);const tot=MAJOR_MUSCLES.reduce((a,m)=>a+(mv[m]||0),0);
+  L.push("Объём по группам за 30 дней:");
+  MAJOR_MUSCLES.map(m=>[m,mv[m]||0]).sort((a,b)=>b[1]-a[1]).forEach(e=>L.push(`• ${MUS_RU[e[0]]}: ${fmtNum(e[1])} кг${tot?" ("+Math.round(e[1]/tot*100)+"%)":""}`));
+  L.push("","Личные рекорды:");
+  Object.keys(prs).forEach(id=>{if(EXMAP[id])L.push(`• ${EXMAP[id].n}: ${prs[id].weight} кг`+(prs[id].e1rm?` (примерно 1ПМ ${prs[id].e1rm})`:""));});
+  L.push("","Последние 8 тренировок:");
+  sessions.slice(-8).reverse().forEach(ss=>{
+    L.push(`— ${new Date(ss.date).toLocaleDateString("ru-RU")}, ${fmtNum(ss.volume)} кг:`);
+    ss.items.forEach(it=>{const ex=EXMAP[it.exId];if(!ex)return;const sets=it.sets.map(x=>ex.t==="t"?`${x.reps}мин`:`${x.reps}x${x.weight}`).join(", ");L.push(`   ${ex.n}: ${sets}`);});
+  });
+  L.push("","Вопрос: разбери прогресс, что проседает, что менять в ближайшие 2 недели.");
+  L.push("","——— данные для импорта, не редактируй ———",WMARK+JSON.stringify(allData()));
+  return L.join("\n");
+}
+function openData(mode){
+  const sheet=document.getElementById("dataSheet"),ta=document.getElementById("dataTa"),msg=document.getElementById("dataMsg"),btns=document.getElementById("dataBtns");
+  msg.textContent="";msg.className="sheet-msg";
+  if(mode==="coach"||mode==="export"){
+    document.getElementById("dataTitle").textContent = mode==="coach"?"Разбор у Claude":"Экспорт данных";
+    document.getElementById("dataSub").textContent = mode==="coach"?"скопируй и вставь мне в чат":"скопируй или скачай бэкап";
+    ta.value = mode==="coach"?buildCoachExport():(WMARK+JSON.stringify(allData()));
+    ta.readOnly=true;
+    btns.innerHTML=`<button class="btn btn-primary btn-sm" style="flex:1" id="copyData"><svg class="icon-sm" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg>Копировать</button><button class="btn btn-ghost btn-sm" style="flex:1" id="dlData"><svg class="icon-sm" viewBox="0 0 24 24"><path d="M12 4v11M12 15l-4-4M12 15l4-4M5 20h14"/></svg>Скачать</button>`;
+    sheet.showModal();
+    document.getElementById("copyData").onclick=()=>{copyTxt(ta.value);msg.className="sheet-msg ok";msg.textContent="Скопировано ✓";setTimeout(()=>msg.textContent="",2000);};
+    document.getElementById("dlData").onclick=()=>{dl(ta.value,mode==="coach"?"telo-rpg-razbor":"telo-rpg-backup");msg.className="sheet-msg ok";msg.textContent="Файл сохранён ✓";setTimeout(()=>msg.textContent="",2000);};
+  } else {
+    document.getElementById("dataTitle").textContent="Импорт данных";
+    document.getElementById("dataSub").textContent="вставь текст бэкапа";
+    ta.value="";ta.readOnly=false;ta.placeholder="Вставь сюда экспорт…";
+    btns.innerHTML=`<button class="btn btn-primary btn-sm" style="flex:1" id="doImp"><svg class="icon-sm" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>Загрузить</button>`;
+    sheet.showModal();
+    document.getElementById("doImp").onclick=()=>{
+      const raw=ta.value.trim(); if(!raw){msg.className="sheet-msg err";msg.textContent="Пусто";return;}
+      let j=null; try{const i=raw.indexOf(WMARK);j=JSON.parse(i>=0?raw.slice(i+WMARK.length).trim():raw);}catch(e){msg.className="sheet-msg err";msg.textContent="Не удалось прочитать данные";return;}
+      if(!j||!j.character){msg.className="sheet-msg err";msg.textContent="Формат не распознан";return;}
+      character=j.character;sessions=j.sessions||[];prs=j.prs||{};achieved=j.achieved||{};
+      save(LS.char,character);save(LS.sess,sessions);save(LS.pr,prs);save(LS.ach,achieved);
+      msg.className="sheet-msg ok";msg.textContent="Загружено ✓";setTimeout(()=>{sheet.close();showScreen("hero");},600);
+    };
+  }
+}
+function copyTxt(t){if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t).catch(()=>fallbackCopy());else fallbackCopy();}
+function fallbackCopy(){const ta=document.getElementById("dataTa");ta.select();try{document.execCommand("copy");}catch(e){}}
+function dl(text,name){const d=new Date(),p=n=>String(n).padStart(2,"0"),stamp=d.getFullYear()+p(d.getMonth()+1)+p(d.getDate());const b=new Blob([text],{type:"text/plain;charset=utf-8"});const u=URL.createObjectURL(b);const a=document.createElement("a");a.href=u;a.download=name+"-"+stamp+".txt";document.body.appendChild(a);a.click();setTimeout(()=>{document.body.removeChild(a);URL.revokeObjectURL(u);},0);}
+
+/* ===================== Навигация и рендер ===================== */
+const SCREENS=["hero","progress","log","body-map","coach"];
+function showScreen(id){
+  document.querySelectorAll(".screen").forEach(s=>s.classList.toggle("active",s.id===id));
+  document.querySelectorAll(".nav-btn").forEach(b=>b.classList.toggle("active",b.dataset.screen===id));
+  if(id==="hero")renderHero(); else if(id==="progress")renderProgress(); else if(id==="log")renderLog(); else if(id==="body-map")renderBody(); else if(id==="coach")renderCoach();
+  try{localStorage.setItem("rpg.screen",id);}catch(e){}
   window.scrollTo(0,0);
-  try{localStorage.setItem('plan-tab',id)}catch(e){}
 }
-document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>showTab(t.dataset.tab)));
-function toggleEx(el,e){
-  if(e){
-    if(e.target.tagName==='A'||e.target.closest('.yt-btn'))return;
-    if(!e.target.closest('.ex-card-header'))return;
-  }
-  el.classList.toggle('open');
-}
-function checkState(){try{return JSON.parse(localStorage.getItem('plan-checks')||'{}')}catch(e){return{}}}
-function toggle(el){
-  el.classList.toggle('done');
-  const items=[...document.querySelectorAll('.check-item')];
-  const st=checkState();st[items.indexOf(el)]=el.classList.contains('done');
-  try{localStorage.setItem('plan-checks',JSON.stringify(st))}catch(e){}
-}
-(function restore(){
-  const st=checkState(),items=[...document.querySelectorAll('.check-item')];
-  Object.keys(st).forEach(i=>{if(items[i])items[i].classList.toggle('done',!!st[i])});
-  let t=null;try{t=localStorage.getItem('plan-tab')}catch(e){}
-  if(t&&TABS.includes(t))showTab(t);
+function toast(t){const el=document.getElementById("toast");el.textContent=t;el.classList.add("show");clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove("show"),1800);}
+
+document.querySelectorAll(".nav-btn").forEach(b=>b.onclick=()=>showScreen(b.dataset.screen));
+document.getElementById("settingsBtn").onclick=()=>{document.getElementById("bwInput").value=character.bodyweight;document.getElementById("settingsSheet").showModal();};
+document.getElementById("saveBwBtn").onclick=()=>{const v=parseFloat(document.getElementById("bwInput").value);if(v>0){character.bodyweight=v;save(LS.char,character);toast("Вес тела сохранён");if(document.getElementById("hero").classList.contains("active"))renderHero();}document.getElementById("settingsSheet").close();};
+document.getElementById("resetBtn").onclick=()=>{ if(confirm("Удалить весь прогресс? Это необратимо. Сделай экспорт заранее.")){ Object.values(LS).forEach(k=>{try{localStorage.removeItem(k);}catch(e){}}); character=freshChar();character.migrated=true;sessions=[];prs={};achieved={};draft=null; save(LS.char,character); document.getElementById("settingsSheet").close(); showScreen("hero"); toast("Прогресс сброшен"); } };
+document.getElementById("exportCoachBtn").onclick=()=>openData("coach");
+document.getElementById("backupExportBtn").onclick=()=>openData("export");
+document.getElementById("backupImportBtn").onclick=()=>openData("import");
+document.getElementById("bodySeg").querySelectorAll("button").forEach(b=>b.onclick=()=>{bodyWin=b.dataset.win;document.getElementById("bodySeg").querySelectorAll("button").forEach(x=>x.classList.toggle("active",x===b));renderBody();});
+document.querySelectorAll("dialog.sheet").forEach(d=>d.addEventListener("click",e=>{if(e.target===d)d.close();}));
+
+(function init(){
+  let start="hero"; try{const s=localStorage.getItem("rpg.screen");if(s&&SCREENS.includes(s))start=s;}catch(e){}
+  showScreen(start);
 })();
-/* Editable weights: tap badge -> input, persisted in localStorage with edit date.
-   Key = section id + exercise title; empty input resets to the default from HTML. */
-const WKEY='plan-weights';
-function wState(){try{return JSON.parse(localStorage.getItem(WKEY)||'{}')}catch(e){return{}}}
-function wSave(st){try{localStorage.setItem(WKEY,JSON.stringify(st))}catch(e){}}
-function fmtDate(iso){const d=new Date(iso);return String(d.getDate()).padStart(2,'0')+'.'+String(d.getMonth()+1).padStart(2,'0')}
-function wTag(b){return b.parentElement.querySelector('.weight-tag')}
-function markEdited(b,iso,auto){
-  const tag=wTag(b);
-  if(tag){if(!tag.dataset.base)tag.dataset.base=tag.textContent;tag.textContent=tag.dataset.base+(auto?'':' · ред. '+fmtDate(iso))}
-  if(!auto)b.classList.add('edited');
-}
-/* Auto-progression: editing the current weight recalculates the "next" badge
-   using the per-exercise step derived from the default cur→next pair in HTML.
-   Works only when the number structure matches (e.g. "37 кг", "3 × 60 сек"). */
-function wNums(s){return (s.match(/\d+(?:[.,]\d+)?/g)||[]).map(x=>parseFloat(x.replace(',','.')))}
-function wTmpl(s){return s.replace(/\d+(?:[.,]\d+)?/g,'#')}
-function wFmt(n){return String(Math.round(n*100)/100)}
-function nextBadgeOf(b){const t=b.closest('.weight-tracker');return t?t.querySelector('.weight-next-badge'):null}
-function autoNext(curBadge,newVal){
-  const nb=nextBadgeOf(curBadge);if(!nb)return;
-  const cd=curBadge.dataset.def,nd=nb.dataset.def;
-  if(wTmpl(cd)!==wTmpl(nd)||wTmpl(newVal)!==wTmpl(cd))return;
-  const base=wNums(cd),step=wNums(nd),cur=wNums(newVal);
-  if(!base.length)return;
-  let i=0;
-  const out=nd.replace(/\d+(?:[.,]\d+)?/g,()=>{const r=cur[i]+(step[i]-base[i]);i++;return wFmt(r)});
-  nb.textContent=out;
-  const st=wState(),key=nb.dataset.wkey;
-  st[key]=st[key]||{};st[key].next={v:out,d:new Date().toISOString(),a:1};
-  wSave(st);markEdited(nb,st[key].next.d,true);
-}
-function resetAutoNext(curBadge){
-  const nb=nextBadgeOf(curBadge);if(!nb)return;
-  const st=wState(),key=nb.dataset.wkey,rec=st[key]&&st[key].next;
-  if(!rec||!rec.a)return;
-  nb.textContent=nb.dataset.def;
-  delete st[key].next;if(!Object.keys(st[key]).length)delete st[key];
-  wSave(st);unmarkEdited(nb);
-}
-function unmarkEdited(b){
-  const tag=wTag(b);
-  if(tag&&tag.dataset.base)tag.textContent=tag.dataset.base;
-  b.classList.remove('edited');
-}
-function startEdit(e){
-  e.stopPropagation();
-  const b=e.currentTarget;
-  if(b.querySelector('input'))return;
-  const cur=b.textContent.trim();
-  b.dataset.prev=cur;
-  b.textContent='';
-  const inp=document.createElement('input');
-  inp.className='weight-input';inp.value=cur;inp.setAttribute('aria-label','Рабочий вес');
-  b.appendChild(inp);inp.focus();inp.select();
-  inp.addEventListener('blur',()=>finishEdit(b,inp));
-  inp.addEventListener('keydown',ev=>{
-    ev.stopPropagation();
-    if(ev.key==='Enter')inp.blur();
-    if(ev.key==='Escape'){inp.value=b.dataset.prev;inp.blur()}
-  });
-  inp.addEventListener('click',ev=>ev.stopPropagation());
-}
-function finishEdit(b,inp){
-  const v=inp.value.trim(),st=wState(),key=b.dataset.wkey,slot=b.dataset.wslot;
-  if(!v||v===b.dataset.def){
-    b.textContent=b.dataset.def;
-    if(st[key]){delete st[key][slot];if(!Object.keys(st[key]).length)delete st[key]}
-    wSave(st);unmarkEdited(b);
-    if(slot==='cur')resetAutoNext(b);
-  }else{
-    b.textContent=v;
-    st[key]=st[key]||{};st[key][slot]={v:v,d:new Date().toISOString()};
-    wSave(st);markEdited(b,st[key][slot].d);
-    if(slot==='cur')autoNext(b,v);
-  }
-}
-(function initWeights(){
-  const st=wState(),curBadges=[];
-  document.querySelectorAll('.ex-card').forEach(card=>{
-    const t=card.querySelector('.ex-card-title'),sec=card.closest('.section');
-    if(!t||!sec)return;
-    const key=sec.id+'|'+t.textContent.trim();
-    card.querySelectorAll('.weight-badge,.weight-next-badge').forEach(b=>{
-      b.dataset.wkey=key;
-      b.dataset.wslot=b.classList.contains('weight-next-badge')?'next':'cur';
-      b.dataset.def=b.textContent.trim();
-      const rec=st[key]&&st[key][b.dataset.wslot];
-      if(rec){b.textContent=rec.v;markEdited(b,rec.d,rec.a)}
-      if(b.dataset.wslot==='cur'){b.addEventListener('click',startEdit);curBadges.push(b);}
-    });
-  });
-  // Backfill: if a current weight was edited but "next" was never derived
-  // (e.g. saved before this fix, or unit mismatch), compute it now.
-  curBadges.forEach(b=>{
-    const rec=st[b.dataset.wkey];
-    if(rec&&rec.cur&&!rec.next)autoNext(b,b.textContent.trim());
-  });
-})();
-/* ---- Export / import weights (share progress across browsers / with coach) ---- */
-const DAY_LABEL={'day-a':'День A — спина + плечи','day-b':'День B — грудь + руки + пресс'};
-const WMARK='PLAN-WEIGHTS::';
-function fmtDT(iso){const d=new Date(iso);const p=n=>String(n).padStart(2,'0');return p(d.getDate())+'.'+p(d.getMonth()+1)+'.'+d.getFullYear()+' · '+p(d.getHours())+':'+p(d.getMinutes())}
-function buildExport(){
-  const st=wState(),keys=Object.keys(st),L=['ТЕЛО МЕЧТЫ — рабочие веса','Экспортировано: '+fmtDT(new Date().toISOString()),''];
-  if(!keys.length){L.push('Пока ничего не менялось — все веса на значениях из плана.');}
-  else{
-    const groups={};
-    keys.forEach(k=>{const i=k.indexOf('|'),sec=k.slice(0,i),title=k.slice(i+1);(groups[sec]=groups[sec]||[]).push({title,rec:st[k]});});
-    Object.keys(groups).forEach(sec=>{
-      L.push((DAY_LABEL[sec]||sec).toUpperCase());
-      groups[sec].forEach(({title,rec})=>{
-        let s='• '+title+' — ';
-        s+=rec.cur?rec.cur.v+' (ред. '+fmtDate(rec.cur.d)+')':'(без изменений)';
-        if(rec.next)s+=' → после чистых '+rec.next.v;
-        L.push(s);
-      });
-      L.push('');
-    });
-  }
-  L.push('——— данные для импорта, не редактируй строку ниже ———',WMARK+JSON.stringify(st));
-  return L.join('\n');
-}
-function openExport(){document.getElementById('export-ta').value=buildExport();document.getElementById('export-msg').textContent='';document.getElementById('export-sheet').showModal();}
-function openImport(){document.getElementById('import-ta').value='';const m=document.getElementById('import-msg');m.textContent='';m.className='sheet-msg';document.getElementById('import-sheet').showModal();}
-function closeSheet(id){document.getElementById(id).close();}
-function copyExport(){
-  const ta=document.getElementById('export-ta'),msg=document.getElementById('export-msg');
-  const done=()=>{msg.className='sheet-msg ok';msg.textContent='Скопировано ✓';setTimeout(()=>msg.textContent='',2000);};
-  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(ta.value).then(done,()=>{ta.select();document.execCommand('copy');done();});}
-  else{ta.select();document.execCommand('copy');done();}
-}
-function downloadExport(){
-  const d=new Date(),p=n=>String(n).padStart(2,'0'),stamp=d.getFullYear()+p(d.getMonth()+1)+p(d.getDate());
-  const blob=new Blob([document.getElementById('export-ta').value],{type:'text/plain;charset=utf-8'});
-  const url=URL.createObjectURL(blob),a=document.createElement('a');
-  a.href=url;a.download='plan-weights-'+stamp+'.txt';document.body.appendChild(a);a.click();
-  setTimeout(()=>{document.body.removeChild(a);URL.revokeObjectURL(url);},0);
-  const msg=document.getElementById('export-msg');msg.className='sheet-msg ok';msg.textContent='Файл сохранён ✓';setTimeout(()=>msg.textContent='',2000);
-}
-function doImport(){
-  const raw=document.getElementById('import-ta').value.trim(),msg=document.getElementById('import-msg');
-  if(!raw){msg.className='sheet-msg err';msg.textContent='Поле пустое — вставь текст экспорта.';return;}
-  let json=null;
-  try{const i=raw.indexOf(WMARK);json=JSON.parse(i>=0?raw.slice(i+WMARK.length).trim():raw);}
-  catch(e){msg.className='sheet-msg err';msg.textContent='Не удалось прочитать данные. Вставь текст целиком, как при экспорте.';return;}
-  if(!json||typeof json!=='object'||Array.isArray(json)){msg.className='sheet-msg err';msg.textContent='Данные пустые или в неверном формате.';return;}
-  wSave(json);
-  msg.className='sheet-msg ok';msg.textContent='Загружено ✓ Обновляю страницу…';
-  setTimeout(()=>location.reload(),700);
-}
-document.querySelectorAll('dialog.sheet').forEach(d=>{
-  d.addEventListener('click',e=>{if(e.target===d)d.close();});
-});
 </script>
 </body>
 </html>
